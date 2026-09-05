@@ -2,21 +2,22 @@
 
 Updated 2026-09-05. Do these in order — later steps depend on earlier ones landing.
 
-## Step 1: Merge the open PRs, in this exact order
+## Step 1: Merge the 12 open PRs, in this exact order
 
-Some of these share sequential database migrations, so the order below is not optional for #18/#20/#23 — merging out of order will break the migration chain. #26 must go first — it's a critical fix (the `web` service's Docker build was fundamentally broken for this monorepo layout, which was failing the E2E check on every single other PR).
+Some of these share sequential database migrations, so the order below is not optional for #18/#20/#23. #26 and #27 must go first — both are critical CI/infra fixes that were blocking every other PR's checks (a broken Docker build for this monorepo layout, and a flaky npm bug), verified green in real CI, not just locally.
 
-1. **#26** — Docker build fix (blocks E2E on every other PR — merge this first)
-2. **#18** — Database integrity pass (indexes, migration-safety fix)
-3. **#20** — Billing/entitlements architecture (its migration chains after #18's)
-4. **#23** — Analytics funnel tracking (its migration chains after #20's)
-5. **#19** — AI reliability (silent-failure fix, cost tracking, rate limiting)
-6. **#21** — Nav fix (AI Quality Engine link for company users)
-7. **#22** — Trust/reputation IDOR fix
-8. **#25** — Performance fixes (N+1 queries, unbounded pagination)
-9. **#24** — CI Node 20→22 bump (needed for #12)
-10. **#12** — Frontend test framework (Vitest)
-11. **#15** — Accessibility audit (WCAG 2.2 AA)
+1. **#26** — Docker build fix (blocks E2E on every other PR)
+2. **#27** — CI npm bug fix (blocks Frontend/E2E intermittently)
+3. **#18** — Database integrity pass (indexes, migration-safety fix)
+4. **#20** — Billing/entitlements architecture (its migration chains after #18's)
+5. **#23** — Analytics funnel tracking (its migration chains after #20's)
+6. **#19** — AI reliability (silent-failure fix, cost tracking, rate limiting)
+7. **#21** — Nav fix (AI Quality Engine link for company users)
+8. **#22** — Trust/reputation IDOR fix
+9. **#25** — Performance fixes (N+1 queries, unbounded pagination)
+10. **#24** — CI Node 20→22 bump
+11. **#12** — Frontend test framework (Vitest) — confirmed fully green in real CI including E2E
+12. **#15** — Accessibility audit (WCAG 2.2 AA)
 
 After each merge, GitHub may show the next PR as briefly "out of date" — that's expected, just wait a minute for it to recheck, or hit "Update branch" if offered.
 

@@ -1,28 +1,39 @@
-# Required from you — running list
+# Required from you — step by step
 
-Kept up to date as new items come up. Each item says exactly what to do and why it can't be done via API/automation.
+Updated 2026-09-05. Do these in order — later steps depend on earlier ones landing.
 
-## 1. Merge open PRs (ongoing)
-Governance you set up requires every change to go through a PR you merge manually. Check `gh pr list` or the repo's Pull Requests tab for what's currently open and waiting.
+## Step 1: Merge the 8 open PRs, in this exact order
 
-## 2. Sentry DSNs
-Once the Sentry code-wiring PR lands (in progress), create a free Sentry account + two projects (Python/FastAPI, Next.js) and paste the two DSN keys so they can be added as `SENTRY_DSN` (Render) and `NEXT_PUBLIC_SENTRY_DSN` (Cloudflare Worker + GitHub secret).
+Some of these share sequential database migrations, so the order below is not optional for #18/#20/#23 — merging out of order will break the migration chain.
 
-## 3. Dev environment storage — S3 access keys (2 minutes, dashboard-only)
-Supabase's Management API has no endpoint for creating S3 access keys — confirmed by checking its OpenAPI spec, this is a dashboard-only action. The dev project's storage buckets are already created (`remote-ai-platform-resumes`, `remote-ai-platform-assets`). To finish isolating dev's storage from prod's:
-1. Go to the **dev** Supabase project (ref `wqugjgtjjmixzsqqcmld`) dashboard → **Settings → Storage → S3 Access Keys**.
-2. Click **New access key**, name it e.g. `render-dev-backend`.
-3. Paste the Access Key ID and Secret Access Key here — they'll be set as `MINIO_ACCESS_KEY`/`MINIO_SECRET_KEY` on the dev Render service (currently reusing prod's).
+1. **#18** — Database integrity pass (indexes, migration-safety fix)
+2. **#20** — Billing/entitlements architecture (its migration chains after #18's)
+3. **#23** — Analytics funnel tracking (its migration chains after #20's)
+4. **#19** — AI reliability (silent-failure fix, cost tracking, rate limiting)
+5. **#21** — Nav fix (AI Quality Engine link for company users)
+6. **#22** — Trust/reputation IDOR fix
+7. **#12** — Frontend test framework (Vitest)
+8. **#15** — Accessibility audit (WCAG 2.2 AA)
 
-## 4. Dev environment Redis — needs its own Upstash instance
-No Upstash API token is available in this environment. To separate dev's Redis from prod's (currently shared):
-1. Go to **upstash.com** → create a new free Redis database (or reuse an existing free-tier one if you already have Upstash access elsewhere).
-2. Paste the connection URL (`rediss://...`) here — it'll be set as `REDIS_URL`/`CELERY_BROKER_URL`/`CELERY_RESULT_BACKEND` on the dev Render service.
+After each merge, GitHub may show the next PR as briefly "out of date" — that's expected, just wait a minute for it to recheck, or hit "Update branch" if offered.
 
-Alternatively, if separating this isn't worth the effort right now: dev sharing prod's Redis is low-risk (used for rate-limiting fallback and an unused Celery broker — no worker consumes it either way, see decision 0001). Fine to leave as-is and revisit later.
+## Step 2: Promote dev to prod
 
-## 5. Legal review
-Once the legal-pages-scaffold PR lands: a real lawyer needs to draft actual privacy policy, terms of service, and Impressum content. The Impressum specifically has a decision only you can make — see `docs/...` in that PR's description: German Impressumspflicht requires a real published name/address once the site takes real commercial traffic, even as an individual, which conflicts with wanting brand-only anonymity for now.
+Once all 8 are merged into `dev`, tell me (or open it yourself: PR from `dev` into `prod`). This is what actually ships everything live and closes the remaining Dependabot alerts for real (they're scanned against `prod`, not `dev`).
 
-## 6. Pricing/monetization decisions
-Not started yet — when it comes up, decisions about actual plan tiers and prices are yours to make; I can build the entitlement/billing architecture but not choose the numbers.
+## Step 3: External accounts / manual dashboard steps
+
+1. **Sentry** — create a free account at sentry.io, two projects (Python/FastAPI named `remote-ai-platform-api`, Next.js named `remote-ai-platform-web`), paste both DSN keys here.
+2. **Supabase S3 keys for dev** (2 min) — dev Supabase project (ref `wqugjgtjjmixzsqqcmld`) → Settings → Storage → S3 Access Keys → New access key → paste both values here.
+3. **Upstash Redis for dev** (optional) — upstash.com → new free Redis database → paste the `rediss://` URL here. Or explicitly tell me to skip this (dev sharing prod's Redis is low-risk).
+
+## Step 4: Decisions only you can make
+
+1. **Auth system consolidation** — two parallel auth systems exist (Supabase-native + legacy custom-JWT). I've deliberately held off touching this without your explicit go-ahead, since it's real surgery on login itself. Say the word when you want this tackled.
+2. **Accessibility contrast colors** — PR #15 fixed 40/53 real WCAG violations but flagged 2 design-system color tokens (`--text-light`, `--text-muted`, used ~180× across 35 files) as needing a brand-color decision to fix the rest. Your call whether/how to adjust them.
+3. **Legal content** — a real lawyer needs to draft privacy policy, terms, and Impressum. The Impressum specifically needs your decision: publish a real personal name/address now (German law requires this for any commercial site reachable from Germany, even run by an individual), or wait until company formation.
+4. **Pricing/plans** — PR #20 built the billing architecture with zero real prices set. Whenever you're ready to define actual plan tiers/limits/prices, I can wire them into the existing entitlement system.
+
+## Everything else
+
+Full history of every finding, fix, and audit performed is in this repo's `reports/` and `decisions/` folders, and `docs/DEPLOYMENT_TOPOLOGY.md` for current live infrastructure.

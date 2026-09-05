@@ -1,8 +1,24 @@
 # Required from you — step by step
 
-Updated 2026-09-06. Big batch of background work just kicked off: PR #31 conflict fix,
-repo hygiene (docs/secrets), and a 6-way security audit. Nothing needs you right now —
-this section will update as each piece lands with PR links to review/merge.
+Updated 2026-09-06. All 6 security-audit PRs plus the repo-hygiene PR are in and ready
+for your review/merge (7 PRs total: #33-#39). Only PR #31 (passwordless auth rebase) is
+still being verified. Recommended merge order below, right after this summary.
+
+## Suggested merge order for #33-#39
+These were built in parallel from slightly different starting points, so several touch
+the same backend files (`app/main.py`, `app/core/middleware.py`, auth files, test files)
+and will likely conflict with each other one-by-one as you merge — that's expected, not
+a sign anything is wrong. Suggested order (safest/most independent first):
+1. **#33** (docs move) — touches no app code, merge anytime
+2. **#34** (injection/SSRF/XSS) — small, isolated
+3. **#38** (file-upload/AI/PII)
+4. **#36** (CORS/headers/rate-limit)
+5. **#39** (CI/CD/deps) — after this, its deploy-hijack fix is live
+6. **#37** (auth/IDOR/websockets) — bigger, fixes the broken websockets
+7. **#35** (payments/storage) — merge last, most sensitive, review it yourself carefully
+
+If GitHub shows a conflict on one of the later ones, just tell me and I'll rebase it onto
+the newly-updated `dev` before you merge — same as the batch-merge pattern from earlier.
 
 ## Already done
 - ✅ PR #32 (Facebook-blue rebrand) — merged to dev, then dev→prod (#28) — **both live in production now**
@@ -17,7 +33,7 @@ this section will update as each piece lands with PR links to review/merge.
 5. ✅ **Security audit — CORS/headers/API-docs/rate-limiting — done.** PR **#36** → https://github.com/gokul-227/remote-ai-platform/pull/36 (targets `dev`, needs your merge). Three MEDIUM fixes: (a) `/docs`/`/redoc`/`/openapi.json` had no production guard at all — now 404 in prod; (b) API responses had zero security headers — added (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, HSTS); (c) a few AI-cost endpoints (resume AI-enhance, project AI reports) were falling into the loose general rate-limit tier instead of the strict AI tier — fixed. CORS and CSRF reviewed and confirmed already safe (not just assumed — traced through Starlette's actual behavior and confirmed no cookie-based auth exists anywhere). Confirms the same test flakiness seen in PR #35's report is pre-existing Docker/test-env flakiness, not a real bug — same two tests, reproduces identically with or without changes, clears on container restart.
 6. ✅ **Security audit — Payments/DB/Supabase/Redis/MinIO — done.** PR **#35** → https://github.com/gokul-227/remote-ai-platform/pull/35 (targets `dev`, **review this one personally before merging — it touches real payment logic**). Two real HIGH fixes: (a) a replayed/out-of-order Stripe webhook could revert an already-`RELEASED`/`REFUNDED` payment backward — added an event-dedup table + a guard that refuses to move terminal-status payments backward; (b) resumes were being served via a permanent public URL requiring a public-read bucket with no expiration (the presigned-URL helper existed but was never actually called) — now every resume access generates a fresh 15-minute presigned URL after the existing owner/admin check. Raw SQL, Supabase key separation, and Redis contents all reviewed clean. Flagged as unverified-from-source (needs you to check live): the actual Supabase Storage bucket ACL, production DB role privileges, and live Redis auth config. **Also noted**: 1 pre-existing test failure on `dev`, unrelated to this PR (confirmed present before these changes) — needs a look separately, not blocking.
 7. ✅ **Security audit — Injection/SSRF/XSS/path-traversal/error-handling — done.** PR **#34** → https://github.com/gokul-227/remote-ai-platform/pull/34 (targets `dev`, needs your merge). One real MEDIUM fix: an auth dependency was leaking raw database error text (e.g. SQL error details) into the 401 response body if a DB error happened mid-auth-check — now returns a generic message to the client while still logging full detail server-side. Everything else audited (SSRF, XSS, command/code injection, path traversal) came back clean — no real issues found, confirmed via actual code search rather than assumed. 214 backend tests pass including 2 new regression tests.
-8. **Security audit — CI/CD, GitHub Actions, dependencies, prod config** — running
+8. ✅ **Security audit — CI/CD, GitHub Actions, dependencies, prod config — done, includes a CRITICAL finding.** PR **#39** → https://github.com/gokul-227/remote-ai-platform/pull/39 (targets `dev`, needs your merge, review carefully). **Critical: the deploy workflows could be tricked into deploying a stranger's code using this repo's real Cloudflare/Supabase/Sentry secrets** — a forked PR whose branch was literally named `prod` or `dev` would satisfy the deploy trigger's branch-name filter. Fixed by requiring the trigger to come from an actual push event on this repo, not a PR build. Also: added least-privilege permissions to 6 workflows, SHA-pinned the actions that touch secrets, added a gitleaks CI job, and cut Python dependency vulnerabilities from 16 down to 1 (the 1 remaining has no upstream fix yet, documented as low-risk). Production config now fails closed on debug-mode-in-prod and a few more localhost-default checks. All 6 security-audit PRs are now in: **#33 (docs), #34 (injection/SSRF/XSS), #35 (payments/storage — review personally), #36 (CORS/headers/rate-limit), #37 (auth/IDOR/websockets — review personally, fixes broken prod websockets), #39 (CI/CD/deps — review personally, fixes the deploy-hijack risk)**.
 
 Each of these opens its own PR against `dev` (not merged by any agent — full review required). Expect these to take anywhere from 20 minutes to over an hour each given the depth requested. A consolidated security report will be written here once they've all landed, following the report structure you specified (executive summary, per-finding severity/scenario/fix, VERIFIED/LIKELY SAFE/UNVERIFIED distinctions, manual-action checklist). No secret values will ever appear in any of these PRs or reports — only classifications and locations.
 

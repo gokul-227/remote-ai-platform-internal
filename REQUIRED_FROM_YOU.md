@@ -2,18 +2,21 @@
 
 Updated 2026-09-05. Do these in order — later steps depend on earlier ones landing.
 
-## Step 1: Merge the 8 open PRs, in this exact order
+## Step 1: Merge the open PRs, in this exact order
 
-Some of these share sequential database migrations, so the order below is not optional for #18/#20/#23 — merging out of order will break the migration chain.
+Some of these share sequential database migrations, so the order below is not optional for #18/#20/#23 — merging out of order will break the migration chain. #26 must go first — it's a critical fix (the `web` service's Docker build was fundamentally broken for this monorepo layout, which was failing the E2E check on every single other PR).
 
-1. **#18** — Database integrity pass (indexes, migration-safety fix)
-2. **#20** — Billing/entitlements architecture (its migration chains after #18's)
-3. **#23** — Analytics funnel tracking (its migration chains after #20's)
-4. **#19** — AI reliability (silent-failure fix, cost tracking, rate limiting)
-5. **#21** — Nav fix (AI Quality Engine link for company users)
-6. **#22** — Trust/reputation IDOR fix
-7. **#12** — Frontend test framework (Vitest)
-8. **#15** — Accessibility audit (WCAG 2.2 AA)
+1. **#26** — Docker build fix (blocks E2E on every other PR — merge this first)
+2. **#18** — Database integrity pass (indexes, migration-safety fix)
+3. **#20** — Billing/entitlements architecture (its migration chains after #18's)
+4. **#23** — Analytics funnel tracking (its migration chains after #20's)
+5. **#19** — AI reliability (silent-failure fix, cost tracking, rate limiting)
+6. **#21** — Nav fix (AI Quality Engine link for company users)
+7. **#22** — Trust/reputation IDOR fix
+8. **#25** — Performance fixes (N+1 queries, unbounded pagination)
+9. **#24** — CI Node 20→22 bump (needed for #12)
+10. **#12** — Frontend test framework (Vitest)
+11. **#15** — Accessibility audit (WCAG 2.2 AA)
 
 After each merge, GitHub may show the next PR as briefly "out of date" — that's expected, just wait a minute for it to recheck, or hit "Update branch" if offered.
 

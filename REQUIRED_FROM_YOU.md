@@ -13,7 +13,7 @@ Updated 2026-09-05 (evening). Passwordless email OTP + GitHub login PR is open. 
 ## Still needed: merge these PRs (in order)
 1. **#28** — `dev → prod` promotion (ships everything live, closes remaining Dependabot alerts) — still open
 2. **#31** — https://github.com/gokul-227/remote-ai-platform/pull/31 — passwordless email OTP (replaces password login entirely) + GitHub OAuth login. Backend/frontend fully verified (ruff/mypy/pytest 249/249, tsc/lint/vitest/build all green). **Before merging, you still need to do 2 things** (see below).
-3. A rebrand PR (Facebook blue/white color scheme) — not opened yet, still being built by an agent in the background. Will post here once it's ready.
+3. **#32** — https://github.com/gokul-227/remote-ai-platform/pull/32 — Facebook-style blue/white rebrand. Uses `#0552CC` light / `#4C9AFF` dark rather than Facebook's literal `#1877F2` — that exact hex only scores 4.23-4.24:1 contrast on white, under the 4.5:1 AA bar, so it was darkened slightly to stay accessible while keeping the same hue. Zero new axe-core violations, lint/tsc/vitest/build all clean, screenshots confirm light+dark mode both look coherent. Fully independent of #31, can merge in either order.
 
 ## Action needed from you before merging #31
 

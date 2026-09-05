@@ -1,6 +1,19 @@
 # Required from you — step by step
 
-Updated 2026-09-05 (evening). Passwordless email OTP + GitHub login PR is open. Facebook-blue rebrand agent still running in background.
+Updated 2026-09-05 (evening).
+
+## 🔴 P0 — blocks real users right now, found while debugging PR #31's failing CI
+**No real user except you can receive any email from the platform.** Resend is still on
+its sandbox sender (`onboarding@resend.dev`), which only delivers to the account owner's
+own inbox until a custom domain is verified. Confirmed directly: OTP send to a test
+account → 500 error; OTP send to your own email → works. Full writeup: `decisions/0003-...md`.
+
+**Fix (needs you, dashboard-only, I'm blocked by the same Cloudflare API/IP issue as the email-routing task):**
+1. Resend dashboard → add `remoteaiplatform.com` as a domain
+2. Add the DNS records Resend gives you (SPF/DKIM/DMARC) via the Cloudflare dashboard
+3. Tell me once verified — I'll switch Supabase's sender email on both projects
+
+This is also *why* PR #31's E2E suite fails — not a bug in that PR's code (see below).
 
 ## Done
 - ✅ All 12 phase PRs merged
@@ -12,7 +25,7 @@ Updated 2026-09-05 (evening). Passwordless email OTP + GitHub login PR is open. 
 
 ## Still needed: merge these PRs (in order)
 1. **#28** — `dev → prod` promotion (ships everything live, closes remaining Dependabot alerts) — still open
-2. **#31** — https://github.com/gokul-227/remote-ai-platform/pull/31 — passwordless email OTP (replaces password login entirely) + GitHub OAuth login. Backend/frontend fully verified (ruff/mypy/pytest 249/249, tsc/lint/vitest/build all green). **Before merging, you still need to do 2 things** (see below).
+2. **#31** — https://github.com/gokul-227/remote-ai-platform/pull/31 — passwordless email OTP (replaces password login entirely) + GitHub OAuth login. Backend/frontend fully verified (ruff/mypy/pytest 249/249, tsc/lint/vitest/build all green). **E2E is currently failing — root cause is the Resend P0 above, not this PR's code.** It'll pass on its own once that's fixed (just re-run the job, no code change needed). Also still needs the GitHub OAuth App steps below before merging.
 3. **#32** — https://github.com/gokul-227/remote-ai-platform/pull/32 — Facebook-style blue/white rebrand. Uses `#0552CC` light / `#4C9AFF` dark rather than Facebook's literal `#1877F2` — that exact hex only scores 4.23-4.24:1 contrast on white, under the 4.5:1 AA bar, so it was darkened slightly to stay accessible while keeping the same hue. Zero new axe-core violations, lint/tsc/vitest/build all clean, screenshots confirm light+dark mode both look coherent. Fully independent of #31, can merge in either order.
 
 ## Action needed from you before merging #31

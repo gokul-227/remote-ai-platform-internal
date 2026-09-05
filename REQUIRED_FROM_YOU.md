@@ -11,7 +11,7 @@ this section will update as each piece lands with PR links to review/merge.
 
 ## In progress — 7 parallel background agents
 1. **PR #31 rebase fix** — it had a merge conflict against `dev` after the rebrand PR landed (both touched the login/register pages). An agent is resolving it correctly (colors + a step-count logic difference) and re-verifying.
-2. **Repo hygiene** — moving all docs/markdown/screenshots out of the public repo into this one, scrubbing any secrets found in the public repo's current tree, trimming the public root CLAUDE.md down to a minimal bootstrap file.
+2. ✅ **Repo hygiene — done.** PR **#33** → https://github.com/gokul-227/remote-ai-platform/pull/33 (targets `dev`, needs your merge). 140 doc/screenshot files moved here into `remote-ai-platform-docs/`. Public repo's root `CLAUDE.md` trimmed to a ~65-line bootstrap; `README.md` kept (normal project readme) with dead doc links fixed. Secret scan (gitleaks, full history + targeted grep): only two low-stakes findings, both fixed in the PR — (a) `apps/web/.env.example` had a real Supabase project URL + a real publishable key hardcoded (now placeholders; rotation not needed, publishable keys are meant to be public and this one's already in the live site's JS bundle anyway), (b) two obviously-fake test JWT secrets in CI config/docker-compose (no rotation needed). No Stripe/AWS/private-key/DB-password leaks found anywhere in history. Screenshots spot-checked — only fake demo data visible, nothing real.
 3. **Security audit — Auth/AuthZ/IDOR/WebSockets**
 4. **Security audit — File upload / AI-LLM / PII**
 5. **Security audit — CORS/headers/API-docs/rate-limiting**

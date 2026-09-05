@@ -12,12 +12,12 @@ this section will update as each piece lands with PR links to review/merge.
 ## In progress — 7 parallel background agents
 1. **PR #31 rebase fix** — it had a merge conflict against `dev` after the rebrand PR landed (both touched the login/register pages). An agent is resolving it correctly (colors + a step-count logic difference) and re-verifying.
 2. ✅ **Repo hygiene — done.** PR **#33** → https://github.com/gokul-227/remote-ai-platform/pull/33 (targets `dev`, needs your merge). 140 doc/screenshot files moved here into `remote-ai-platform-docs/`. Public repo's root `CLAUDE.md` trimmed to a ~65-line bootstrap; `README.md` kept (normal project readme) with dead doc links fixed. Secret scan (gitleaks, full history + targeted grep): only two low-stakes findings, both fixed in the PR — (a) `apps/web/.env.example` had a real Supabase project URL + a real publishable key hardcoded (now placeholders; rotation not needed, publishable keys are meant to be public and this one's already in the live site's JS bundle anyway), (b) two obviously-fake test JWT secrets in CI config/docker-compose (no rotation needed). No Stripe/AWS/private-key/DB-password leaks found anywhere in history. Screenshots spot-checked — only fake demo data visible, nothing real.
-3. **Security audit — Auth/AuthZ/IDOR/WebSockets**
-4. **Security audit — File upload / AI-LLM / PII**
-5. **Security audit — CORS/headers/API-docs/rate-limiting**
-6. **Security audit — Payments/DB/Supabase/Redis/MinIO**
-7. **Security audit — Injection/SSRF/XSS/path-traversal/error-handling**
-8. **Security audit — CI/CD, GitHub Actions, dependencies, prod config**
+3. **Security audit — Auth/AuthZ/IDOR/WebSockets** — running
+4. **Security audit — File upload / AI-LLM / PII** — running
+5. **Security audit — CORS/headers/API-docs/rate-limiting** — running
+6. **Security audit — Payments/DB/Supabase/Redis/MinIO** — running
+7. ✅ **Security audit — Injection/SSRF/XSS/path-traversal/error-handling — done.** PR **#34** → https://github.com/gokul-227/remote-ai-platform/pull/34 (targets `dev`, needs your merge). One real MEDIUM fix: an auth dependency was leaking raw database error text (e.g. SQL error details) into the 401 response body if a DB error happened mid-auth-check — now returns a generic message to the client while still logging full detail server-side. Everything else audited (SSRF, XSS, command/code injection, path traversal) came back clean — no real issues found, confirmed via actual code search rather than assumed. 214 backend tests pass including 2 new regression tests.
+8. **Security audit — CI/CD, GitHub Actions, dependencies, prod config** — running
 
 Each of these opens its own PR against `dev` (not merged by any agent — full review required). Expect these to take anywhere from 20 minutes to over an hour each given the depth requested. A consolidated security report will be written here once they've all landed, following the report structure you specified (executive summary, per-finding severity/scenario/fix, VERIFIED/LIKELY SAFE/UNVERIFIED distinctions, manual-action checklist). No secret values will ever appear in any of these PRs or reports — only classifications and locations.
 

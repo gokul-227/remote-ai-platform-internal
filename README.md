@@ -9,6 +9,8 @@ This repo holds everything intentionally kept out of the public `remote-ai-platf
 - `docs/DEPLOYMENT_TOPOLOGY.md` — current live architecture, real URLs, service/project IDs (prod + dev)
 - `docs/DEPLOYMENT_ZERO_COST.md`, `docs/PRODUCTION_CERTIFICATION.md`, `docs/deployment.md` — historical deployment docs migrated from the public repo (some content predates the Cloudflare Workers migration — cross-check against DEPLOYMENT_TOPOLOGY.md for current state)
 - `credentials/REFERENCE.md` — every credential in use: what it's for, where it's stored, how to rotate it
+- `remote-ai-platform-docs/` — the full docs/screenshots/planning-md tree moved out of the public repo on
+  2026-09-06 (paths mirror their original public-repo location); see its own README for details
 
 ## Ground rules
 

@@ -21,9 +21,16 @@ Don't stand up a dedicated Celery worker service right now. Instead:
   timeout/fallback handling — fits an inline pattern fine at current traffic.
   Implemented in PR #9.
 - **Periodic scheduled work** (trending-skills refresh, stale-match
-  recompute): follow the same GitHub-Actions-cron pattern already proven for
-  job-source sync (`scheduled-job-sync.yml`), rather than a worker. Not yet
-  implemented — flagged as a follow-up, not done in this pass.
+  recompute): **correction (2026-09-05, later same day)** — checked the
+  actual task bodies (`app/workers/tasks/jobs.py::refresh_trending_skills`,
+  `app/workers/tasks/matching.py::compute_stale_matches`) and both are
+  literal stubs: log a line, `return {"status": "ok"}`. There is no real
+  "recompute trending skills" or "recompute stale matches" logic to dispatch
+  at all — this isn't an undispatched-task problem, it's an unimplemented-
+  feature problem. Migrating these to GitHub-Actions-cron (the original plan
+  in this doc) would accomplish nothing until the actual business logic
+  exists. Demoted from "P0-2 follow-up" to its own separately-scoped feature
+  task — see the priority list, not addressed in this pass.
 
 ## Why
 

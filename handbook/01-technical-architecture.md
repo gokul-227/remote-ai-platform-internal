@@ -145,10 +145,9 @@ consolidation question"):**
 
 None of this legacy code is reachable by the current frontend, but it is live
 code, reachable by anyone who calls those endpoints directly, and it has not been
-removed. Whether and when to delete it is listed as an open decision in
-`REQUIRED_FROM_YOU.md` in this repo ("Auth system consolidation ... 'do it' or
-'later'?") — this handbook does not resolve that decision, only documents that it
-exists and precisely what code is affected.
+removed. Whether and when to delete it entirely is an open decision (see
+"Open decisions" in `00-overview.md`) — this handbook does not resolve that
+decision, only documents that it exists and precisely what code is affected.
 
 Role is always decided by this backend's own `users` table, never read off any
 identity provider's token — a deliberate design choice that holds across both the
@@ -232,9 +231,19 @@ required first and hasn't been built.
 `app/workers/celery_app.py` defines 4 named queues (`default`, `jobs`, `ai`,
 `matching`) and a `beat_schedule` with 3 cron jobs (job-source sync every 6h,
 trending-skills refresh every 12h, stale-match recompute daily). **This is not
-currently what runs in production** — see `03-deployment-and-infrastructure.md`
-for why job-source sync actually runs via a GitHub Actions cron instead, and
-`decisions/0001-no-celery-worker-yet.md` for the reasoning.
+currently what runs in production** — Render hosts exactly 2 services (prod +
+dev API), no dedicated Celery worker/beat process, so nothing on this schedule
+has ever actually run there. The deliberate decision (made because a third
+always-on Render service either costs real money or eats into the shared
+750-instance-hour/month free-tier pool): job-source sync instead runs via a
+GitHub Actions scheduled workflow (`scheduled-job-sync.yml`), and per-request
+AI work (resume parsing) runs inline/synchronously in the same request rather
+than being dispatched to a queue. The other two scheduled tasks
+(`refresh_trending_skills`, `compute_stale_matches`) are honestly still no-op
+stubs today — not just undispatched, the actual business logic doesn't exist
+yet either — revisit this when a scheduled task needs sub-hour granularity,
+heavier compute than GitHub Actions can reasonably do, or budget allows a paid
+worker instance.
 
 ## Job aggregators
 

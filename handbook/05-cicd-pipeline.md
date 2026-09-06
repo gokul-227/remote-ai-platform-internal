@@ -97,8 +97,8 @@ work to application startup deserve real scrutiny on this project specifically.
   change that touches application startup or adds a dependency, not a one-time
   historical note — see incident 3 above.
 - The branch-flow and fork-deploy protections exist because this repository is
-  public; removing them (or making the public repo private, a decision noted as
-  pending in `REQUIRED_FROM_YOU.md`) would change the actual risk calculus here
+  public; removing them (or making the public repo private — see "Open
+  decisions" in `00-overview.md`) would change the actual risk calculus here
   and is worth revisiting together with that decision.
 - CodeQL, gitleaks, and dependency-review were added specifically as part of
   today's security audit, alongside the fork-hijack fix — they are new, not

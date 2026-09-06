@@ -2,10 +2,7 @@
 
 Where everything actually runs today, as of 2026-09-06. No credential values,
 API keys, or secrets appear anywhere in this document — see
-`04-secrets-and-credentials.md` for how those are managed, and this repo's
-`docs/DEPLOYMENT_TOPOLOGY.md` for the living, IDs-included version of this table
-(kept as the operational source of truth; this document is its polished,
-narrative counterpart).
+`04-secrets-and-credentials.md` for how those are managed.
 
 ## Environments
 
@@ -125,11 +122,12 @@ configured to send through the same Resend account/credentials via custom SMTP
 — Supabase's own default email provider does not support the template
 customization this product's OTP flow needs (and blocks template edits
 entirely on free-tier projects using the default provider), which is why custom
-SMTP was wired in for both environments. See
-`decisions/0002-otp-email-template-and-dev-smtp.md` for the full story,
-including one real scare: changing the sender address via Supabase's
-Management API replaced the *entire* SMTP configuration instead of merging one
-field, briefly wiping email sending on both projects until it was restored.
+SMTP was wired in for both environments. One real incident worth knowing: an
+earlier change to the sender address via Supabase's Management API replaced
+the *entire* SMTP configuration instead of merging just that one field, briefly
+wiping email sending on both projects — caught and restored the same day. If
+you ever change a single SMTP-related field via that API, re-verify all the
+other SMTP fields are still populated afterward.
 
 ## Error monitoring — Sentry
 
@@ -137,6 +135,35 @@ Two separate Sentry projects: one for the frontend (`@sentry/nextjs`), one for
 the backend (`sentry-sdk[fastapi]`). The backend integration is a genuine no-op
 — no network calls, no overhead — until a `SENTRY_DSN` value is actually
 configured for a given environment.
+
+## Reference: account/organization ownership and IDs
+
+Not secrets (no credential values), but the concrete account/resource
+identifiers referenced elsewhere in this handbook, kept in one place:
+
+| Account | Owner / ID |
+|---|---|
+| GitHub | `gokul-227` (personal account) |
+| Render | workspace `tea-d35655r3fgac73b6i2j0` |
+| Cloudflare | account `7d68e8481f9b2c593027df283a43b6be` |
+| Supabase | organization `hgelrtnobjyxojqksltf` ("Remote-AI-Platform") |
+| Stripe | account `acct_1UAGip0wWqj47Hzf` (Germany, individual account type) |
+| Domain registrar | Porkbun (`remoteaiplatform.com`), nameservers delegated to Cloudflare |
+
+Application-level admin accounts (not infrastructure): `gokulraj22797@gmail.com`
+and `gokulraj22797@outlook.com` are ADMIN role; `ci-service@remote-ai-platform.internal`
+is a service ADMIN account used only by the scheduled job-sync CI workflow.
+
+## Free-tier limits worth respecting before changing infrastructure
+
+- **Render**: 750 total instance-hours/month shared across the whole account —
+  adding another always-on service risks exceeding this. Only prod is kept
+  warm 24/7 (via cron-job.org pinging `/health/live`); dev is allowed to sleep.
+- **Supabase**: a limited number of free active projects per organization —
+  currently using both available slots (prod + dev). Check current limits
+  before provisioning a third.
+- **Cloudflare Workers**: 100k requests/day per Worker — not a practical
+  concern at current traffic.
 
 ## What could not be independently verified
 

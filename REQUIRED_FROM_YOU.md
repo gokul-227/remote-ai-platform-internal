@@ -1,10 +1,10 @@
 # Required from you — step by step
 
-Updated 2026-09-06. All 6 security-audit PRs plus the repo-hygiene PR are in and ready
-for your review/merge (7 PRs total: #33-#39). Only PR #31 (passwordless auth rebase) is
-still being verified. Recommended merge order below, right after this summary.
+Updated 2026-09-06. Everything from this batch is now done and ready for your review/merge:
+PR #31 (passwordless auth), the 6 security-audit PRs, and the repo-hygiene PR — 8 PRs
+total: #31, #33-#39. Recommended merge order below, right after this summary.
 
-## Suggested merge order for #33-#39
+## Suggested merge order for #31, #33-#39
 These were built in parallel from slightly different starting points, so several touch
 the same backend files (`app/main.py`, `app/core/middleware.py`, auth files, test files)
 and will likely conflict with each other one-by-one as you merge — that's expected, not
@@ -15,7 +15,8 @@ a sign anything is wrong. Suggested order (safest/most independent first):
 4. **#36** (CORS/headers/rate-limit)
 5. **#39** (CI/CD/deps) — after this, its deploy-hijack fix is live
 6. **#37** (auth/IDOR/websockets) — bigger, fixes the broken websockets
-7. **#35** (payments/storage) — merge last, most sensitive, review it yourself carefully
+7. **#31** (passwordless auth) — merge after #37 since both touch auth-related files
+8. **#35** (payments/storage) — merge last, most sensitive, review it yourself carefully
 
 If GitHub shows a conflict on one of the later ones, just tell me and I'll rebase it onto
 the newly-updated `dev` before you merge — same as the batch-merge pattern from earlier.
@@ -25,8 +26,8 @@ the newly-updated `dev` before you merge — same as the batch-merge pattern fro
 - ✅ GitHub OAuth wired into both Supabase projects (prod + dev) using the Client ID/Secret you provided
 - ✅ Resend domain fully verified and confirmed working end-to-end (real email delivered to an arbitrary test address, confirmed via Resend's own delivery logs). One scare along the way: switching the sender address accidentally wiped the entire SMTP config on both Supabase projects (Supabase's API replaces the whole SMTP block instead of merging one field) — caught immediately and fully restored using a fresh Resend API key you provided, now sending from `hello@remoteaiplatform.com` on both prod and dev.
 
-## In progress — 7 parallel background agents
-1. **PR #31** — rebase conflicts fixed and confirmed passing everywhere except E2E. Email delivery itself now confirmed fully working (see Resend note below) — but that surfaced a genuinely new, separate app bug: after successfully entering the OTP code, the login page never redirects to the dashboard. An agent is debugging the actual root cause now (not an infra issue this time — a real auth-flow bug to fix before this can be the only way to log in).
+## All 8 PRs from this batch — full detail
+1. ✅ **PR #31 — done, fully green (18/18 E2E, 249 backend, 12/12 frontend).** https://github.com/gokul-227/remote-ai-platform/pull/31 (targets `dev`, needs your merge). Two real bugs found and fixed along the way: (a) the E2E suite's own test helper was making a redundant real OTP-send call that exhausted Supabase's shared email quota during repeated CI runs — fixed by stubbing just that one call in tests, the actual verify+redirect stayed fully real; (b) **a genuine production bug that would have made passwordless login completely unusable for every real user** — this Supabase project issues 8-digit OTP codes, but the login/register pages hardcoded a 6-character max on the code input, silently truncating every real code before submission. Fixed by widening the input to 6-12 characters. Also fixed a stale test left over from the password-removal.
 2. ✅ **Repo hygiene — done.** PR **#33** → https://github.com/gokul-227/remote-ai-platform/pull/33 (targets `dev`, needs your merge). 140 doc/screenshot files moved here into `remote-ai-platform-docs/`. Public repo's root `CLAUDE.md` trimmed to a ~65-line bootstrap; `README.md` kept (normal project readme) with dead doc links fixed. Secret scan (gitleaks, full history + targeted grep): only two low-stakes findings, both fixed in the PR — (a) `apps/web/.env.example` had a real Supabase project URL + a real publishable key hardcoded (now placeholders; rotation not needed, publishable keys are meant to be public and this one's already in the live site's JS bundle anyway), (b) two obviously-fake test JWT secrets in CI config/docker-compose (no rotation needed). No Stripe/AWS/private-key/DB-password leaks found anywhere in history. Screenshots spot-checked — only fake demo data visible, nothing real.
 3. ✅ **Security audit — Auth/AuthZ/IDOR/WebSockets — done, HIGH severity, includes a real prod-breaking bug.** PR **#37** → https://github.com/gokul-227/remote-ai-platform/pull/37 (targets `dev`, needs your merge, review carefully). **Biggest finding: both WebSocket endpoints (real-time messaging + notifications) were authenticating with the OLD legacy HS256 JWT verifier, never updated for `AUTH_PROVIDER=supabase`** — meaning every real user's actual Supabase-issued token has been failing WebSocket auth in production. Real-time messaging/notifications have likely been completely broken for every real user this whole time. Fixed. Also fixed: a cross-tenant IDOR letting a project member link their milestone to another company's contract milestone and flip its status; an engineer able to self-approve their own contract milestone (should be client/admin-only); OAuth users' session refresh silently failing; a WS message size cap gap; added defense-in-depth JWT issuer check. Everything else across all 21 domains reviewed and confirmed already correct.
 4. ✅ **Security audit — File upload / AI-LLM / PII — done.** PR **#38** → https://github.com/gokul-227/remote-ai-platform/pull/38 (targets `dev`, needs your merge). Found most of this area already well-hardened from earlier work. Two HIGH fixes on Sentry PII scrubbing: it was missing real field names this app actually uses (`new_password`, `current_password`, `reset_token`, `password_hash`) — a crash during password reset/change would have shipped these to Sentry in cleartext; and a separate Sentry setting (`include_local_variables`, not the same switch as PII scrubbing) was capturing every local variable in every crash stack frame, unaddressed by the existing scrubber — now disabled. Also fixed: resume upload was logging the full resume URL, which embeds the secret token gating access to the private bucket — now logs metadata only. File-upload validation, AI prompt-injection isolation, and AI cost limits were all reviewed and confirmed already solid — 12 new regression tests added for gaps in coverage. `pip-audit` clean except one transitive `ecdsa` CVE with no upstream fix available yet (flagged, not actionable).
@@ -35,12 +36,12 @@ the newly-updated `dev` before you merge — same as the batch-merge pattern fro
 7. ✅ **Security audit — Injection/SSRF/XSS/path-traversal/error-handling — done.** PR **#34** → https://github.com/gokul-227/remote-ai-platform/pull/34 (targets `dev`, needs your merge). One real MEDIUM fix: an auth dependency was leaking raw database error text (e.g. SQL error details) into the 401 response body if a DB error happened mid-auth-check — now returns a generic message to the client while still logging full detail server-side. Everything else audited (SSRF, XSS, command/code injection, path traversal) came back clean — no real issues found, confirmed via actual code search rather than assumed. 214 backend tests pass including 2 new regression tests.
 8. ✅ **Security audit — CI/CD, GitHub Actions, dependencies, prod config — done, includes a CRITICAL finding.** PR **#39** → https://github.com/gokul-227/remote-ai-platform/pull/39 (targets `dev`, needs your merge, review carefully). **Critical: the deploy workflows could be tricked into deploying a stranger's code using this repo's real Cloudflare/Supabase/Sentry secrets** — a forked PR whose branch was literally named `prod` or `dev` would satisfy the deploy trigger's branch-name filter. Fixed by requiring the trigger to come from an actual push event on this repo, not a PR build. Also: added least-privilege permissions to 6 workflows, SHA-pinned the actions that touch secrets, added a gitleaks CI job, and cut Python dependency vulnerabilities from 16 down to 1 (the 1 remaining has no upstream fix yet, documented as low-risk). Production config now fails closed on debug-mode-in-prod and a few more localhost-default checks. All 6 security-audit PRs are now in: **#33 (docs), #34 (injection/SSRF/XSS), #35 (payments/storage — review personally), #36 (CORS/headers/rate-limit), #37 (auth/IDOR/websockets — review personally, fixes broken prod websockets), #39 (CI/CD/deps — review personally, fixes the deploy-hijack risk)**.
 
-Each of these opens its own PR against `dev` (not merged by any agent — full review required). Expect these to take anywhere from 20 minutes to over an hour each given the depth requested. A consolidated security report will be written here once they've all landed, following the report structure you specified (executive summary, per-finding severity/scenario/fix, VERIFIED/LIKELY SAFE/UNVERIFIED distinctions, manual-action checklist). No secret values will ever appear in any of these PRs or reports — only classifications and locations.
+All 8 PRs are open against `dev`, none merged by me — full review required from you.
+No secret values appear in any of these PRs or reports — only classifications and locations.
 
-## What's still needed from you (unblocked, can do anytime)
-1. Keep an eye on Resend — once it shows "Verified", say so and the OTP flow gets its final confirmation.
-2. As each security-audit PR lands, you'll need to review and merge it yourself (payments-related PR in particular needs your own eyes before merging, given real money is involved).
-3. Once all of this lands and merges, we'll do a full manual smoke test of dev + prod together and I'll fix anything that surfaces.
+## What's still needed from you
+1. Review and merge the 8 PRs (#31, #33-#39) in the suggested order above — review #35 (payments) and #37 (auth/websockets) and #39 (CI/CD) especially carefully given their scope.
+2. Once merged to `dev` and promoted to `prod`, we'll do a full manual smoke test of both environments together and I'll fix anything that surfaces.
 
 ## Longer-standing decisions still pending your answer
 1. **Auth system consolidation** (Supabase-native + legacy custom-JWT `service.py` path) — "do it" or "later"?

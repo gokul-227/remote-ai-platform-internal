@@ -1,25 +1,22 @@
 # Required from you — step by step
 
-Updated 2026-09-06. Everything from this batch is now done and ready for your review/merge:
-PR #31 (passwordless auth), the 6 security-audit PRs, and the repo-hygiene PR — 8 PRs
-total: #31, #33-#39. Recommended merge order below, right after this summary.
+Updated 2026-09-06. You've already merged #31, #33, #34, #35. The remaining 4
+(#36, #37, #38, #39) had merge conflicts from the parallel-PR batch — all now
+rebased, conflict-free, and re-verified. **Priority: merge #38 next** — the rebase
+found that #35 (already merged) accidentally reintroduced the exact secret-log leak
+#38 was fixing, so `dev`/`prod` are currently still logging a resume's private
+access token until #38 merges.
 
-## Suggested merge order for #31, #33-#39
-These were built in parallel from slightly different starting points, so several touch
-the same backend files (`app/main.py`, `app/core/middleware.py`, auth files, test files)
-and will likely conflict with each other one-by-one as you merge — that's expected, not
-a sign anything is wrong. Suggested order (safest/most independent first):
-1. **#33** (docs move) — touches no app code, merge anytime
-2. **#34** (injection/SSRF/XSS) — small, isolated
-3. **#38** (file-upload/AI/PII)
-4. **#36** (CORS/headers/rate-limit)
-5. **#39** (CI/CD/deps) — after this, its deploy-hijack fix is live
-6. **#37** (auth/IDOR/websockets) — bigger, fixes the broken websockets
-7. **#31** (passwordless auth) — merge after #37 since both touch auth-related files
-8. **#35** (payments/storage) — merge last, most sensitive, review it yourself carefully
+## Remaining merge order for #36, #37, #38, #39
+Already merged: #31, #33, #34, #35. All 4 remaining PRs are now rebased onto current
+`dev`, conflict-free (`mergeable: MERGEABLE`), and fully re-verified. Suggested order:
+1. **#38** (file-upload/AI/PII) — do this one first, closes the live secret-log leak described above
+2. **#37** (auth/IDOR/websockets) — fixes the broken production websockets
+3. **#36** (CORS/headers/rate-limit)
+4. **#39** (CI/CD/deps) — closes the deploy-hijack risk
 
-If GitHub shows a conflict on one of the later ones, just tell me and I'll rebase it onto
-the newly-updated `dev` before you merge — same as the batch-merge pattern from earlier.
+If GitHub shows a NEW conflict as you merge these one by one (expected — merging one
+changes `dev` under the next one's feet), just tell me and I'll rebase again.
 
 ## Already done
 - ✅ PR #32 (Facebook-blue rebrand) — merged to dev, then dev→prod (#28) — **both live in production now**

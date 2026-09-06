@@ -6,11 +6,23 @@ This repo holds everything intentionally kept out of the public `remote-ai-platf
 
 ## Contents
 
-- `docs/DEPLOYMENT_TOPOLOGY.md` — current live architecture, real URLs, service/project IDs (prod + dev)
-- `docs/DEPLOYMENT_ZERO_COST.md`, `docs/PRODUCTION_CERTIFICATION.md`, `docs/deployment.md` — historical deployment docs migrated from the public repo (some content predates the Cloudflare Workers migration — cross-check against DEPLOYMENT_TOPOLOGY.md for current state)
+- `handbook/` — the final, polished technical/operational documentation package
+  (architecture, tech stack, deployment, secrets, CI/CD, repo guide) written
+  fresh from the current state of the code on 2026-09-06. Start at
+  `handbook/00-overview.md`. A separate business/product handbook is maintained
+  alongside this one and covers feature/user-facing documentation instead.
+- `docs/DEPLOYMENT_TOPOLOGY.md` — the living, IDs-included operational
+  reference for current live architecture, real URLs, and service/project IDs
+  (prod + dev); kept current as the raw source of truth, with
+  `handbook/03-deployment-and-infrastructure.md` as its polished narrative
+  counterpart.
 - `credentials/REFERENCE.md` — every credential in use: what it's for, where it's stored, how to rotate it
-- `remote-ai-platform-docs/` — the full docs/screenshots/planning-md tree moved out of the public repo on
-  2026-09-06 (paths mirror their original public-repo location); see its own README for details
+- `decisions/` — dated architectural/operational decision records (historical, not superseded by the handbook)
+- `reports/` — dated point-in-time reports (historical, not superseded by the handbook)
+
+The old `remote-ai-platform-docs/` dump (140 files moved verbatim out of the
+public repo in an earlier cleanup pass) was removed on 2026-09-06 — its content
+was a stale snapshot of the public repo's old docs, superseded by `handbook/`.
 
 ## Ground rules
 

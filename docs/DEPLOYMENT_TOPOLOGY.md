@@ -1,6 +1,10 @@
-# Deployment Topology (current, as of 2026-09-04)
+# Deployment Topology (current, as of 2026-09-06)
 
-Public repo: https://github.com/gokul-227/remote-ai-platform (branches `main` = prod, `dev` = development)
+> See `../handbook/03-deployment-and-infrastructure.md` for the polished,
+> narrative version of this document (including today's Render OOM incident
+> and its fix). This file stays the raw, IDs-included quick reference.
+
+Public repo: https://github.com/gokul-227/remote-ai-platform (branches `prod` = production, `dev` = development; promotion path is feature branch -> `dev` -> `prod`, enforced by CI)
 
 ## Production
 
@@ -43,9 +47,11 @@ Public repo: https://github.com/gokul-227/remote-ai-platform (branches `main` = 
 ## CI/CD
 
 - `ci.yml` runs on every push to `main`/`dev` and every PR: backend lint+typecheck+test, frontend lint+typecheck+build, E2E (Playwright against a full docker-compose stack), migration validation.
-- `deploy-frontend.yml` / `deploy-frontend-dev.yml`: triggered by `CI` succeeding on `main` / `dev` respectively, deploy via `wrangler deploy` to the matching Worker.
-- Render's own git integration auto-deploys the backend services directly on push to their tracked branch (`main` for prod, `dev` for dev) -- independent of GitHub Actions.
-- Both `main` and `dev` are branch-protected: no direct pushes (enforced for admins too), PR + passing status checks required to merge.
+- `deploy-frontend.yml` / `deploy-frontend-dev.yml`: triggered by `CI` succeeding on `prod` / `dev` respectively, deploy via `wrangler deploy` to the matching Worker. Both are restricted to real `push` events on this repo only (a fork PR named `prod`/`dev` cannot trigger a deploy with this repo's secrets -- fixed 2026-09-06, see `reports/`).
+- Render's own git integration auto-deploys the backend services directly on push to their tracked branch (`prod` for prod, `dev` for dev) -- independent of GitHub Actions.
+- Both `prod` and `dev` are branch-protected: no direct pushes (enforced for admins too), PR + passing status checks required to merge. `prod` additionally only accepts PRs sourced from `dev` (enforced by `enforce-branch-flow.yml`).
+- 2026-09-06: production briefly could not receive new deploys due to a Render free-tier OOM crash on boot (root cause: a duplicate in-process Alembic migration run at startup); fixed and merged to both branches same day -- see `decisions/0004-render-oom-blocks-deploy.md`.
+- Auth: Supabase Auth is the live identity provider for both environments -- email OTP (passwordless) plus Google/Microsoft/GitHub OAuth, added 2026-09-06. A legacy self-issued-JWT path still exists in the backend but is not used by the live frontend -- see `handbook/01-technical-architecture.md`.
 
 ## Known free-tier constraints to respect when changing anything here
 

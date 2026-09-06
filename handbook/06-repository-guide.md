@@ -46,6 +46,7 @@ implements both at once.
 ## How this handbook is organized
 
 ```
+AGENT-ONBOARDING.md                       — entry point for AI coding agents specifically
 handbook/
   00-overview.md                          — start here
   01-technical-architecture.md            — how the system is built

@@ -48,11 +48,26 @@ how the system is built, how it is deployed, and how to operate it.
   provider, gated behind a feature flag so it is only active where explicitly
   configured (production only; the dev environment deliberately never touches
   real Stripe).
+- **All real secret values now live in Infisical**, a centralized free-tier
+  secrets manager (organization/project `remote-ai-platform`, `dev`/`prod`
+  environments) — see `04-secrets-and-credentials.md`. This replaced a
+  scattered "check GitHub/Render/Supabase/Cloudflare individually" approach.
+- **Deploy automation was fixed today**: Render's own GitHub-integration
+  auto-deploy had been silently unreliable (merges sat undeployed for hours
+  with no visible error). Both `dev` and `prod` now deploy the backend via an
+  explicit Render deploy-hook call from the same GitHub Actions pipeline that
+  already deploys the frontend — see `05-cicd-pipeline.md`.
+- **This repository itself was rewritten today** from a pile of dated,
+  historical working documents into the current single handbook described
+  below, and an `AGENT-ONBOARDING.md` was added at the repo root specifically
+  so any AI coding agent — not just a human — can pick up both repositories
+  and operate on the product without further input from the product owner.
 
 ## Who should read what in this handbook
 
 | Document | Audience | Content |
 |---|---|---|
+| `../AGENT-ONBOARDING.md` | AI coding agents | Start here if you're an agent, not a person — everything needed to operate on this product cold |
 | `01-technical-architecture.md` | Engineers, technical founder | How the system is built: backend domains, auth, AI, real-time, payments |
 | `02-tech-stack.md` | Everyone | What it's built with, in plain language with technical detail available |
 | `03-deployment-and-infrastructure.md` | Whoever operates this next | Exactly where everything runs today |

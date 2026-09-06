@@ -1,11 +1,12 @@
 # Required from you — step by step
 
-Updated 2026-09-06. You've already merged #31, #33, #34, #35. The remaining 4
-(#36, #37, #38, #39) had merge conflicts from the parallel-PR batch — all now
-rebased, conflict-free, and re-verified. **Priority: merge #38 next** — the rebase
-found that #35 (already merged) accidentally reintroduced the exact secret-log leak
-#38 was fixing, so `dev`/`prod` are currently still logging a resume's private
-access token until #38 merges.
+Updated 2026-09-06 (afternoon). All 8 PRs from the batch are merged (#31, #33-#40,
+including the dev→prod promotion). **But: deploys are currently blocked on both
+dev and prod by a real backend OOM bug** — see `decisions/0004-render-oom-blocks-deploy.md`.
+Prod is NOT down (still serving yesterday's old, working build), but can't receive
+any of today's fixes until this is resolved. An agent is investigating now. A
+separate frontend deploy issue (npm 12 blocking install scripts) is already fixed
+in PR #41, merged.
 
 ## Remaining merge order for #36, #37, #38, #39
 Already merged: #31, #33, #34, #35. All 4 remaining PRs are now rebased onto current

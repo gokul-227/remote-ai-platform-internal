@@ -97,12 +97,23 @@ From here you can, for any job posting:
   disappeared from the aggregator feed (and so would otherwise never get cleaned again). This is a
   maintenance action, not something you'd run routinely.
 
+## Feature flags (API only — no dashboard panel yet)
+
+The backend exposes `GET /admin/feature-flags`, which reports the live on/off state of every registered
+feature flag (things like trending skills, AI matching, the job aggregator, stale-match recompute) sourced
+straight from server configuration. This is real and callable today via the API docs link in the header —
+but there is **no panel for it on the admin dashboard yet**, so seeing it means calling the endpoint
+directly rather than clicking through the UI. There is also no toggle: flags are read-only from the API
+by design — changing one means changing server configuration, not clicking a switch in the console.
+
 ## What the admin console does not (yet) do
 
 Being direct about the edges, so you don't go looking for something that isn't there:
-- There's no billing/plan management screen, because there's no billing system yet (see the Product
-  Overview document) — nothing to configure there today.
-- There's no feature-flag management UI in the admin console; if a feature needs to be toggled off,
-  that's a code/config change today, not an admin-console action.
+- There's no billing/plan management screen. A `billing` domain with `Plan`/`Subscription` data models
+  exists in the codebase as architecture-only scaffolding for a future paid-plan system, but nothing is
+  wired up to an API endpoint yet, so there is nothing to configure or view here today (see the Product
+  Overview document for the full context).
+- Feature flags can be *read* via the API (see above) but not toggled from the admin console — that's
+  still a code/config change today, not an admin-console action.
 - There's no bulk-export or reporting/analytics-builder tool beyond the stats already on the dashboard —
   what you see there is the full extent of platform analytics today.

@@ -5,30 +5,28 @@ walks through the real screens and buttons in the product today — nothing here
 
 ## 1. Creating your account
 
-Go to the sign-up page. You have three ways to get in — pick whichever is easiest:
+Remote AI Platform doesn't use passwords. Go to the sign-up page and choose one of two ways in:
 
-1. **Google or Microsoft** — click the **Google** or **Microsoft** button at the top of the page. You'll
-   be sent to sign in with that account, then brought straight back into the platform. No password to
-   set or remember.
-2. **Email and password** — fill in your **Full name**, **Email address**, and a **Password** (at least 8
-   characters — the form shows a live strength meter as you type: Weak/Fair/Good/Strong). Tick the box
-   agreeing to the Terms of Service and Privacy Policy, then click **Continue**.
-3. On the next screen, tell the platform what you're here to do: click **"I am a Professional"** (the
-   other option, "I am hiring / represent an organization," is for companies — see the Company Manual).
-   Click **Create Account**.
+1. **Google, Microsoft, or GitHub** — click the matching button at the top of the page. You'll be sent to
+   sign in with that account, then brought straight back into the platform, fully signed in. Nothing
+   further to set up.
+2. **Email code** — fill in your **Full name** and **Email address**, tick the box agreeing to the Terms
+   of Service and Privacy Policy, then click **Continue**. On the next screen, tell the platform what
+   you're here to do: click **"I am a Professional"** (the other option, "I am hiring / represent an
+   organization," is for companies — see the Company Manual). Click **Send code** — Remote AI Platform
+   emails you a one-time sign-in code (a short string of digits/letters). Enter it in the **Sign-in code**
+   box and click **Verify & create account**. Didn't get it, or it expired? Click **Resend code** on the
+   same screen.
 
-If you signed up with email and password, check your inbox — Remote AI Platform sends a confirmation
-link before your first sign-in works. Click it, then go back and sign in normally with your email and
-password. If you used Google or Microsoft, there's nothing to confirm — you're in immediately.
+That's it — there's no password to create, remember, reset, or leak. Every future sign-in works the same
+way: go to the sign-in page, enter your email, click **Send code**, and enter the code Remote AI Platform
+emails you (or just click Google/Microsoft/GitHub again if that's how you originally signed up).
 
-> **A note on how sign-in actually works today:** the platform's login is handled by Supabase Auth behind
-> the scenes. Practically, all that means for you is: email+password, or one-click Google/Microsoft, are
-> your two sign-in paths — there's no separate "magic code by email" option today, and no GitHub sign-in
-> button (though you can *link* a GitHub URL to your profile later, which is a different thing — more on
-> that below).
-
-Forgot your password? On the sign-in page, click **Forgot password?**, enter your email, and follow the
-reset link sent to you.
+> **If you're used to other products with a password field, note what's different here:** there is no
+> "Forgot password?" link because there's no password to forget — a fresh email code every time you sign
+> in serves the same purpose more simply. A GitHub *account* connection (used for one-click sign-in) is a
+> separate thing from adding a GitHub *profile link* (your portfolio URL) later — the manual covers that
+> separately below, under profile setup.
 
 ## 2. Setting up your profile (with AI, or by hand)
 
@@ -127,10 +125,10 @@ see a new reply.
   (copies a link to the post) on anything in your feed.
 - **Groups**: join or create interest-based groups and post inside them separately from the main feed.
 
-One honest caveat: the **"Trending Skills"** panel you'll see in the feed's sidebar (and elsewhere) shows
-a fixed list of skills and growth percentages — this is sample data, not a live calculation from real
-platform activity, even though nothing in the UI currently says so. Don't read anything into those exact
-numbers.
+One honest note: the **"Trending Skills"** panel you'll see in the feed's sidebar (and elsewhere) currently
+just says **"Coming soon — we're still building this."** That's not a bug — the real feature (showing
+which skills are actually rising in demand across the platform) hasn't been built yet, and the team chose
+to say so plainly rather than show you fake numbers in the meantime.
 
 ## 8. Notifications
 

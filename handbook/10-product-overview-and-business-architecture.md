@@ -96,17 +96,24 @@ flowchart TD
 
 ## Business model — the honest current state
 
-**Everything on the platform is free to use today.** There is no billing domain in the backend, no
-subscription/plan model, and no paywall anywhere in the product — every feature described in this
-handbook (AI matching, unlimited job postings, unlimited applications, messaging, contracts, escrow) is
-available to every engineer and company account at no cost.
+**Everything on the platform is free to use today.** There is no active billing system, no subscription/
+plan model, and no paywall anywhere in the product — every feature described in this handbook (AI
+matching, unlimited job postings, unlimited applications, messaging, contracts, escrow) is available to
+every engineer and company account at no cost.
+
+The codebase does now contain the first piece of *scaffolding* for future monetization — a `billing`
+domain with `Plan` and `Subscription` data models and an entitlement-checking helper — but it is
+explicitly architecture-only: no plan names, prices, or usage limits have been decided, the helper isn't
+called from a single existing endpoint, and there's no billing API mounted for the frontend to talk to at
+all. Nothing about today's product experience is gated by it.
 
 This is a deliberate, temporary decision, not an oversight: the plan is to prove out usage and value
-first, then introduce paid plans and feature gating later. When that happens, the natural places to meter
-are visible in the product already — job-posting volume for companies, advanced search/matching depth,
-and priority placement are the likely candidates — but none of that exists in the code today, and this
-document should not be read as describing a finished pricing model. Anyone evaluating the business today
-should treat "free for everyone, monetization is a future step" as the accurate, current answer.
+first, then introduce paid plans and feature gating later, with the groundwork above ready for that switch
+to be flipped. The natural places to meter are visible in the product already — job-posting volume for
+companies, advanced search/matching depth, and priority placement are the likely candidates — but none of
+that is decided or wired up today, and this document should not be read as describing a finished pricing
+model. Anyone evaluating the business today should treat "free for everyone, monetization is scaffolded
+but not yet active" as the accurate, current answer.
 
 The one piece of real payments infrastructure that *does* exist is the **escrow system between a company
 and an engineer once a contract is signed** (Stripe-backed, with a sandbox/mock provider also available

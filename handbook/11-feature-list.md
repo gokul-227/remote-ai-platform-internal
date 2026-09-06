@@ -13,7 +13,7 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 
 | Feature | What it does | Status |
 |---|---|---|
-| Passwordless-free sign up / sign in | Create an account with email + password, or one click via Google or Microsoft — see the User Manual for the exact flow. | Working |
+| Passwordless sign up / sign in | Create an account and sign in with a one-time email code — no password to set or remember — or with one click via Google, Microsoft, or GitHub. See the User Manual for the exact flow. | Working |
 | AI resume import | Upload a PDF/DOCX resume during onboarding or from your profile; AI extracts your headline, primary role, skills, experience, and location so you don't retype your resume. | Working |
 | Manual profile builder | Fill in headline, role, bio, skills, experience, education, projects, rate, and links (GitHub/LinkedIn/portfolio) by hand instead of, or in addition to, AI import. | Working |
 | Profile completeness score | A visible 0–100 score and checklist (bio, 3+ skills, experience, a project, resume, rate) nudging you to finish your profile — a fuller profile matches better. | Working |
@@ -33,14 +33,14 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 | Digital contracts | Once a company decides to hire you, review contract terms (rate, scope, milestones) and sign digitally. | Working |
 | Escrow-backed payments | See funds held in escrow for your contract milestones, and get paid out to your platform wallet once a company approves and releases a milestone. | Working |
 | Wallet & transaction history | A running view of escrow held, total earned, and full transaction history. | Working |
-| "Trending Skills" panel (feed sidebar) | A sidebar widget showing which skills are supposedly rising in demand. | **Placeholder** — the numbers are hardcoded sample data in the frontend, not computed from real platform activity. The backend does have a scheduled job named `refresh_trending_skills`, but it is currently an empty no-op that computes nothing — so nothing about this panel is real yet, and it isn't currently labeled as sample data in the UI. |
+| "Trending Skills" panel (feed and sidebar) | A widget intended to show which skills are rising in demand across the platform. | **Coming soon (honestly labeled)** — the backend job that would compute this (`refresh_trending_skills`) is a documented no-op stub with no real logic behind it yet, gated off by a `FEATURE_TRENDING_SKILLS` flag. Rather than showing fabricated numbers, the UI displays a plain "Coming soon — we're still building this" message in its place — an intentional, transparent placeholder, not a bug. |
 | Code/submission quality review | An AI endpoint exists to evaluate code submissions and give a quality report. | **Partial** — the backend (`/quality/evaluate`, `/quality/review-code`) is implemented, but there's no dedicated engineer-facing page for it in the current frontend routes; it's not part of the everyday engineer workflow today. |
 
 ## Company features
 
 | Feature | What it does | Status |
 |---|---|---|
-| Company sign up / sign in | Same passwordless-capable, OAuth-capable auth as engineers — see the Company Manual. | Working |
+| Company sign up / sign in | Same passwordless email-code auth (plus Google/Microsoft/GitHub one-click sign-in) as engineers — see the Company Manual. | Working |
 | Company profile | Set up organization name, industry, size, location, website, and description so candidates know who they're applying to. | Working |
 | Post a job | Publish a new open role with title, description, required skills, experience level, budget range, and remote preference. | Working |
 | Manage job postings | Edit, pause/reactivate, or view all of your organization's postings in one dashboard. | Working |
@@ -70,6 +70,7 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 | Moderation queue | Review and act on user-submitted reports (hide a job, suspend a user, or dismiss) from one queue. | Working |
 | Audit log | An immutable, searchable log of every sensitive admin action (status changes, role changes, deletions) for accountability. | Working |
 | Activity log | A general feed of platform administrative activity. | Working |
+| Feature-flag visibility | The backend can report which platform feature flags are currently on/off (e.g. trending skills, AI matching). | **Partial** — the API endpoint exists and works, but there's no panel for it in the admin dashboard UI yet, and flags can only be changed via server configuration, not clicked on/off from the console. |
 
 ## Shared / cross-cutting features
 
@@ -87,10 +88,10 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 
 ## A note on "coming soon" honesty
 
-The product does have at least one place that fabricates numbers without saying so — the **Trending
-Skills** widget (on the social feed and in the right-hand sidebar across several pages) shows a static,
-hardcoded list of skills and growth percentages. It looks like a live analytics feature, but there is no
-real computation behind it: the backend's scheduled `refresh_trending_skills` task is a no-op stub that
-does nothing and stores nothing. Anyone reviewing the product closely should be aware this one panel is
-decorative today, not a real trending-skills insight, and unlike some other in-progress areas of the
-product, it currently is *not* labeled as illustrative or "coming soon" in the UI itself.
+The product has a good example of doing this right: the **Trending Skills** widget (on the social feed
+and in the right-hand sidebar across several pages) doesn't exist yet as real functionality — the backend
+task that would compute it, `refresh_trending_skills`, is a documented no-op stub with no logic behind
+it — but rather than faking numbers to look finished, the UI plainly shows "Coming soon — we're still
+building this" in that panel's place. It's gated behind a `FEATURE_TRENDING_SKILLS` flag so the real
+feature can be switched on deliberately once it's built, instead of a half-working version going live by
+accident. This is the standard worth holding every other in-progress feature to.

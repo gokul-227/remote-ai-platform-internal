@@ -5,18 +5,19 @@ actually works today.
 
 ## 1. Creating your account
 
-On the sign-up page, sign up the same way an engineer would:
+There's no password anywhere in this product. On the sign-up page, sign up the same way an engineer
+would:
 
-1. **Google or Microsoft** one-click sign-up, or **email + password** (name, email, an 8+ character
-   password, and agreeing to the Terms of Service).
-2. On the role-selection step, choose **"I am hiring / represent an organization"** and click
-   **Create Account**.
-
-If you signed up with email and password, confirm your email via the link sent to your inbox before your
-first sign-in. Google/Microsoft sign-ups skip this step entirely.
+1. **Google, Microsoft, or GitHub** — one click, and you're signed in immediately. Nothing further to
+   set up.
+2. **Email code** — enter your name and email, agree to the Terms of Service, and click **Continue**. On
+   the role-selection step, choose **"I am hiring / represent an organization"** and click **Send code**.
+   Remote AI Platform emails you a one-time sign-in code; enter it and click **Verify & create account**.
 
 There's no separate "business" sign-up flow, contract, or sales process today — the same account system
-serves both engineers and companies, distinguished only by the role you pick here.
+serves both engineers and companies, distinguished only by the role you pick during sign-up. Every future
+sign-in works the same way: enter your email, click **Send code**, and type in the code emailed to you
+(or use Google/Microsoft/GitHub again, whichever you used originally).
 
 ## 2. Setting up your organization profile
 

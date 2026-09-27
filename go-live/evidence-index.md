@@ -421,3 +421,23 @@ a stricter rate tier (tests exist); the web app doesn't send client events today
 Not done: JobPosting structured data (needs a decision on source licensing/attribution per board); company and profile
 public pages (next candidates, profiles only when public); sitemap ISR on Workers needs an OpenNext incremental cache —
 without one it refreshes on each deploy; hash links (`#jobdetail/<id>`) keep working.
+
+---
+
+## Phase 13 — monetisation readiness, without money movement (2026-09-27)
+
+**Status: payments remain OFF. One fix on `feat/go-live-phase-13`.**
+
+| Commit | Change | Evidence |
+|---|---|---|
+| `0d923e3` | PAY-02: wallet balances per currency (`by_currency`); single totals only when one currency; UI shows one amount per currency, chart limited to one currency and labelled; a null figure no longer renders as the transaction count | test with EUR+USD transactions; 428 API tests pass |
+
+Verified: `MARKETPLACE_PAYMENTS_ENABLED=false` gates fund/release on `/payments` and `/projects/*/payments` (4 call sites) and the
+UI; live `/payments/escrow` answers 503; no Stripe Checkout/subscription endpoint exists, so nothing can charge a card;
+webhook signature tests exist (`test_payments_webhook_security.py`).
+
+**Paid-launch gate (all required, separately approved):** integer minor-unit amounts (migration from float); hosted
+checkout + subscription webhooks with signature check and idempotent replay; entitlement enforcement server-side;
+refunds/cancellation/failed-renewal flows; VAT/Kleinunternehmer decision with a tax adviser; payment-provider named in
+the privacy notice; legal review of payout model before any marketplace money movement; **rotate the Stripe live key
+that was pasted into chat on 2026-09-27 before any of this.**

@@ -251,3 +251,38 @@ resource ids, all cleared on sign-out.
 
 Deferred within Phase 03 (carried forward): splitting `rap_*.tsx` by domain and replacing `any` — done per endpoint as
 response models are added (ADR-004), not as a blanket rewrite.
+
+---
+
+## Phase 04 — database, identity and API integrity (2026-09-27)
+
+**Status: implemented and tested locally on `fix/go-live-phase-04` (stacked). Migrations 037, 038 rehearsed on PostgreSQL 16.**
+
+| Commit | Finding | Change | Evidence |
+|---|---|---|---|
+| `36ff24e` | API-01 (P0) | Never overwrite a set `auth_subject` on email match → 409 with support path; legacy rows without identity still link. Sign-in screens show the API's reason and end the refused Supabase session | Takeover reproduced (200) then 409; 2 tests |
+| `202e8da` | DATA-01 (P0) | Migration 037 `deleted_identities` (SHA-256 of subject + time); tokens issued ≤ deletion → 401; deliberate new sign-in → fresh account. Supabase Admin API delete when `SUPABASE_SERVICE_ROLE_KEY` set (off otherwise; provider failure never undoes erasure). UI signs out everywhere after deleting | 11 tests incl. mocked Admin API (URL, headers, 404, 5xx, non-UUID); E2E now asserts old token → 401 (was 404 = silently re-created account); PG 036→037→036→037 |
+| `cd71d90` | DATA-02 (P0) | Export is an explicit source list (`auth/export.py`): rows where the user is the subject; drops staff ids/notes, capability URLs, provider refs; adds received messages, profile-keyed matches, own audit/analytics events, organisation postings, subscriptions (was silently skipped — model not imported at runtime). Guard test: every user/profile-linked column exported or excluded with a reason | Old export failed both privacy fixtures (admin export contained others' reports; reporter export had moderator notes) |
+| `238a212` | integrity | Migration 038 `uq_job_application_user_job` (refuses, never deletes, if duplicates exist); apply insert in savepoint → 409; likes use SQL-expression counter + absorb duplicate insert | On PostgreSQL the old code stored **8 concurrent likes as 2** and 500'd a double like; new `test_postgres_concurrency.py` (CI migration job). 038's first draft id was 33 chars > `alembic_version` VARCHAR(32) — caught by rehearsal; guard test added |
+| `f887114` | OPS-04 | Advisory lock around startup migrations + `lock_timeout 15s` | Two concurrent migrators on fresh PG: before = one crashed (`UniqueViolationError`), after = both exit 0 (×4); failing migration exits 1 and releases lock. CI now runs two migrators at once |
+| `16254cb` | SEC-04 | WebSockets closed (1008) before token handling unless `FEATURE_REALTIME_WEBSOCKETS`; single realtime strategy = polling; uvicorn `--no-access-log` (it logged `?token=`) | WS auth tests run with flag on; new flag-off test |
+| `6dc90e4` | JWKS | Verification in threadpool; JWKS timeout 30 s → 5 s; unknown `kid` refresh at most once/min | 2 tests (5 made-up kids → 1 fetch) |
+| `ec81274` | IDOR audit | `/trust/{scores,reviews,verifications}/{user_id}` follow profile visibility; public sees VERIFIED badges only, no `verifier_notes`/`reviewed_by_id` (were anonymous and complete) | 2 tests; existing trust tests fetch as owner (assertions unchanged) |
+| `1ac2548` | IDOR audit | `GET /jobs/{id}`: inactive → org + admin only; removed → admin only | test |
+
+**Object-authorization audit:** 87 id-taking endpoints — 80 require auth (51 user, 29 role); the 7 unauthenticated ones
+reviewed: 2 fixed above (trust ×3 counted as one fix, jobs/{id}), companies/{id} and jobs/company/{id} public by design
+(active jobs only), engineers/{id} already visibility-checked. Existing two-persona tests cover contracts, projects,
+applications, payments, admin.
+
+**Pre-existing drift recorded (not changed):** 23 model-declared indexes never created by migrations (→ Phase 11), 19
+DB indexes not in models, `plans`/`subscriptions` models not imported by `app.main`, `post_likes` "missing"
+`uq_post_like` is redundant with its composite PK. Response schemas with input constraints (e.g. `title` min length)
+can 500 on odd stored data (follow-up, ADR-004).
+
+**Owner dry-run before pushing (read-only SQL in Supabase):**
+`SELECT count(*) FROM (SELECT user_id, job_id FROM job_applications GROUP BY 1,2 HAVING count(*) > 1) d;`
+must be 0, or migration 038 will stop the new instance from starting (Render keeps the old one).
+
+Validation at `1ac2548`: API 399 passed + 3 PostgreSQL-only (run locally against PG: 3 passed); ruff/mypy clean; web
+tsc clean, Vitest 44, formatting clean; E2E **29 passed** (stack built from `1ac2548`, 13:39 UTC).

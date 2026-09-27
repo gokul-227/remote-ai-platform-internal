@@ -148,3 +148,66 @@ State: **W** working (covered by CI tests, and live where noted) · **P** partia
 
 No production data copied. The local stack uses `.env.example` values and mock Supabase (cannot resolve production
 credentials). No secret values were printed; secret inventory is by name and update date only.
+
+---
+
+## Phase 01 — critical containment and security foundations (2026-09-27)
+
+**Status: code-side items implemented and tested locally on branch `fix/go-live-phase-01` (not pushed, not deployed).
+Owner-blocked items remain open: SEC-01, SEC-02, DATA-03.**
+
+### Commits (branch `fix/go-live-phase-01`, base `prod` `07867833`)
+
+| Commit | Finding | Change | Test evidence |
+|---|---|---|---|
+| `cf4880f` | SEC-03 | Rate-limit buckets per client **and endpoint class** (sensitive / ai / ingest / general), not raw path; general = 30× base (300/min prod) since it now spans all ordinary requests; fallback capped at 10k keys with idle-first eviction; one pooled Redis client; unique ZSET members | 3 new tests failed before, pass after: path-variation bypass, class isolation, bounded fallback |
+| `bb67d23` | REL-01, OPS-05 | `--max-time` on every curl in deploy/sync workflows; `timeout-minutes` on all deploy + CI jobs (5–10× observed); CodeQL on `[prod, dev]`; `upload-artifact` pinned to `ea165f8` | YAML parsed; `test_deployment_contract.py` 9 passed; observed CI durations 0–4 min vs ceilings 10–30 |
+| `f066282` | OBS-02 | `GIT_SHA` = `RENDER_GIT_COMMIT` → `GIT_SHA` → `"unknown"`; `/health/version` and Sentry `release` share it | new test failed before (`9389640…`), passes after |
+| `b69f033` | SEC-05, SEO-02 | Deployed web builds (`NEXT_PUBLIC_DEPLOY_ENV` production/dev) fail on missing/local/placeholder public env; `app/robots.ts` allows crawling only in production; non-production responses carry `X-Robots-Tag: noindex, nofollow` | 4 Vitest tests; three real builds: no env → `Disallow: /` + header; production env → `Allow: /`, no header; production without API URL → build refuses; `cf:build` ok |
+| `248d0c2` | token negatives | Tests: `alg=none`, HS256 signed with the public key, malformed tokens → 401 (verifier already pins ES256/RS256/EdDSA) | 6 new tests pass (behaviour already correct) |
+
+### Reviewed, no change needed (verified source)
+
+- Client IP for limits = last `X-Forwarded-For` hop (appended by Render). *Documented only* that Render appends; confirm in staging with a spoofed header once dev is healthy.
+- Backend refuses production boot with dev DB/MinIO creds, `DEBUG`, missing `SUPABASE_URL`, wildcard CORS (`validate_production_settings`).
+- Unhandled exceptions → generic `Internal server error`; health errors via `_public_error`.
+- Public build output (`.open-next/assets`): 0 source maps, no secret patterns, no internal-repo references.
+- Money movement stays off (`MARKETPLACE_PAYMENTS_ENABLED=false`; live `/payments/escrow` 503).
+
+### Secret scanning (gitleaks 8, redacted)
+
+- Branch commits `prod..HEAD`: no leaks.
+- Full history: 5 `generic-api-key` hits — 3 false positives (E2E dummy key, `ci-test…` JWT fixture, compose `${…}` interpolation); 2 are a real-format Supabase **publishable** key committed 2026-09-04 in `ci.yml` / `apps/web/.env.example` (already replaced by placeholders at HEAD). Publishable keys are public by design (shipped in the browser bundle); their safety depends on RLS → tracked under DATA-03. No history rewrite proposed.
+
+### Owner-blocked (unchanged)
+
+- **SEC-01** rotation: no repo secret updated after 2026-09-06. Order: create new key at provider → update Infisical → Render / GitHub secrets → verify consumers (deploy, sync, `/health/dependencies`) → revoke old key → confirm old key fails. `SUPABASE_SERVICE_ROLE_KEY` repo secret is unused by workflows — delete rather than rotate.
+- **SEC-02** `enforce_admins`: restore on `prod` and `dev` (commands in `progress.md`). Break-glass: owner temporarily disables, records reason in this file, re-enables.
+- **DATA-03**: Supabase storage bucket policies / RLS / Data API exposure need a dashboard or Management-API read by the owner.
+| `ee70453` | (regression from `b69f033`) | Keep `apps/web/public/` (`.gitkeep`): removing the static robots.txt emptied it and the web Docker image failed at `COPY public` | Caught by the local E2E rebuild before push; image builds |
+
+### Phase 01 validation at `ee70453` (local)
+
+| Check | Result |
+|---|---|
+| API ruff / mypy / pytest | clean / clean (139 files) / **362 passed** (352 baseline + 10 new) |
+| Web tsc / lint / Vitest | clean / 0 errors, 332 warnings (unchanged) / **33 passed** |
+| `next build`, `cf:build` | ok |
+| Hermetic E2E (stack rebuilt at `ee70453`, containers created 12:38 UTC) | **29 passed**; API `/health/version` → `git_sha: "unknown"` (no hard-coded SHA); web `/robots.txt` → `Disallow: /` + `X-Robots-Tag: noindex, nofollow` |
+| gitleaks `prod..HEAD` | no leaks |
+
+Process note: a first E2E rerun reported 29 passed against **stale containers** — the image build had failed
+(`COPY public`) and macOS has no `timeout`, so the wait loop was skipped silently. Evidence now always records the
+container creation time and `/health/version` of the stack under test.
+
+**Not yet:** pushed, CI-verified, deployed to dev, or verified live. Dev deploy cannot be verified until the dev API
+is reachable (REL-01 owner action).
+
+### Next-phase findings confirmed in source while here (for Phase 04)
+
+- **API-01 — severity raised to P0.** `AuthService.get_or_create_user` matches by email and **overwrites a non-null
+  `auth_subject`** with the new token's subject. Supabase does not auto-link identities whose email the provider has
+  not verified, so a second Supabase user with a victim's email can exist; its first API call would take over the
+  victim's app account. Fix: never overwrite a set `auth_subject`; refuse with a support path.
+- **DATA-01 confirmed.** `DELETE /auth/me` deletes app rows + resume object but not the Supabase user; the still-valid
+  access token (≤1 h) or a refresh re-enters `get_or_create_user` and silently provisions a new blank account.

@@ -165,6 +165,7 @@ Owner-blocked items remain open: SEC-01, SEC-02, DATA-03.**
 | `f066282` | OBS-02 | `GIT_SHA` = `RENDER_GIT_COMMIT` → `GIT_SHA` → `"unknown"`; `/health/version` and Sentry `release` share it | new test failed before (`9389640…`), passes after |
 | `b69f033` | SEC-05, SEO-02 | Deployed web builds (`NEXT_PUBLIC_DEPLOY_ENV` production/dev) fail on missing/local/placeholder public env; `app/robots.ts` allows crawling only in production; non-production responses carry `X-Robots-Tag: noindex, nofollow` | 4 Vitest tests; three real builds: no env → `Disallow: /` + header; production env → `Allow: /`, no header; production without API URL → build refuses; `cf:build` ok |
 | `248d0c2` | token negatives | Tests: `alg=none`, HS256 signed with the public key, malformed tokens → 401 (verifier already pins ES256/RS256/EdDSA) | 6 new tests pass (behaviour already correct) |
+| `ee70453` | (regression from `b69f033`) | Keep `apps/web/public/` (`.gitkeep`): removing the static robots.txt emptied it and the web Docker image failed at `COPY public` | Caught by the local E2E rebuild before push; image builds |
 
 ### Reviewed, no change needed (verified source)
 
@@ -184,7 +185,6 @@ Owner-blocked items remain open: SEC-01, SEC-02, DATA-03.**
 - **SEC-01** rotation: no repo secret updated after 2026-09-06. Order: create new key at provider → update Infisical → Render / GitHub secrets → verify consumers (deploy, sync, `/health/dependencies`) → revoke old key → confirm old key fails. `SUPABASE_SERVICE_ROLE_KEY` repo secret is unused by workflows — delete rather than rotate.
 - **SEC-02** `enforce_admins`: restore on `prod` and `dev` (commands in `progress.md`). Break-glass: owner temporarily disables, records reason in this file, re-enables.
 - **DATA-03**: Supabase storage bucket policies / RLS / Data API exposure need a dashboard or Management-API read by the owner.
-| `ee70453` | (regression from `b69f033`) | Keep `apps/web/public/` (`.gitkeep`): removing the static robots.txt emptied it and the web Docker image failed at `COPY public` | Caught by the local E2E rebuild before push; image builds |
 
 ### Phase 01 validation at `ee70453` (local)
 

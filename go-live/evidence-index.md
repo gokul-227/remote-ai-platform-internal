@@ -348,3 +348,21 @@ Verified, no change: moderation decisions are audit-logged (`MODERATION_DECISION
 4. Qualified legal review of Terms/Privacy.
 
 Remaining uncertainty: GDPR/DSA obligations assessed only at the level of "notice matches behaviour"; no legal compliance is claimed.
+
+---
+
+## Phase 08 — testing and resilience verification (2026-09-27)
+
+**Status: implemented and rehearsed locally on `test/go-live-phase-08` (stacked).**
+
+| Commit | Change | Evidence |
+|---|---|---|
+| `d09f260` | Coverage measured correctly (`concurrency = greenlet`): real total **86%** (reported 71%; whole endpoints looked unexecuted); critical modules 87–100%, network router 71% (mostly switched-off WebSockets). CI test service fails under 80% | CI image run: 422 passed, 85.67% |
+| `e87bb0e` | OPS-01 tooling: `ops/backup/{backup,restore}.sh` + `objects.py` (encrypted archive, SHA-256 manifest, row counts, version-pinned client via `PG_IMAGE`, refuses restoring over source or into an older server, `RESET_IDENTITIES`) | Rehearsal: 50 tables / 18 objects, backup 1 s, restore+verify 2 s, restored DB at head 040; negatives (wrong passphrase, tampered archive, over-source, version) fail. Runbook `backup-and-restore.md` |
+
+Fault drill (verified locally): Redis stopped → `/health/ready` 200 `DEGRADED` (redis DOWN), public API 200 < 50 ms, all 11 E2E journeys pass (rate limiter fallback, message fan-out fallback).
+
+Existing coverage retained: PostgreSQL concurrency suite (5 tests), 36 E2E tests (journeys, privacy, safety, navigation, responsive, a11y).
+
+**OPS-01 remains open for production** until the owner runs the first real backup and a timed restore of it (G07).
+Not done: provider outage drills against real staging (dev API down), mutation testing.

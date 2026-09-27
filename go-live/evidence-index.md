@@ -286,3 +286,24 @@ must be 0, or migration 038 will stop the new instance from starting (Render kee
 
 Validation at `1ac2548`: API 399 passed + 3 PostgreSQL-only (run locally against PG: 3 passed); ruff/mypy clean; web
 tsc clean, Vitest 44, formatting clean; E2E **29 passed** (stack built from `1ac2548`, 13:39 UTC).
+
+---
+
+## Phase 05 — design system, responsive UX and accessibility (2026-09-27)
+
+**Status: implemented and tested locally on `feat/go-live-phase-05` (stacked).**
+
+Method: an audit sweep of **240 screen views** (visitor 11 routes, professional 27, organisation 11, admin 11 × 320/375/768/1280 px) recording horizontal overflow and axe WCAG 2.2 A/AA results. Baseline: **8 overflowing views, 3 serious rules** (`scrollable-region-focusable` ×5 pages, `target-size` Help/Talent, `color-contrast` Notifications). After fixes: **0 overflow, 0 violations** except one triaged artifact (Talent name link "obscured" by the fixed mobile bottom bar at axe's scroll position; clears on scroll). Limits: fresh accounts, so populated states are less covered.
+
+| Commit | Change |
+|---|---|
+| `a0d13c2` | Overflow fixes (search inputs `min-w-0`, sort chips wrap, local tab row scrolls, grid item `min-w-0`); `TableScroll` (focusable, labelled region) around all 7 tables + pipeline/transactions scrollers — root cause a global `div:has(>table){overflow-x:auto}` rule; Help `<summary>` 24px targets; Talent name is a link; contrast fixes; tabs expose `aria-pressed`. New `responsive.spec.ts`: every signed-in screen × 4 widths, no overflow, no serious/critical axe |
+| `4f5f165` | UX-03 ingestion: `clean_rich_text` keeps paragraphs/headings/bullets (0 of 40 live descriptions had a line break; real Arbeitnow sample 1 → 25 lines, median 57 lines over 325 jobs); admin re-clean no longer flattens |
+| `f00d92f` | UX-03 UI: `RichText` renders headings, paragraphs, lists at `max-w-prose`; React elements only (markup-looking text stays text) |
+| `e5468bd` | `useDialogFocus` shared by Modal + main menu + project task panel + job drawer (menu had no Escape/focus handling; the other two had no dialog semantics). E2E: menu by keyboard, focus trapped, Escape restores focus |
+| `2f97d62` | `Notice`: one always-mounted polite live region per screen for 19 outcome toasts (were mostly click-to-dismiss buttons); `prefers-reduced-motion` rule |
+| `0b6106c` | 11 navigations put the id in the URL (`#engineer/<id>` …) instead of storage + bare route |
+
+Validation at `0b6106c`: web tsc clean, lint 0 errors (332 warnings, unchanged), Vitest **49**, formatting clean; E2E **32 passed** (29 + 2 responsive + 1 keyboard menu; containers 14:03 UTC); API 404 passed.
+
+Not done (needs a person/device): manual VoiceOver/NVDA pass; Safari/iOS retest of UX-02; 200% zoom was approximated by the 375/768 px widths, not tested as browser zoom. Remaining `button`-as-link navigation outside entity names is a known follow-up.

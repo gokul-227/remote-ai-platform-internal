@@ -328,3 +328,23 @@ Verified, no change: all 9 server-side outbound HTTP calls use configured URLs (
 Validation at `61c1f2e`: API **419 passed** + 5 PostgreSQL-only (passed against PG); web Vitest 51; E2E **34 passed** (stack 14:42 UTC).
 
 Blocked: real OTP/OAuth and real Groq completions in staging (dev API down, REL-01); message send idempotency keys (UI prevents double submit only) — follow-up.
+
+---
+
+## Phase 07 — trust, safety, privacy and legal readiness (2026-09-27)
+
+**Status: code-side items implemented on `feat/go-live-phase-07` (stacked). Legal facts and review remain owner-blocked (LEG-01).**
+
+| Commit | Change | Evidence |
+|---|---|---|
+| `8329834` | Privacy notice reconciled with behaviour (LAST_UPDATED 27 Sep 2026): Resend = sign-in codes only (no notification emails exist); deletion is immediate + Supabase identity removed + one-way identity hash kept; blocks and AI allowance usage listed; public visibility of verified badges/reviews; blocks private. Production warns if `SUPABASE_SERVICE_ROLE_KEY` is unset. Moderation: post removal / job hiding notify the owner (what + appeal address, never reporter or moderator note); suspended accounts are told they are suspended and how to appeal (`SUPPORT_EMAIL`) | legal tests pass; 2 moderation tests failed before, pass after; warning test |
+
+Verified, no change: moderation decisions are audit-logged (`MODERATION_DECISION`); reporters are never revealed to the reported person; `is_verified` (organisations) cannot be set through any API — only directly in the database; the professional "Verified" tag on Talent reads a field engineer profiles don't have (never shown). **Gap:** no admin UI to grant organisation verification — badge semantics must be defined before it is used (Phase 14).
+
+**Owner actions required before this notice is accurate in production:**
+1. Set `SUPABASE_SERVICE_ROLE_KEY` on Render (deletion promises Supabase erasure).
+2. Confirm Supabase Auth sends sign-in codes through Resend SMTP (else correct the provider line).
+3. LEG-01: operator legal name/address, VAT/register, governing law, supervisory authority, log/backup retention in `OPERATOR`.
+4. Qualified legal review of Terms/Privacy.
+
+Remaining uncertainty: GDPR/DSA obligations assessed only at the level of "notice matches behaviour"; no legal compliance is claimed.

@@ -228,3 +228,26 @@ Validation: API 365 passed; web tsc clean, lint 0 errors (332 warnings, unchange
 
 Checked, no change: payments gated in API (503) and UI (`payments_enabled` from `/payments/wallet`); Help's
 match-score weights equal `matching/service.py`; role switching is audited and cannot self-assign ADMIN.
+
+---
+
+## Phase 03 — architecture and incremental refactoring (2026-09-27)
+
+**Status: implemented and tested locally on `refactor/go-live-phase-03` (stacked). ADRs 001–004 in `handbook/adr/`.**
+
+| Commit | Change | Evidence |
+|---|---|---|
+| `b83639d` | `useApi` data keyed to account + path + params: never shows the previous resource while loading or after its request fails; drops data on account change; reload of the same resource keeps it | 3 of 4 new hook tests failed before, all pass after |
+| `6273212` | Sign-out also removes an abandoned sign-up's `pending_registration` (email, name) | auth test extended |
+| `08ca3ac` | Mechanical Prettier format of `apps/web/src` (max line 1,811 → 155; UI now 10.8k lines); root config aligned to the code's double quotes; CI `Formatting` step; `npm run format` | esbuild-minified output of all 44 files identical except 9 JSX trailing-space splits (same rendered text); tsc/lint/tests/build pass |
+| `e720aea` | http(s)-only links: shared `HttpUrlIn` on 9 input fields (post link/image, org website/logo, profile image/GitHub/LinkedIn/portfolio, project links); response schemas don't re-validate; UI `safeHref` on every user/job-board link (`href`, `img src`, `window.open`) | 6 API tests failed before, pass after; 2 `safeHref` unit tests |
+
+Validation at `e720aea`: API 371 passed (ruff, mypy clean); web tsc clean, lint 0 errors / 332 warnings, Vitest 44
+passed, formatting check clean; hermetic E2E **29 passed** (containers created 13:03 UTC from `e720aea`).
+
+Architecture facts established: no `dangerouslySetInnerHTML` or inline app scripts (CSP comment corrected); 91 of 174
+API operations declare a response model (ADR-004 plan); browser storage holds only tokens, the user object and `rap-*`
+resource ids, all cleared on sign-out.
+
+Deferred within Phase 03 (carried forward): splitting `rap_*.tsx` by domain and replacing `any` — done per endpoint as
+response models are added (ADR-004), not as a blanket rewrite.

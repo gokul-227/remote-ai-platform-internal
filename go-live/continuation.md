@@ -11,7 +11,16 @@ Last updated 2026-09-27. Read `findings-register.md` first; owner-only items are
   password_reset_tokens table (no real users exist; owner confirmed).
 - Render prod + dev: `GROQ_API_KEY` and `AI_PROVIDER=auto` set. Infisical holds the same keys.
 
-## Going live (owner authorised a direct push to `prod`)
+## Live (2026-09-27 01:00 UTC)
+
+`prod` and `dev` at `0786783`. CI green (backend, frontend, E2E, migrations); deploy run 36283984440.
+Verified live: web `/api/version` and API `/health/version` both report `0786783`; `/health/dependencies`
+HEALTHY (DB, Redis, storage, AI chain = groq); `GET /jobs` 200 with `X-Total-Count: 859` and
+`salary_period`; `/auth/me` 401 without a token; `/payments/escrow` 503 (payments off).
+Open: gitleaks on `dev` flags the dummy `e2e-publishable-key` in `tests/e2e/docker-compose.e2e.yml`
+(false positive; owner to decide how to allow-list it).
+
+## Going live checklist (done)
 
 1. Push the branch to `prod`, then fast-forward `dev`.
 2. Watch CI (lint, types, unit, E2E) and the deploy workflows; the deploy only runs for the tested tip.

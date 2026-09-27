@@ -10,7 +10,7 @@ Production deployed · Production behavior verified · Blocked · Deferred and g
 
 **Status 2026-09-27:** all fixes are on branch `fix/go-live-p0-containment` (31 commits), fully tested locally
 (backend 352, frontend 29 unit, 29 Playwright journeys + axe scans). "Tested locally" below means verified
-by those suites; the production-deploy column is updated after the push to `prod`.
+by those suites; all of it is **production deployed** at `0786783` (2026-09-27) and the checks in `continuation.md` were verified live.
 
 ## Baseline re-verified 2026-09-26 18:44 UTC
 

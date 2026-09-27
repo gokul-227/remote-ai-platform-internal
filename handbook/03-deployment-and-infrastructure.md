@@ -16,8 +16,8 @@ There are three environments, deliberately kept separate:
   service, used for testing changes against real infrastructure before they
   reach production. Payments on dev are **always** the sandbox provider —
   dev is deliberately never wired to real Stripe.
-- **Prod** (`remoteaiplatform.com`) — the real product, serving real users and
-  real (live-mode) Stripe payments.
+- **Prod** (`remoteaiplatform.com`) — the real product. Payments are switched off
+  (`MARKETPLACE_PAYMENTS_ENABLED=false`); Stripe keys exist but nothing is charged.
 
 ## The branch model
 
@@ -25,8 +25,9 @@ Promotion path: **feature branch → `dev` → `prod`**, enforced by CI, not jus
 convention. A dedicated workflow (`enforce-branch-flow.yml`) rejects any pull
 request opened directly against `prod` unless its source branch is `dev` — this
 runs on every PR targeting `prod` and needs no repository secrets to do it (it
-only inspects the PR's branch name). Both `dev` and `prod` are protected
-branches: no direct pushes, even for repo admins; merging requires a passing PR
+only inspects the PR's branch name). Both `dev` and `prod` have branch protection, but `enforce_admins` is
+currently OFF (turned off during the Figma migration; restore after launch — see
+`go-live/progress.md`); required checks still gate PR merges
 with the required status checks green.
 
 ## Frontend hosting — Cloudflare Workers
@@ -50,40 +51,21 @@ today.
 
 ## Backend hosting — Render
 
-The FastAPI backend runs as a single Render **free-tier** web service, one per
-environment, built from `apps/api/Dockerfile`'s `production` Docker target
-(defined in `infra/deploy/render.yaml`, this repo's Render Blueprint). Render's
-own git integration auto-deploys directly on a push to each service's tracked
-branch (`prod` for the production service, `dev` for the dev service) —
-independent of GitHub Actions; there is no GitHub Actions workflow that deploys
-to Render.
+The FastAPI backend runs as a Render **free-tier** web service per environment
+(`remote-ai-platform-api` → `prod`, `remote-ai-platform-api-dev` → `dev`), built from
+`apps/api/Dockerfile` (`production` target, see `infra/deploy/render.yaml`). Deploys are
+triggered by the deploy workflows calling the service's deploy hook **with `?ref=<tested SHA>`**
+(Render disables its own auto-deploy when `ref` is used); the workflow then waits for
+`/health/version` to report that SHA. Migrations run on start (`start-production.sh`).
+Region: Oregon (US). Free instances sleep after ~15 idle minutes; the `keep-render-warm`
+workflow pings prod.
 
-**The free tier's 512MB RAM ceiling is a real, binding constraint, not a
-theoretical one.** On 2026-09-06, after merging a batch of security and feature
-fixes, the backend started failing to boot on Render with "Out of memory (used
-over 512Mi)" roughly 20-30 seconds into every fresh process start, on both `dev`
-and `prod`. Render correctly refused to swap production onto the broken build
-and kept serving the previous, working version, so production was never fully
-down — but it could not receive any of that day's fixes (including the
-WebSocket fix described in `01-technical-architecture.md`) until the memory
-issue was resolved. The root cause turned out to be a duplicate,
-memory-heavy Alembic migration run happening in-process during application
-startup on top of the migration Render already runs separately; removing the
-duplicate run fixed it. The fix is merged and live on both branches as of this
-writing. Because of this incident, `WEB_CONCURRENCY` is deliberately kept at 1
-(a single Uvicorn worker process) on both Render services — see the Blueprint's
-own comment for the reasoning. Treat any future change that adds startup-time
-work, a second worker process, or a larger dependency footprint as something to
-load-test against this ceiling before merging.
-
-Render's free web service tier also spins down after roughly 15 minutes of no
-inbound traffic and takes 10-60 seconds to cold-start on the next request. The
-production service is kept warm continuously by external pings from
-**cron-job.org** (primary) and a GitHub Actions scheduled workflow
-(`keep-render-warm.yml`, secondary) hitting `/health/live` every few minutes —
-together this uses close to the full 750 free instance-hours/month Render
-allots per account, so adding a second always-on free Render service would
-risk exceeding that budget. The dev service is allowed to sleep.
+Runtime config set on Render (names only): APP_ENV, AI_PROVIDER=auto, GROQ_API_KEY,
+CORS_ORIGINS, DATABASE_URL, SUPABASE_URL, REDIS_URL (+ legacy CELERY_BROKER_URL, read as a
+fallback), MINIO_* (Supabase Storage S3), EMAIL_PROVIDER, RESEND_API_KEY, SENTRY_DSN,
+RATE_LIMIT_*, STRIPE_* (unused while payments are off), WEB_CONCURRENCY. Obsolete and
+ignored by the app: AUTH_PROVIDER, JWT_SECRET_KEY, KEYCLOAK_*, CELERY_RESULT_BACKEND,
+SEED_DEMO_DATA, PAYMENT_PROVIDER — safe to delete from the dashboard.
 
 ## Database — Supabase Postgres
 
@@ -102,11 +84,9 @@ never via a permanent public link.
 
 ## Redis
 
-A single Redis instance is currently shared by **both** the dev and prod
-environments — a deliberate free-tier simplification, not an oversight, and
-called out explicitly as a known tradeoff. If dev testing ever needs to be
-fully isolated from prod (for example before a risky migration test), a
-separate Redis instance should be provisioned for dev first.
+Documented as shared by dev and prod. Every key and pub/sub channel is prefixed with the
+environment (`APP_ENV`), so rate limits, cache entries and chat fan-out never cross environments
+even on a shared instance. Redis is disposable: nothing irreplaceable is stored there.
 
 ## DNS / CDN
 
@@ -165,16 +145,28 @@ is a service ADMIN account used only by the scheduled job-sync CI workflow.
 - **Cloudflare Workers**: 100k requests/day per Worker — not a practical
   concern at current traffic.
 
-## What could not be independently verified
+## Verified vs. not verified (2026-09-27)
 
-The exact current values of environment-specific configuration (which AI
-provider/model is live, whether `AUTH_PROVIDER` is explicitly set to
-`"supabase"` in each environment's Render dashboard versus relying on some other
-mechanism, live Redis auth configuration, and the actual Supabase Storage
-bucket ACL) live only in the Render/Supabase dashboards themselves and are not
-committed anywhere this handbook can read. The live frontend's behavior
-(exclusively Supabase-based sign-in) makes it near-certain both environments
-have `AUTH_PROVIDER=supabase` set at runtime even though that is not the
-in-code default — but this handbook states that as an inference from observed
-behavior, not a confirmed fact, since the actual environment variable value
-was not directly inspected.
+Verified through the providers' APIs (names/settings only, no secret values read into docs):
+Render env var **names** for both services; Supabase project regions and auth settings; Cloudflare
+email routing; Groq model availability; Infisical secret names. `AUTH_PROVIDER` no longer matters
+(Supabase is the only path in code).
+
+Not yet verified: Supabase Storage bucket ACLs and RLS policies (no read-only API was used), backup
+restore (Supabase free tier has no automatic backups — see `go-live/backup-and-restore.md`), and whether
+dev and prod really share one Redis (the app now namespaces every Redis key by `APP_ENV`, so sharing is
+safe either way).
+
+## Email
+
+- Sending: Supabase Auth sends sign-in codes through Resend SMTP from `hello@remoteaiplatform.com`
+  (rate limit set to 60/hour in Supabase → Authentication → Rate Limits).
+- Receiving: the only public address is **contact@remoteaiplatform.com**, forwarded by Cloudflare
+  Email Routing to the owner's private inbox (never published). Verified 2026-09-27.
+
+## Supabase projects
+
+- `Remote-AI-Platform` (`cvjypjsjmamoppwhuwdl`, eu-west-1) — production. Redirect allow list is
+  production origins only (localhost removed 2026-09-27).
+- `remote-ai-platform-dev` (`wqugjgtjjmixzsqqcmld`, eu-west-1) — **paused** (free-tier inactivity);
+  restore from its dashboard before using dev.remoteaiplatform.com.

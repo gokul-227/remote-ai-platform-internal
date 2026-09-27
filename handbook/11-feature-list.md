@@ -28,11 +28,10 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 | Professional network / connections | Send, accept, and manage connection requests with other engineers and companies, similar to a professional network. | Working |
 | Social feed | A LinkedIn-style feed: post updates/project news/achievements/articles, like, comment, and share; filter by "All," "Connections," or "Media & Links." | Working |
 | Groups | Join or create interest-based groups, post inside them, and manage membership roles. | Working |
-| Notifications | In-app notifications for application status changes, contract offers, messages, and escrow/payment events, plus a live unread-count badge. | Working |
+| Notifications | In-app notifications for application status changes, contract offers, messages and milestone updates, plus a live unread-count badge. | Working |
 | Global search | Search across jobs, companies, and people from one search bar. | Working |
 | Digital contracts | Once a company decides to hire you, review contract terms (rate, scope, milestones) and sign digitally. | Working |
-| Escrow-backed payments | See funds held in escrow for your contract milestones, and get paid out to your platform wallet once a company approves and releases a milestone. | Working |
-| Wallet & transaction history | A running view of escrow held, total earned, and full transaction history. | Working |
+| Payment between parties | Organisations pay professionals directly (e.g. bank transfer); the platform records contracts and milestones but does not hold or move money. | Payments off by design |
 | "Trending Skills" panel (feed and sidebar) | A widget intended to show which skills are rising in demand across the platform. | **Coming soon (honestly labeled)** — the backend job that would compute this (`refresh_trending_skills`) is a documented no-op stub with no real logic behind it yet, gated off by a `FEATURE_TRENDING_SKILLS` flag. Rather than showing fabricated numbers, the UI displays a plain "Coming soon — we're still building this" message in its place — an intentional, transparent placeholder, not a bug. |
 | Code/submission quality review | An AI endpoint exists to evaluate code submissions and give a quality report. | **Partial** — the backend (`/quality/evaluate`, `/quality/review-code`) is implemented, but there's no dedicated engineer-facing page for it in the current frontend routes; it's not part of the everyday engineer workflow today. |
 
@@ -51,8 +50,8 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 | Message candidates | Direct, real-time messaging with any candidate you're connected to. | Working |
 | Browse the engineer/company directories | Explore public engineer and company profile listings. | Working |
 | Digital contracts | Draft a contract for a specific worker (rate type, amount, scope, milestones), send it, and track it through Offered → Signed → Active → Completed/Terminated. | Working |
-| Escrow-backed payments | Fund an escrow payment (via Stripe, or a sandbox provider for testing) for a project/task, then release or refund it once milestones are approved. | Working |
-| Payments dashboard | Wallet balance, escrow held, and full transaction history across all your contracts. | Working |
+| Payment to professionals | Pay the professional directly under the agreed terms; in-product escrow buttons are switched off. | Payments off by design |
+| Platform plans | Pro plans (Professional €9 / Organisation €29 per month) with higher limits and AI allowance via Stripe Checkout. | Planned (final phase) |
 | Company/network feed & groups | Same social feed, groups, and connections features as engineers. | Working |
 
 ## Admin features

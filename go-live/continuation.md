@@ -1,43 +1,24 @@
 # Continuation: go-live hardening
 
-Last updated 2026-09-26. Read `findings-register.md` first.
+Last updated 2026-09-27. Read `findings-register.md` first; owner-only items are in `owner-checklist.md`.
 
 ## Where things stand
 
-- App repo branch: `fix/go-live-p0-containment`, 10 commits on top of `6d16b77`. **Not pushed, no PR.**
-- Local checks on the branch: backend 330 passed (SQLite), ruff + mypy clean; frontend `tsc`, 12 vitest
-  tests, `eslint` (0 errors), `next build` and `cf:build` all pass. E2E not run.
-- Migration: `033_user_sessions_revoked_at` (nullable, additive) can run before or with the code.
-- Config added: `MARKETPLACE_PAYMENTS_ENABLED` (default `False`), `RESUME_PARSE_BUDGET_SECONDS` (45).
+- App repo branch `fix/go-live-p0-containment`: 31 commits on top of `prod` (`6d16b77`).
+- Local checks: backend 352 passed, ruff + mypy clean; frontend tsc, eslint (0 errors), 29 vitest,
+  `next build` and `cf:build` pass; hermetic E2E (29 Playwright tests incl. WCAG AA scans) pass.
+- Migrations `033`–`036` are additive or data-only except `036`, which drops password columns and the
+  password_reset_tokens table (no real users exist; owner confirmed).
+- Render prod + dev: `GROQ_API_KEY` and `AI_PROVIDER=auto` set. Infisical holds the same keys.
 
-## Before this branch reaches production
+## Going live (owner authorised a direct push to `prod`)
 
-1. Push, open PR → `dev`, and let CI run (it runs the E2E job with Docker services).
-2. On dev: sign out and back in, then use sign-out-everywhere across two browsers; check a hidden profile
-   returns 404 to another account; walk a contract from offer to approval; upload a resume with the AI
-   provider down; confirm that `/api/version` on dev reports the merged SHA.
-3. Before the first prod deploy with `?ref=`, confirm in Render that the service follows deploy hooks
-   (Render disables auto-deploy when `ref` is used).
+1. Push the branch to `prod`, then fast-forward `dev`.
+2. Watch CI (lint, types, unit, E2E) and the deploy workflows; the deploy only runs for the tested tip.
+3. Verify `/api/version` (frontend) and `/health/version` (backend) report the pushed SHA.
+4. Check `/health/dependencies`: AI chain HEALTHY via Groq; DB and Redis healthy; migrations at `036`.
+5. Smoke: anonymous job feed with pagination, sign-in by email code, profile visibility, resume upload.
 
-## Decisions waiting on the owner
+## Later
 
-- **Legal (A):** every `OPERATOR` field in `apps/web/src/figma/legal_content.ts` (legal name, address, a
-  monitored contact inbox, VAT/register, content responsible, AI providers and training terms, cache
-  provider, data locations, log retention, governing law, supervisory authority), plus legal review.
-- **AI provider (E):** which provider/model production should use. Today it is the `ollama` default
-  against localhost.
-- **Branch protection (H):** restore `enforce_admins` on `prod` and `dev` (commands in `progress.md`). As
-  a solo maintainer, keep required CI checks and set required approvals to 0; review happens through the
-  PR itself.
-- **Profile projection (M):** confirm that `hourly_rate` stays public and `desired_salary_min` stays private.
-- **Payments:** confirm the actual `PAYMENT_PROVIDER` in prod, and whether any ESCROWED or AUTHORIZED
-  records exist that need refunds.
-
-## Next engineering steps (in order)
-
-1. G: bring `src/figma` under ESLint (start with `no-unused-vars`), delete verified-dead mock screens and data.
-2. F: port the legacy E2E journeys (engineer, company, authorization, persistence) onto the Figma UI.
-3. N: path-based resource URLs (`/jobs/{id}`, `/engineers/{id}`) that don't depend on storage selections.
-4. O / W: jobs pagination and data quality; score candidates beyond the first 30.
-5. P / E: durable resume-parse job and a draft/commit model for AI fields.
-6. Q / R: observability, and a backup restore rehearsal.
+See `owner-checklist.md` (branch protection, key rotation, Impressum, Stripe plans, freelance payments).

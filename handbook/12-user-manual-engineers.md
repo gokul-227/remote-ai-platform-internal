@@ -133,23 +133,15 @@ to say so plainly rather than show you fake numbers in the meantime.
 ## 8. Notifications
 
 Click the notifications bell to see a live feed of updates: application status changes, new messages,
-contract offers, and escrow/payment events (like a milestone being funded or released). Unread items are
+contract offers and milestone updates. Unread items are
 badged with a live count, and you can mark items read individually or all at once.
 
 ## 9. Getting hired: contracts and payment
 
-If a company decides to move forward with you, you'll receive a **contract offer** — a proposal covering
-the rate, scope of work, and milestones. Review it from your **Contracts** page and **digitally sign** it
-when you're ready. Once both you and the company have signed, the contract becomes **Active**.
+If an organisation decides to move forward with you, you'll receive a **contract offer** covering the
+rate, scope and milestones. Review it on your **Contracts** page and **sign** it. Once both sides have
+signed, the contract becomes **Active**.
 
-From there:
-- The company funds an **escrow payment** for a milestone — the money is held securely (via Stripe) but
-  not released to you yet.
-- You deliver the work and mark the milestone as delivered.
-- Once the company approves it, they **release** the escrow — the funds move to your platform **wallet**.
-- Your **Payments** page shows your wallet balance, how much is currently held in escrow, and your full
-  transaction history.
-
-This part of the product is genuinely functional today, not a mockup — but it's a lightweight system, not
-a full accounting suite, so treat it as a convenient record and payment rail rather than a replacement for
-your own invoicing/tax records.
+From there you start and deliver each milestone, and the organisation approves it or sends it back.
+**The platform does not hold or move money.** The organisation pays you directly (for example by bank
+transfer) under the terms you agreed. Keep your own invoices and tax records.

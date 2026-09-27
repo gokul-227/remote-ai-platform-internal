@@ -31,8 +31,8 @@ Remote AI Platform (`remoteaiplatform.com`) is an AI-powered remote-engineering
 job marketplace: it aggregates jobs from external boards, uses AI to parse
 resumes into structured profiles, and computes explainable matches between
 engineers and jobs. Three user types (engineers, companies, admins) share one
-Next.js frontend and one FastAPI backend. It is a real product with real users
-and real Stripe payments live in production — treat it accordingly (see
+Next.js frontend and one FastAPI backend. It is live in production and preparing for its first real users; payments
+are switched off until the final phase — treat it as production (see
 `handbook/01-technical-architecture.md` and onward for the full picture).
 
 ## Live URLs, right now
@@ -102,6 +102,6 @@ everything else.
   written — this handbook is dated and was accurate at the time, but the
   product keeps shipping. If something you observe contradicts a document
   here, trust the live system and update the document.
-- Real users, real payments, real production system — the same engineering
+- Real production system — the same engineering
   care (testing, security-mindedness, not breaking what already works) that
   applies to any live commercial product applies here.

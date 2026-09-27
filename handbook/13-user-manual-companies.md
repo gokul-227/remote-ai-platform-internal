@@ -82,33 +82,23 @@ Once you're connected with a candidate (or they've applied to your job), message
 Your **Company Jobs** page is the single place to see every role you've posted, its current status, and
 how many applications it has received. From there you can edit a listing or pause/reactivate it.
 
-## 8. Hiring: contracts and escrow payments
+## 8. Hiring: contracts and payment
 
-When you're ready to formally hire someone, this is where the product moves from "marketplace" to
-"working relationship":
+When you're ready to formally hire someone:
 
-1. **Create a contract.** From the **Contracts** page, draft a contract for the specific person you're
-   hiring: title, scope of work, rate type and amount, currency, and one or more milestones (each with a
-   title and dollar amount). This sends a **contract offer** to the worker.
-2. **Both parties sign.** The worker reviews and digitally signs; once you've both signed, the contract
-   status becomes **Active**.
-3. **Fund escrow.** From the **Payments** page, create an escrow payment tied to the contract's project/
-   milestone. In production this runs through **Stripe** — funds are authorized and held, not yet
-   released, until you confirm the work is done. (A sandbox/mock payment provider is also available,
-   used for testing rather than real transactions.)
-4. **Review delivered work.** The worker marks a milestone as delivered; you review it.
-5. **Approve and release.** Once satisfied, mark the milestone **Approved** and **release the escrow** —
-   funds move from escrow to the worker's platform wallet. If something goes wrong before release, you
-   can instead **refund** the held escrow back to yourself.
-6. Your **Payments** dashboard shows your full transaction history and current escrow exposure across all
-   contracts.
+1. **Create a contract.** From the **Contracts** page, draft a contract for the person you're hiring:
+   title, scope, rate, currency and milestones. This sends a **contract offer**. You can edit the terms
+   only until the first signature.
+2. **Both parties sign.** Once both of you have signed, the contract becomes **Active**. Milestones can
+   only move on an active contract.
+3. **Track milestones.** The professional starts and delivers each milestone; you **approve** it or
+   **send it back** for changes.
+4. **Pay directly.** The platform does **not** hold or move money. You pay the professional directly
+   (for example by bank transfer) under the terms you agreed. The in-product payment buttons are
+   switched off and say so.
 
-**Honest caveats about this part of the product:**
-- The system does **not force you to go through the application/hiring pipeline before creating a
-  contract** — a contract can technically be created for anyone, at any time. In practice, use it as the
-  step *after* you've accepted someone through the normal applications flow.
-- There is no automatic "mark contract as fully completed and archived" step tied to milestones — a
-  contract simply accumulates milestone approvals, or you can manually **terminate** it. Treat the
-  contract's milestone history as your record of what's been delivered and paid.
-- This is a functional but lightweight system — it is not a substitute for your own accounting, tax, or
-  legal documentation for a hire.
+**Caveats:**
+- The platform does not require an accepted application before a contract; use contracts as the step
+  after you've chosen someone.
+- The contract and milestone history is a record of what was agreed and delivered. It does not replace
+  your own invoices, tax or legal documentation.

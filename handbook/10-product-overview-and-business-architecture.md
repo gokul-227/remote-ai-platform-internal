@@ -1,11 +1,11 @@
 # Product Overview & Business Architecture
 
-*Last verified against the live codebase: September 2026.*
+*Last verified against the live codebase: 2026-09-27.*
 
 ## What this is
 
-Remote AI Platform is a marketplace that connects **remote software engineers** with **companies hiring
-for remote engineering roles**, with artificial intelligence doing two specific jobs in the middle:
+Remote AI Platform is a marketplace that connects **remote professionals of every field** with **companies and
+organisations hiring remotely**, with artificial intelligence doing two specific jobs in the middle:
 
 1. **Reading resumes.** When an engineer uploads a resume, an AI model extracts their skills, work
    history, and headline automatically, instead of asking them to type it all in by hand.
@@ -15,7 +15,7 @@ for remote engineering roles**, with artificial intelligence doing two specific 
 
 Around that AI core sits a fairly complete professional-network product: company and engineer profiles,
 job search and applications, a LinkedIn-style social feed, direct messaging, groups, saved jobs,
-notifications, and — for the hiring side — digital contracts and escrow-style payments once someone is
+notifications, and — for the hiring side — digital contracts with milestones once someone is
 actually hired.
 
 ## Who it's for
@@ -23,12 +23,12 @@ actually hired.
 **Engineers ("Professionals")** come to the platform to build a profile once (with AI doing the heavy
 lifting from their resume), discover remote roles that are genuinely relevant to them, understand at a
 glance why a role is or isn't a good fit, apply, and manage the process — messaging, tracking application
-status, and eventually signing a contract and getting paid — in one place.
+status, and eventually signing a contract — in one place. Payment is made directly between the parties.
 
 **Companies** come to the platform to post open remote roles, see qualified candidates surfaced and
 ranked automatically rather than sifting through hundreds of unfiltered resumes, review and manage
-applications, message candidates directly, and — for roles that convert to a hire — issue a contract and
-run payment through an escrow-style flow instead of an informal invoice-and-wire-transfer arrangement.
+applications, message candidates directly, and — for roles that convert to a hire — issue a contract with
+milestones and pay the professional directly (for example by bank transfer).
 
 **Admins** (the platform operator, today effectively the founder) come to the platform to keep the lights
 on: see how many engineers/companies/jobs exist, watch the automated job-import pipeline for failures,
@@ -70,10 +70,9 @@ flowchart TD
 
     K -->|Company decides to hire| L[Company issues a Contract\nwith rate + milestones]
     L --> M[Both parties digitally sign\ncontract goes ACTIVE]
-    M --> N[Company funds an escrow payment\nStripe holds the funds]
-    N --> O[Engineer delivers a milestone]
+    M --> O[Engineer delivers a milestone]
     O --> P[Company approves the milestone]
-    P --> Q[Company releases escrow\nfunds move to engineer's wallet]
+    P --> Q[Company pays the professional directly\noutside the platform]
 
     K -.->|messaging available at every stage| R[Direct messages\nbetween engineer and company]
 ```
@@ -81,12 +80,12 @@ flowchart TD
 **What's real vs. what's aspirational in this flow, honestly:**
 
 - Job posting, AI enrichment for aggregated jobs, resume parsing, the explainable match score,
-  applications (submit / invite / status transitions), messaging, contracts, digital signing, and
-  Stripe-backed escrow (authorize → hold → release/refund, with a real webhook confirming funded status)
-  are all implemented and wired end-to-end in the current codebase.
+  applications (submit / invite / status transitions), messaging, contracts, digital signing and the
+  enforced milestone lifecycle are implemented end-to-end. Money movement is switched off
+  (`MARKETPLACE_PAYMENTS_ENABLED=false`).
 - The "Company invites an engineer directly" path re-uses the same application record as a normal
   apply — there's no separate outreach/sourcing product yet.
-- Contracts and escrow payments are a genuinely working feature set, but they are **not gated on an
+- Contracts are a working feature set, but they are **not gated on an
   application actually reaching ACCEPTED** — a company can create a contract for any user it knows the ID
   of. In practice today it's used as the natural next step after a hire decision, but the system doesn't
   enforce that sequencing.
@@ -98,7 +97,7 @@ flowchart TD
 
 **Everything on the platform is free to use today.** There is no active billing system, no subscription/
 plan model, and no paywall anywhere in the product — every feature described in this handbook (AI
-matching, unlimited job postings, unlimited applications, messaging, contracts, escrow) is available to
+matching, unlimited job postings, unlimited applications, messaging, contracts) is available to
 every engineer and company account at no cost.
 
 The codebase does now contain the first piece of *scaffolding* for future monetization — a `billing`
@@ -115,8 +114,8 @@ that is decided or wired up today, and this document should not be read as descr
 model. Anyone evaluating the business today should treat "free for everyone, monetization is scaffolded
 but not yet active" as the accurate, current answer.
 
-The one piece of real payments infrastructure that *does* exist is the **escrow system between a company
-and an engineer once a contract is signed** (Stripe-backed, with a sandbox/mock provider also available
-for testing) — but that is a value-add for facilitating a hire, not a platform revenue mechanism. The
-platform does not currently take a fee, commission, or cut from any escrow transaction; the full contract
-amount flows from company to engineer.
+**Decided for the final phase (owner, 2026-09):** freelance/contract work is paid **bank-to-bank between
+the parties**; the platform never holds that money. The platform's own revenue comes from Stripe Checkout
+plans: **Professional Pro €9/month** and **Organisation Pro €29/month**. Free accounts keep up to 2 job
+posts, 50 applications a month and 2 freelance posts; Pro lifts these and includes an AI token allowance.
+Until that ships, everything stays free and the escrow code is switched off.

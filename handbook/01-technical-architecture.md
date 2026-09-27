@@ -1,269 +1,102 @@
-# Technical Architecture
+# Technical architecture
 
-Verified directly against the `prod` branch of `gokul-227/remote-ai-platform` on
-2026-09-06.
+**As of 2026-09-27**, verified against the `prod` branch after the go-live hardening
+(`fix/go-live-p0-containment`). Where this document and the code disagree, the code wins — update this file.
 
 ## System overview
 
 ```mermaid
-flowchart TB
-    subgraph Client["Browsers"]
-        User[Engineer / Company / Admin]
-    end
-
-    subgraph CF["Cloudflare"]
-        CDN[Cloudflare CDN + DNS]
-        Worker["Next.js 16 app<br/>(Cloudflare Worker via OpenNext)"]
-    end
-
-    subgraph Render["Render (backend host)"]
-        API["FastAPI backend<br/>(apps/api, Docker, single instance)"]
-    end
-
-    subgraph Supabase["Supabase"]
-        SBAuth["Supabase Auth<br/>(OTP + Google/Microsoft/GitHub OAuth)"]
-        PG[("Postgres<br/>(session-mode pooler)")]
-        Storage["Supabase Storage<br/>(S3-compatible, resumes/assets)"]
-    end
-
-    Redis[("Redis<br/>(shared dev+prod instance)")]
-
-    subgraph External["External services"]
-        Stripe["Stripe<br/>(escrow payments, live mode)"]
-        Resend["Resend<br/>(transactional email)"]
-        Sentry["Sentry<br/>(error monitoring, 2 projects)"]
-        AI["AI providers via LiteLLM<br/>(Groq primary, Ollama fallback)"]
-        Boards["External job boards<br/>(RemoteOK, Arbeitnow, Remotive, USAJobs, TheMuse)"]
-    end
-
-    User -->|HTTPS| CDN --> Worker
-    Worker -->|REST + WebSocket| API
-    Worker -->|"Auth: OTP / OAuth<br/>(direct, not through backend)"| SBAuth
-    API -->|verify JWT via JWKS| SBAuth
-    API --> PG
-    API --> Storage
-    API --> Redis
-    API --> Stripe
-    API --> Resend
-    API --> AI
-    API --> Boards
-    Worker -.errors.-> Sentry
-    API -.errors.-> Sentry
+flowchart LR
+    Browser["Browser<br/>Next.js 16 app on Cloudflare Workers (OpenNext)"] -- REST --> API["FastAPI on Render (Oregon, US)"]
+    Browser -- "email code / Google / Microsoft / GitHub" --> Auth["Supabase Auth (EU)"]
+    API -- "verify ES256 tokens via JWKS" --> Auth
+    API --> PG[("Supabase Postgres (eu-west-1)")]
+    API --> S3[("Supabase Storage (S3 API)<br/>private resume bucket")]
+    API --> Redis[("Hosted Redis<br/>rate limits · cache · chat fan-out")]
+    API -- LiteLLM --> AI["Free-tier AI chain<br/>Groq gpt-oss-120b → gpt-oss-20b → Gemini → Cerebras → OpenRouter → Mistral"]
+    Resend["Resend SMTP"] <-- "sign-in codes" --- Auth
+    GHA["GitHub Actions cron (6h)"] -- "POST /api/v1/jobs/sync" --> API
+    API --> Boards["RemoteOK · Arbeitnow · Remotive · USAJobs · The Muse"]
 ```
 
-Two things worth calling out about this diagram: the frontend talks to Supabase
-Auth **directly** for sign-in/sign-up (the backend is never in that path), and the
-backend independently verifies whichever Supabase-issued token the frontend hands
-it on every request — it never trusts the frontend's word for who the user is.
+## Frontend (`apps/web`)
 
-## Backend: domain-driven modular monolith
+- The product UI is `src/figma/*`: a client-rendered, **hash-routed** app inside a thin Next.js shell
+  (`src/app/page.tsx` renders it with `ssr: false`). Routes are the `REG` map in `App.tsx`.
+- **Shareable resource URLs:** `#engineer/<id>`, `#jobdetail/<id>`, `#company/<id>`, `#contractsign/<id>`,
+  `#group/<id>`. `readRoute()` syncs the id with the storage key each screen reads. Old path URLs
+  (`/jobs/<id>` …) are redirected by `src/app/[...slug]/page.tsx`, keeping the id.
+- **Role-aware navigation** (`rap_shell.tsx`): visitors see public discovery + Sign in/Join; professionals
+  see Community/Careers/Workspace/Account; organisations see Community/Hiring/Workspace/Account; admins see all.
+- Data access: `useApi` (in `live.ts`) over the axios client (`src/lib/api.ts`). `useApi` exposes
+  `total` from `X-Total-Count` for pagination. TanStack Query is still a dependency but not used by the UI.
+- Session: Supabase session in the browser; the access token is copied to localStorage for the API
+  client. On 401 the client refreshes via Supabase **only if the request carried a session**; logout calls
+  Supabase `signOut` (local, or global for "sign out everywhere") and clears `rap-*` UI keys.
+- Linted (0 errors; `no-explicit-any` is a tracked warning in `src/figma`), type-checked (no `@ts-nocheck`),
+  WCAG 2.1 AA axe scans in E2E. `Modal` is an accessible dialog (focus trap, Escape, focus restore).
+- Build provenance: `/api/version` and `/health/version` report `NEXT_PUBLIC_BUILD_SHA`, env, build time and
+  deployment id injected by the deploy workflow.
 
-`apps/api/app/domains/` holds one subpackage per bounded context — **23** today
-(the CLAUDE.md figure of 21 is out of date; `analytics` and `billing` were added
-since). Each domain can have up to five files:
+## Backend (`apps/api`)
 
-```
-domains/<name>/
-  models.py       # SQLAlchemy models
-  schemas.py      # Pydantic request/response schemas
-  repository.py   # DB access class
-  service.py      # business logic
-  router.py       # FastAPI APIRouter
-```
+Modular monolith, one package per domain under `app/domains/`: `auth, engineers, companies, jobs,
+applications, saved_jobs, matching, search, network (connections + messaging + WS), notifications, social,
+groups, projects, marketplace (tasks/offers/submissions), contracts, payments, trust, quality, analytics,
+billing (entitlement scaffolding), admin`. All mounted under `/api/v1`.
 
-Verified maturity as of today (not trusting older docs' claims):
+### Identity and authorization
 
-| Layering | Domains |
-|---|---|
-| Fully layered (all 5 files) | `admin`, `analytics`, `auth`, `companies`, `engineers`, `jobs`, `matching`, `trust` |
-| Partial (models + router + schemas, no repository/service split out) | `contracts`, `groups`, `payments`, `social` |
-| Thin (models + router only) | `applications`, `network`, `notifications`, `saved_jobs`, `search` |
-| Thinnest / not wired into the app | `quality` (router + schemas, no models yet); `billing` (models + an `entitlements` module, no router — built but not exposed); `marketplace` (models only, still not registered in `main.py`) |
+- **Supabase is the only sign-in path.** `authenticate_bearer_token` verifies the token (ES256/RS256 via the
+  project JWKS, audience `authenticated`, issuer `<SUPABASE_URL>/auth/v1`), maps `sub` → `users.auth_subject`
+  (first sign-in links an existing row by verified email or creates one), rejects inactive users, and rejects
+  tokens issued before `users.sessions_revoked_at` (sign-out-everywhere). The API never issues tokens.
+- Role (`ENGINEER` = professional, `COMPANY` = organisation, `ADMIN`) lives only in the `users` table;
+  users may switch between ENGINEER/COMPANY, never self-assign ADMIN.
+- Resource checks live in each router (contract parties, project membership, company ownership, …).
+  Hidden profiles (`is_public=false`) 404 to everyone except owner, admins and companies they applied to;
+  the public projection excludes resume, salary floor and the AI review.
+- Self-service privacy: `GET /auth/me/export` (every row referencing the user, JSON) and
+  `DELETE /auth/me` (typed confirmation; cascades; removes the stored resume). Admins can't self-delete.
 
-All 21 domains that have a router are mounted in `apps/api/app/main.py` under a
-shared `/api/v1` prefix. `billing` and `marketplace` exist as code but are not yet
-reachable via any endpoint — `billing` in particular matches a known pending
-decision ("pricing/plans — architecture built, zero real prices set yet").
+### Contracts and money
 
-`app/core/` holds cross-cutting concerns rather than being a domain itself:
-config (`config.py`), the async DB engine (`database.py`), the exception
-hierarchy (`exceptions.py`), S3-compatible storage helpers built on boto3
-(`storage.py` — boto3 rather than the MinIO SDK specifically because it supports
-Supabase Storage's path-style S3 endpoint), and middleware (`middleware.py`) for
-request-ID tagging, in-process rate limiting, and — added in today's security
-pass — a standard set of response security headers (`X-Content-Type-Options`,
-`Permissions-Policy`, HSTS, and related).
+- `contracts/lifecycle.py` enforces: milestones change only on ACTIVE (fully signed) contracts, in order
+  PENDING → IN_PROGRESS → DELIVERED → APPROVED (professional starts/delivers; client approves or sends back);
+  terms frozen after the first signature; only the client adds milestones; PAID is never set by hand.
+- **Payments are switched off** (`MARKETPLACE_PAYMENTS_ENABLED=false`) on every fund/capture endpoint; refunds
+  stay open. The Stripe escrow adapter exists but there is no payout path. The owner's plan: freelance work is
+  paid bank-to-bank between the parties (recorded, not processed), and Stripe Checkout is used only for
+  platform plans (Engineer Pro €9 / Company Pro €29) in the final phase.
 
-## Authentication architecture — read this section carefully, it changed today
+### AI
 
-This is the area most likely to be described incorrectly by anything written
-before today, so it is documented here precisely as the code exists on `prod`
-right now, including the parts that are messier than a clean diagram would
-suggest.
+- LiteLLM only. `AI_PROVIDER=auto` builds the chain from `AI_FREE_TIER_CHAIN`, skipping providers without
+  their own key; one `AI_TOTAL_BUDGET_SECONDS` budget across all models; no hidden retries.
+- Per-user monthly allowance (`AI_FREE_MONTHLY_TOKENS`) and platform daily cap (`AI_GLOBAL_DAILY_TOKENS`);
+  429 with a clear message when exceeded; usage recorded per user in `ai_usage_logs`.
+- Resume upload stores the file (private bucket, presigned 15-min download URLs), extracts text off the
+  event loop, parses within `RESUME_PARSE_BUDGET_SECONDS`, fills only **empty** fields and reports
+  `ai_parse_status` (parsed / failed / no_text / quota_exceeded).
+- Match scores are deterministic (`matching/service.py::score`); AI is used for explanations/reviews only.
 
-**Current live behavior (frontend):** the web app talks to Supabase Auth
-directly, not through the FastAPI backend, for all sign-in and sign-up:
-- **Email OTP ("passwordless")** — a user enters their email, Supabase emails
-  a one-time code (via Resend SMTP, see `02-tech-stack.md`), the user enters the
-  code and is signed in. No passwords are collected or stored for new sign-ins.
-- **OAuth** — Google, Microsoft, and GitHub, all via
-  `supabase.auth.signInWithOAuth()`.
-- After Supabase issues a session, the frontend calls the backend's
-  `GET /api/v1/auth/me` with the Supabase access token to fetch (or
-  auto-provision, on first sight) this app's own user record — because role
-  (`ENGINEER` / `COMPANY` / `ADMIN`) and profile data live only in this app's own
-  `users` table, never in Supabase's identity token.
+### Jobs
 
-**Current live behavior (backend):** `apps/api/app/domains/auth/supabase_auth.py`
-verifies Supabase-issued tokens by fetching Supabase's public JWKS keys and
-checking the signature (ES256/RS256/EdDSA) — the backend never holds a Supabase
-secret and never calls back to Supabase on the request path. This is selected by
-`settings.AUTH_PROVIDER == "supabase"`. Both the WebSocket endpoints
-(`/network/messages/ws/{conversation_id}` and `/notifications/ws/{user_id}`) were
-fixed today to respect this same setting — previously they only ever checked
-tokens against the old verifier below, which meant every real user's actual
-session token failed WebSocket auth silently. Real-time messaging and
-notifications had been non-functional in production until this fix.
+- Five public aggregators, all professions. Text is repaired (mojibake) and NFC-normalised; job type and
+  level are never invented (`unspecified` / null); `salary_period` is explicit. `GET /jobs` returns
+  `X-Total-Count` and a stable order.
 
-**What still exists in the codebase, not yet removed (the "known, not-yet-resolved
-consolidation question"):**
-- `apps/api/app/domains/auth/service.py` still contains a complete, working
-  self-issued JWT system (`AuthService.verify_token`, HS256, signed with
-  `JWT_SECRET_KEY`) — this is the *default* value of `AUTH_PROVIDER` in code
-  (`"custom_jwt"`), even though the live frontend no longer exercises it.
-- `apps/api/app/domains/auth/router.py` still exposes the full set of
-  legacy endpoints built on that system: `/auth/register`, `/auth/login`
-  (or `/auth/token`), `/auth/refresh`, `/auth/forgot-password`,
-  `/auth/reset-password`, `/auth/change-password`, `/auth/logout-all`.
-- A **separate**, custom-built Google/Microsoft OAuth flow also still exists
-  (`apps/api/app/domains/auth/oauth.py`, endpoints under `/auth/oauth/{provider}`)
-  — distinct from, and not used by, the Supabase-based OAuth the frontend
-  actually calls today.
-- Keycloak references (`KEYCLOAK_*` settings, `/auth/login-url`, `/auth/logout-url`)
-  also remain in config and code as leftovers from an earlier identity-provider
-  design; Keycloak itself is not deployed or used anywhere in production.
+### Operations
 
-None of this legacy code is reachable by the current frontend, but it is live
-code, reachable by anyone who calls those endpoints directly, and it has not been
-removed. Whether and when to delete it entirely is an open decision (see
-"Open decisions" in `00-overview.md`) — this handbook does not resolve that
-decision, only documents that it exists and precisely what code is affected.
+- Health: `/health/live`, `/health/ready` (DB + Redis), `/health/dependencies` (+ storage + AI chain),
+  `/health/version` (git SHA). Public health errors are generic in production.
+- Metrics: Prometheus exporter off unless enabled by env; request counter labelled by route template.
+- Logs: structlog JSON with request ids; Cloudflare Workers Logs on; Sentry on both sides when DSNs are set.
+- Rate limits: per route per client, Redis-backed with in-memory fallback.
 
-Role is always decided by this backend's own `users` table, never read off any
-identity provider's token — a deliberate design choice that holds across both the
-legacy and current auth paths.
+## Data model notes
 
-## AI / LLM layer
-
-All AI calls go through [LiteLLM](https://github.com/BerriAI/litellm) —
-application code never imports a provider SDK (OpenAI/Anthropic/Gemini/Groq)
-directly. Call chain: `app/agents/*` → `app/services/ai/service.py` (`AIService`)
-→ `app/agents/llm_client.py` (`LLMClient.complete()` /
-`complete_structured_json()`) → `litellm.acompletion`.
-
-- `LLMClient` resolves a primary model from `AI_PROVIDER`/`AI_MODEL`
-  (`"provider/model"` format; code default is `ollama`/`qwen2.5`) and falls back,
-  in order, through `AI_FALLBACK_PROVIDERS` if the primary call fails.
-- Two concrete agents exist: `ResumeParserAgent.parse_resume_text()` (turns an
-  uploaded resume into a structured engineer profile) and
-  `JobEnricherAgent.enrich_job()` (enriches raw scraped job postings). Both
-  prompt for structured JSON, parsed via `complete_structured_json` with a
-  regex fallback for markdown-fenced JSON output.
-- The documented dev/production default provider is Groq (`llama-3.1-8b-instant`),
-  falling back to locally-hosted Ollama models — see `.env.example` in the public
-  repo for the exact configured chain.
-- Resume text extraction (PDF/DOCX → plain text) happens ahead of the AI step via
-  `pypdf` and `python-docx`, in `apps/api/app/domains/engineers/resume_extraction.py`.
-
-## Real-time features (WebSockets)
-
-Two WebSocket endpoints exist:
-- `/api/v1/network/messages/ws/{conversation_id}` — real-time messaging between
-  users in a conversation.
-- `/api/v1/notifications/ws/{user_id}` — real-time delivery of in-app
-  notifications, backed by an in-process `ConnectionManager`
-  (`app/core/ws_manager.py`) keyed per user.
-
-Both endpoints authenticate the same way HTTP endpoints do (provider-aware,
-respecting `AUTH_PROVIDER`) — as described above, this is what was broken for
-every real user until today's fix. There is no separate Redis pub/sub fan-out for
-WebSocket messages; connections are held in-process, which is consistent with
-running a single backend instance (see `03-deployment-and-infrastructure.md`).
-
-## Payments / escrow architecture
-
-`apps/api/app/domains/payments/` implements a provider-neutral escrow model
-(`app/services/payments/service.py` defines `PaymentProvider`, `EscrowProvider`,
-and `PayoutProvider` protocols) with two concrete implementations:
-
-- **`SandboxPaymentProvider`** — a deterministic in-memory fake that never
-  contacts a real payment network. This is the default, and the only provider
-  ever configured on the dev environment.
-- **`StripePaymentProvider`** — a real Stripe integration using manual-capture
-  `PaymentIntent`s as the escrow primitive: `authorize()` creates a PaymentIntent
-  with `capture_method="manual"` and returns its `client_secret` for the frontend
-  to confirm client-side via Stripe.js (the backend never touches raw card
-  data); once confirmed, the intent sits in `requires_capture`, which this app
-  treats as "funds held" (`ESCROWED`); `release()` captures it; `refund()`
-  cancels or refunds it depending on whether it was already captured. Only
-  activated when `PAYMENT_PROVIDER=stripe` and a real `STRIPE_SECRET_KEY` are
-  configured — production only.
-
-**Webhook handling and idempotency:** `POST /api/v1/payments/webhooks/stripe`
-verifies every event's signature against `STRIPE_WEBHOOK_SECRET` before touching
-the database, and is the *only* path that marks an escrow as actually funded
-(since that requires the customer to have confirmed the PaymentIntent
-client-side). A dedicated `stripe_webhook_events` table
-(`app/domains/payments/models.py`) records one row per processed Stripe
-`event_id` as its primary key — a retried or replayed webhook delivery hits a
-primary-key conflict and is treated as an already-handled no-op rather than
-being applied twice. Direct escrow creation (`POST /api/v1/payments/escrow`)
-also accepts a client-supplied idempotency key to make repeated create-escrow
-calls with the same key safe to retry.
-
-Stripe Connect payouts (paying an individual engineer directly) are explicitly
-**not implemented** — `StripePaymentProvider.payout()` raises `NotImplementedError`
-with a comment explaining that per-recipient Stripe Connect onboarding would be
-required first and hasn't been built.
-
-## Celery: queues and scheduled tasks (background jobs)
-
-`app/workers/celery_app.py` defines 4 named queues (`default`, `jobs`, `ai`,
-`matching`) and a `beat_schedule` with 3 cron jobs (job-source sync every 6h,
-trending-skills refresh every 12h, stale-match recompute daily). **This is not
-currently what runs in production** — Render hosts exactly 2 services (prod +
-dev API), no dedicated Celery worker/beat process, so nothing on this schedule
-has ever actually run there. The deliberate decision (made because a third
-always-on Render service either costs real money or eats into the shared
-750-instance-hour/month free-tier pool): job-source sync instead runs via a
-GitHub Actions scheduled workflow (`scheduled-job-sync.yml`), and per-request
-AI work (resume parsing) runs inline/synchronously in the same request rather
-than being dispatched to a queue. The other two scheduled tasks
-(`refresh_trending_skills`, `compute_stale_matches`) are honestly still no-op
-stubs today — not just undispatched, the actual business logic doesn't exist
-yet either — revisit this when a scheduled task needs sub-hour granularity,
-heavier compute than GitHub Actions can reasonably do, or budget allows a paid
-worker instance.
-
-## Job aggregators
-
-`app/domains/jobs/aggregators/base.py` defines an abstract `BaseAggregator`
-with `fetch_jobs()`. Five concrete adapters (`remoteok.py`, `arbeitnow.py`,
-`remotive.py`, `usajobs.py`, `themuse.py`) each pull from one external job board
-API and normalize results. `JobService.sync_all_job_sources()` fans out across
-all five.
-
-## Frontend structure
-
-`apps/web/src/app/` is the Next.js App Router, with plain nested folders mapping
-to personas: `engineer/*`, `company/*`, `admin/dashboard`, plus shared `auth/*`,
-`jobs/*`, `projects/*`, `network/*`, `messages/*`. `src/lib/supabase.ts` holds the
-Supabase client and the helpers described above (`fetchBackendUser`,
-`applyPendingRegistration`); `src/lib/api.ts` is the shared axios instance for
-talking to the FastAPI backend. Styling is a hand-rolled Tailwind v4 design
-system in `globals.css`, not a component library like shadcn/ui (some older docs
-describe shadcn/ui as the intended approach — that is not what was actually
-built).
-
-A real frontend test framework (Vitest + Testing Library) now exists — this is
-new; earlier documentation correctly noted there was none.
+Postgres is the source of truth. Migrations `001`–`036`; the go-live ones: `033` sessions_revoked_at,
+`034` ai_usage_logs.user_id, `035` job data quality (salary_period, reset invented defaults), `036`
+Supabase-only auth (keycloak_id → auth_subject, drop password_hash/token_version/password_reset_tokens).
+All foreign keys to `users.id` cascade (account deletion relies on it). Redis is disposable.

@@ -13,9 +13,8 @@ talks to a backend service (built with a Python framework called FastAPI). User
 data lives in a managed database (Postgres, hosted by a company called Supabase,
 which also handles login/sign-up). AI features (resume parsing, job enrichment)
 call out to third-party AI models through an abstraction layer, so the specific
-AI provider can be swapped without rewriting code. Payments, when real money is
-involved, go through Stripe, the same payment processor used by most modern
-online businesses. Everything is hosted on free or near-free tiers of
+AI provider can be swapped without rewriting code. The platform does not move money between
+users today; Stripe is planned only for the platform's own paid plans. Everything is hosted on free or near-free tiers of
 established cloud providers (Cloudflare, Render, Supabase) rather than
 custom-managed servers.
 
@@ -34,7 +33,6 @@ custom-managed servers.
 | Auth/JWT libraries | python-jose, PyJWT | 3.5.0, 2.13.0 |
 | Password hashing (legacy path only) | passlib[bcrypt] | 1.7.4 |
 | HTTP client | httpx | ≥0.28.0 |
-| Background tasks | Celery (+ Redis transport) | 5.4.0 |
 | Task monitoring | Flower | 2.0.1 |
 | Object storage client | boto3 | 1.35.75 |
 | AI abstraction | LiteLLM | 1.84.0 |
@@ -92,9 +90,8 @@ Dev/test-only: pytest 9.0.3, pytest-asyncio, pytest-cov, ruff 0.8.3 (lint), mypy
 
 ## Payments
 
-- **Stripe** — real, live-mode integration in production only (manual-capture
-  PaymentIntents as an escrow primitive); a deterministic no-op sandbox provider
-  everywhere else (always in the dev environment).
+- **Stripe** — SDK and escrow adapter remain in the code but every fund/capture endpoint is gated off
+  (`MARKETPLACE_PAYMENTS_ENABLED=false`). Planned use: Stripe Checkout for platform plans only.
 
 ## Auth
 

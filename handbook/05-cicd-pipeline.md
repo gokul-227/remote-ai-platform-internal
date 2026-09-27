@@ -44,17 +44,15 @@ relying on people remembering the convention.
 
 ## What happens on merge to `dev` vs `prod`
 
-- Merging to **`dev`**: `ci.yml` runs again on the merge commit; Render's git
-  integration auto-deploys the dev backend service; `deploy-frontend-dev.yml`
-  deploys the dev Cloudflare Worker once CI succeeds on that push.
-- Merging to **`prod`**: same shape — Render auto-deploys the prod backend
-  service on the push; `deploy-frontend.yml` deploys the prod Cloudflare Worker
-  once CI succeeds on that exact push event.
+`ci.yml` runs backend (ruff, mypy, pytest), frontend (lint, tsc, vitest, build), migration validation
+(fresh Postgres), and the **E2E journeys** (isolated compose stack + mock Supabase Auth; no secrets, no
+real accounts). When CI passes on a push to `dev`/`prod`, `deploy-frontend(-dev).yml`:
 
-Both frontend deploy workflows trigger on `workflow_run` (CI completing) rather
-than directly on `push`, specifically so a broken merge to a protected branch
-never gets deployed just because it merged — the deploy only fires if CI
-actually passed on that commit.
+1. `current` job — skips the run if its commit is no longer the branch tip (stale runs never redeploy
+   old code); runs are serialized per environment (`concurrency: deploy-<env>`).
+2. Builds the Cloudflare artifact with `NEXT_PUBLIC_BUILD_SHA/ENV/TIME/DEPLOYMENT_ID`, deploys it, and
+   waits until `/api/version` reports the SHA.
+3. Calls the Render deploy hook with `?ref=<SHA>` and waits until `/health/version` reports it.
 
 ## Real incidents from today, worth learning from
 

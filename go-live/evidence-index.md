@@ -441,3 +441,20 @@ checkout + subscription webhooks with signature check and idempotent replay; ent
 refunds/cancellation/failed-renewal flows; VAT/Kleinunternehmer decision with a tax adviser; payment-provider named in
 the privacy notice; legal review of payout model before any marketplace money movement; **rotate the Stripe live key
 that was pasted into chat on 2026-09-27 before any of this.**
+
+---
+
+## Phase 14 — administration and customer support (2026-09-27)
+
+| Commit | Change | Evidence |
+|---|---|---|
+| `ae92a2a` | Scheduled sync uses `JOB_SYNC_TOKEN` via `POST /jobs/sync/scheduled` (only that action; 404 when unset; constant-time compare); workflow falls back to the admin login until the secret exists | 3 tests |
+| `7dd0d0f` | Deletion (self or admin) refused (409) while a person has signed contracts or payment records — every FK cascades, so it erased the other party's records; admin delete no longer logs the deleted email; notice updated | 2 of 3 new tests failed on old code |
+
+Verified: every admin mutation is audit-logged (6/6). Runbook: `support-runbook.md`. Owner: generate `JOB_SYNC_TOKEN`
+(`openssl rand -hex 32`), set it on Render **and** as a GitHub secret, then delete `PROD_ADMIN_EMAIL/PASSWORD` and demote
+the ci-service account; decide the keep-and-anonymise retention policy for contracts/payments.
+
+## Phases 15–17 (2026-09-27)
+
+Documents only: `launch-gates.md` (gate matrix + verdict), `operations-cadence.md`, `aws-migration-plan.md`.

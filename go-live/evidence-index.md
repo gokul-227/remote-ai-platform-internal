@@ -366,3 +366,22 @@ Existing coverage retained: PostgreSQL concurrency suite (5 tests), 36 E2E tests
 
 **OPS-01 remains open for production** until the owner runs the first real backup and a timed restore of it (G07).
 Not done: provider outage drills against real staging (dev API down), mutation testing.
+
+---
+
+## Phase 09 — CI/CD and deployment safety (2026-09-27)
+
+**Status: implemented on `ci/go-live-phase-09` (stacked); takes effect when pushed.**
+
+| Commit | Change | Evidence |
+|---|---|---|
+| `bb67d23` (Phase 01) | Bounded probes + job timeouts; CodeQL on prod; actions pinned | REL-01 root cause |
+| `f887114` (Phase 04) | Advisory-locked startup migrations; CI runs two migrators at once | concurrency rehearsal |
+| `720e398` | Secret scan moved into CI (was a separate workflow on `[main, dev]` — prod never scanned on push, deploys never gated); `.gitleaks.toml` reviewed exceptions; post-deploy smoke: `/health/ready` 200 + non-empty job list; robots.txt Allow (prod) / Disallow (dev) | full-history scan clean; planted AWS key caught; smoke snippets run against live prod (863 jobs, Allow) and local non-prod (Disallow; prod check fails as intended) |
+
+Compatibility: all API changes today are additive (new endpoints, stricter validation, new optional fields); web and API
+deploy in either order. Migrations 037–040 are additive; 038 refuses (never deletes) on duplicate applications — owner
+dry-run query in Phase 04.
+
+Owner-gated (deferred by owner to after the push): restore `enforce_admins`; make "Secret scan (gitleaks)" and
+"Analyze" required checks on prod/dev; repair dev (paused Supabase) so dev deploys verify.

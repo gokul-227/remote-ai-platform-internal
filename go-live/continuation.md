@@ -1,33 +1,16 @@
 # Continuation: go-live hardening
 
-Last updated 2026-09-27. Read `findings-register.md` first; owner-only items are in `owner-checklist.md`.
+Last updated 2026-09-28. Read `evidence-index.md` (per phase) and `findings-register.md` (status tracker) first.
 
 ## Where things stand
+- App repo: `prod` = `dev` = `2ad2dcb` (app code = `7dd0d0f`, 48 commits over `0786783`). CI, CodeQL, production
+  deploy green; web and API report the SHA; dev API healthy after the Supabase restore.
+- Local checks at release: API 434 passed (85.7 % coverage), web 51 unit, 35 E2E, cf:build, gitleaks clean.
+- Migrations 037–040 applied in production.
+- Secrets: Infisical (US) project `237deba5-…`; `prod:/render-api` syncs to Render (Secret Sync).
+- Owner decision 2026-09-27: **not launching yet; stay 100 % free**; product quality is the next focus.
 
-- App repo branch `fix/go-live-p0-containment`: 31 commits on top of `prod` (`6d16b77`).
-- Local checks: backend 352 passed, ruff + mypy clean; frontend tsc, eslint (0 errors), 29 vitest,
-  `next build` and `cf:build` pass; hermetic E2E (29 Playwright tests incl. WCAG AA scans) pass.
-- Migrations `033`–`036` are additive or data-only except `036`, which drops password columns and the
-  password_reset_tokens table (no real users exist; owner confirmed).
-- Render prod + dev: `GROQ_API_KEY` and `AI_PROVIDER=auto` set. Infisical holds the same keys.
-
-## Live (2026-09-27 01:00 UTC)
-
-`prod` and `dev` at `0786783`. CI green (backend, frontend, E2E, migrations); deploy run 36283984440.
-Verified live: web `/api/version` and API `/health/version` both report `0786783`; `/health/dependencies`
-HEALTHY (DB, Redis, storage, AI chain = groq); `GET /jobs` 200 with `X-Total-Count: 859` and
-`salary_period`; `/auth/me` 401 without a token; `/payments/escrow` 503 (payments off).
-Open: gitleaks on `dev` flags the dummy `e2e-publishable-key` in `tests/e2e/docker-compose.e2e.yml`
-(false positive; owner to decide how to allow-list it).
-
-## Going live checklist (done)
-
-1. Push the branch to `prod`, then fast-forward `dev`.
-2. Watch CI (lint, types, unit, E2E) and the deploy workflows; the deploy only runs for the tested tip.
-3. Verify `/api/version` (frontend) and `/health/version` (backend) report the pushed SHA.
-4. Check `/health/dependencies`: AI chain HEALTHY via Groq; DB and Redis healthy; migrations at `036`.
-5. Smoke: anonymous job feed with pagination, sign-in by email code, profile visibility, resume upload.
-
-## Later
-
-See `owner-checklist.md` (branch protection, key rotation, Impressum, Stripe plans, freelance payments).
+## Next
+1. Product-quality pass (owner to list what feels unfinished).
+2. DATA-03 Supabase storage/RLS review.
+3. Owner items in `owner-checklist.md`.

@@ -458,3 +458,24 @@ the ci-service account; decide the keep-and-anonymise retention policy for contr
 ## Phases 15–17 (2026-09-27)
 
 Documents only: `launch-gates.md` (gate matrix + verdict), `operations-cadence.md`, `aws-migration-plan.md`.
+
+
+---
+
+## Release and post-release (2026-09-27 → 28)
+
+- Pushed `7dd0d0f` to `prod` and `dev` (owner's instruction: direct push). CI (prod, dev), CodeQL, production deploy
+  green; live: API and web report `7dd0d0f`; `/health/ready` 200; `/health/dependencies` 401 anonymous; `/jobs/<id>`
+  200; unknown path 404; sitemap/robots OK; migrations 037–040 applied (the new API only starts after them).
+- Dev deploy failed after 20 min (bounded, previously 4 h 50 min) because the dev Supabase project was paused; owner
+  restored it, dev API redeployed → healthy (`7dd0d0f`, environment staging).
+- Secrets: Infisical (US) made the single source. `prod:/render-api` folder + Secret Sync to Render (initial import,
+  destination values kept; 38 keys). `SUPABASE_SERVICE_ROLE_KEY` now references `SUPABASE_SECRET_KEY` (admin API 200;
+  the old root value returned 401). `JOB_SYNC_TOKEN` generated in Infisical, set in Render (sync) and GitHub (owner);
+  sync endpoint 404 → 403; scheduled sync ran via token (97 jobs). `PROD_ADMIN_*` and unused
+  `SUPABASE_SERVICE_ROLE_KEY` removed from GitHub secrets.
+- Support mailbox: Cloudflare Email Routing confirmed forwarding.
+- `2ad2dcb`: public docs match the release; `keep-dev-awake.yml`.
+- Security posture 2026-09-28: 0 open code-scanning alerts, 0 Dependabot alerts.
+- Blocked for Claude by Claude Code's safety classifier (by design; owner does these): production deploys, writing
+  secrets into GitHub/Render, logging in with pasted credentials.

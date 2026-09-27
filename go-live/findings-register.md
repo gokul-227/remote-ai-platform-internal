@@ -76,37 +76,39 @@ below record what was wrong before.
 
 ## Audit 2026-09-27 (`Remote-AI-Platfrom-Go-Live.md`) — status tracker
 
-IDs follow the audit. Evidence for each phase lives in `evidence-index.md`. Owner = `gokul-227` unless noted.
+IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **2026-09-28**, production at `2ad2dcb`
+(app code identical to `7dd0d0f`, deployed and verified live 2026-09-27). Owner = `gokul-227`.
 
-| ID | Pri | Status | Evidence / next step | Phase |
-|---|---|---|---|---|
-| SEC-01 | P0 | Open — blocked by owner | No repo secret updated after 2026-09-06; rotation evidence needed per identifier | 01 |
-| SEC-02 | P0 | Open — confirmed live | `enforce_admins` false on prod/dev (gh api 2026-09-27) | 01/09 |
-| SEC-03 | P1 | Open | Rate limiter review | 01/11 |
-| SEC-04 | P1 | Open | WS token in query string | 04/06 |
-| SEC-05 | P1 | Open | CSP inline scripts, placeholder build env | 01/03 |
-| LEG-01 | P0 | Open — owner facts needed | `OPERATOR` identity null | 07 |
-| DATA-01 | P0 | Open | Self-delete leaves Supabase identity | 04/07 |
-| DATA-02 | P0 | Open | Export scope unproven | 04/07 |
-| DATA-03 | P0 | Open — blocked by access | Supabase ACL/RLS | 01/04 |
-| OPS-01 | P0 | Open | No restore demonstrated | 08/10 |
-| REL-01 | P1 | Root cause found | Dev API unreachable (hypothesis: paused dev Supabase) + unbounded curl made the wait take 4 h 50 min | 00/09 |
-| OBS-01 | P1 | Open | AI/storage health = configured, not functional | 10 |
-| OBS-02 | P1 | **New**, open | Hard-coded default `GIT_SHA`; Sentry release tag stale | 01/10 |
-| PERF-01 | P1 | Open | DB ~1.65 s, Redis ~0.68 s (12:19 UTC sample) | 11 |
-| API-01 | P1 | Open | Email relinking | 04 |
-| AI-01 | P1 | Open | Non-atomic quota | 06/11 |
-| UX-01 | P1 | Open | 332 lint warnings (`any`) | 03/05 |
-| UX-02 | P1 | Not reproduced | Chromium click + keyboard at 1280/375 all navigate; retest Safari/iOS | 05 |
-| UX-03 | P1 | Open | | 05/06 |
-| SEO-01 | P1 | Confirmed live | No sitemap; unknown paths 200 | 12 |
-| SEO-02 | P1 | **New**, open | Dev site indexable | 01/12 |
-| OPS-02 | P1 | Open — owner | Contact mailbox receipt | 14 |
-| OPS-03 | P1 | Confirmed live | Security scans not required checks | 09 |
-| OPS-04 | P1 | Open | Startup migrations | 04/09 |
-| OPS-05 | P1 | **New**, open | CodeQL never runs on pushes to `prod` (`branches: [main, dev]`) | 01/09 |
-| COST-01 | P1 | Open | | 11/15 |
-| COST-02 | P1 | **New**, hypothesis | Two free Render services vs 750 h pool | 11 |
-| PAY-01/02 | P0-if-enabled / P2 | Gated off (verified live 503) | | 13 |
-| TRUST-01, PROD-01 | P1 | Open | | 07/14, 04/06 |
-| GROW-01, ENT-01 | P2 | Deferred | | 12/16, 17 |
+| ID | Pri | Status | Where |
+|---|---|---|---|
+| SEC-01 | P0 | **Open — owner.** Keys pasted in chat (again 2026-09-27, incl. Stripe live). Owner rotates later; Infisical now the single source, Render fed by Secret Sync | owner-checklist |
+| SEC-02 | P0 | **Open — owner decision.** `enforce_admins` still off; restore + add Secret scan/Analyze as required checks | owner-checklist |
+| SEC-03 | P1 | Production verified | `cf4880f` |
+| SEC-04 | P1 | Production verified (WS off, no access log) | `16254cb` |
+| SEC-05 | P1 | Production verified (build refuses bad env) | `b69f033` |
+| LEG-01 | P0 | **Deferred by owner** — Impressum shows "Coming soon" | `OPERATOR` in legal_content.ts |
+| DATA-01 | P0 | Production verified; Supabase erasure key live via Infisical sync (admin API 200) | `202e8da` |
+| DATA-02 | P0 | Production deployed | `cd71d90` |
+| DATA-03 | P0 | **Open** — Supabase storage/RLS policy review not yet done | next session |
+| OPS-01 | P0 | Tooling rehearsed; **no production backup yet by owner decision** (no real users) | `e87bb0e`, backup-and-restore.md |
+| REL-01 | P1 | **Closed** — probes bounded; dev Supabase restored, dev API redeployed and healthy (2026-09-27); keep-awake workflow | `bb67d23`, `2ad2dcb` |
+| OBS-01 | P1 | Production deployed | Phase 10 |
+| OBS-02 | P1 | Production verified | `f066282` |
+| PERF-01 | P1 | Production deployed (pool, statement cache, list cache); region move deferred (free only) | `d4923d8` |
+| API-01 | P0 | Production deployed | `36ff24e` |
+| AI-01 | P1 | Production deployed | `ae65253` |
+| UX-01 | P1 | Partly: formatted, typed where touched; 332 `any` warnings remain | ADR-004 |
+| UX-02 | P1 | Not reproduced (Chromium); Safari/iOS check pending | — |
+| UX-03 | P1 | Production deployed | `4f5f165`, `f00d92f` |
+| SEO-01 | P1 | Production verified (job pages, 404, sitemap) | `86c8420` |
+| SEO-02 | P1 | Production verified (dev Disallow) | `b69f033` |
+| OPS-02 | P1 | **Verified**: Cloudflare Email Routing forwards contact@ (2026-09-27; Gmail hid a same-account test) | — |
+| OPS-03 | P1 | Secret scan gates deploys; required-check setting still owner (SEC-02) | `720e398` |
+| OPS-04 | P1 | Production deployed (037–040 applied) | `f887114` |
+| OPS-05 | P1 | **Closed** — CodeQL on prod; 0 open alerts | `bb67d23` |
+| COST-01/02 | P1 | Owner chose free-only until launch; two free Render services share 750 h | — |
+| PAY-01 | P0-if-enabled | Gated off (verified) | — |
+| PAY-02 | P2 | Production deployed | `0d923e3` |
+| TRUST-01 | P1 | Blocking, moderation notices/appeals deployed | `ab132ff`, `8329834` |
+| PROD-01 | P1 | Documented (one user = one org, no members) | launch-contract.md |
+| GROW-01, ENT-01 | P2 | Deferred | — |

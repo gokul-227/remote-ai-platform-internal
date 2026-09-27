@@ -481,3 +481,25 @@ Documents only: `launch-gates.md` (gate matrix + verdict), `operations-cadence.m
   secrets into GitHub/Render, logging in with pasted credentials.
 
 - `a365ecc`: dev smoke test accepts an empty dev job list. First fully green run of all pipelines, including the dev deploy (2026-09-28).
+
+## Plan 2026-09-28 — Phase 00 re-baseline and P0/P1 fixes (branch `fix/go-live-p0-p1`, PR #50)
+
+Phase 00 (2026-09-27 22:47 UTC): app `prod` = `dev` = `a365ecc`; internal `22d3356`. Live: API `/health/version`
+`a365ecc` production; `/health/ready` 200 (DB 733 ms, one sample); `/auth/me` and `/health/dependencies` 401 anonymous;
+prod and dev web `/api/version` `a365ecc` (the earlier 403 was bot filtering of non-browser user agents, not a missing
+endpoint). Runs for `a365ecc`: CI, CodeQL (prod, dev), both frontend deploys success. Branch protection unchanged
+(see SEC-02). Bundles contain only `sb_publishable_` keys (the `sb_secret_` string is supabase-js's key-format check).
+
+Local checks at `d29c328` (macOS, Python 3.11 venv, Node 22, Docker 29.6):
+- `pytest`: 459 passed, 5 skipped, 86 % coverage; `ruff check app`, `mypy app` clean.
+- PostgreSQL 16 (disposable): `tests/test_postgres_concurrency.py` 5/5; 041 and 042 upgrade → downgrade → upgrade.
+- Web: lint 0 errors (332 `any` warnings, unchanged), `tsc` clean, vitest 54/54, `cf:build` OK.
+- Playwright on the isolated `rap-e2e` stack (mock Supabase, migration head 042): 35/35 (Chromium).
+- DATA-03 simulation: PG16 with `anon`/`authenticated` and Supabase-style default privileges; before 042 `anon`
+  `SELECT count(*) FROM users` = 1, after: permission denied; `authenticated` DELETE denied; owner reads; 50/50 tables RLS;
+  a new table no longer inherits anon privileges.
+- Backup drill (PG16 source/target, two MinIO): target = source via another address → exit 2; non-empty buckets → 4;
+  dry run prints identity; no confirmation → 5; confirmed restore: archive + 6 file checksums, 50 tables' counts,
+  3 objects with content type/metadata/cache-control, 1 dangling reference reported; re-run into restored DB → 4;
+  tampered archive → 6. Under 300 concurrent inserts: dump counted 67 users, restore 67, live 340.
+- Not done by Claude (safety classifier): anonymous probe of the live Supabase Data API/Storage with the public key.

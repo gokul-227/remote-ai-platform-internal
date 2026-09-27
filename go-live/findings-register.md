@@ -89,7 +89,7 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 | LEG-01 | P0 | **Deferred by owner** — Impressum shows "Coming soon" | `OPERATOR` in legal_content.ts |
 | DATA-01 | P0 | Production verified; Supabase erasure key live via Infisical sync (admin API 200) | `202e8da` |
 | DATA-02 | P0 | Production deployed | `cd71d90` |
-| DATA-03 | P0 | **Open** — Supabase storage/RLS policy review not yet done | next session |
+| DATA-03 | P0 | **Implemented, CI pending (PR #50).** No migration ever enabled RLS/revoked `anon`/`authenticated`; reproduced on PG16 with Supabase-style grants (anon read `users`). Migration 042 + PG guard test. **Still owner:** anonymous live probe of dev/prod Data API + Storage (blocked for Claude), bucket MIME/size limits, confirm assets bucket content | `d29c328`, evidence 2026-09-28 |
 | OPS-01 | P0 | Tooling rehearsed; **no production backup yet by owner decision** (no real users) | `e87bb0e`, backup-and-restore.md |
 | REL-01 | P1 | **Closed** — probes bounded; dev Supabase restored, dev API redeployed and healthy (2026-09-27); keep-awake workflow | `bb67d23`, `2ad2dcb` |
 | OBS-01 | P1 | Production deployed | Phase 10 |
@@ -112,3 +112,20 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 | TRUST-01 | P1 | Blocking, moderation notices/appeals deployed | `ab132ff`, `8329834` |
 | PROD-01 | P1 | Documented (one user = one org, no members) | launch-contract.md |
 | GROW-01, ENT-01 | P2 | Deferred | — |
+
+### Plan 2026-09-28 (`Remote-AI-Platform-GO-Live.md`) — new findings
+
+| ID | Pri | Status | Evidence / where |
+|---|---|---|---|
+| DATA-04 | P0 | **Implemented, CI pending (PR #50).** Reproduced in source + test: refreshed old session re-created a deleted account after failed Supabase erasure; admin delete wrote no tombstone at all. All tokens for a tombstoned subject refused; durable pending erasure retried (sync + admin endpoint). Real-provider staging check still owner (AUTH-01) | `988a230`, migration 041 |
+| AI-02 | P1 | **Implemented, CI pending.** Admission was `used >= cap`; now `used + reservation > cap` refuses. Overshoot bounded by (actual − estimate) per in-flight call; documented as token allowance, not a financial cap | `1aa0ef2` |
+| UX-04 | P1 | **Implemented, CI pending.** Native button per job row, `aria-current`, visible focus, live region; unit tests (Tab/Enter/Space). Manual screen-reader check (VoiceOver/NVDA) still open | `6feee2e`, `321dd10` |
+| OPS-06 | P1 | **Implemented + drilled locally.** Identity-based source refusal, empty DB/bucket preflight, dry run + CONFIRM_TARGET, no `--clean`, single transaction, outer checksum | `6926ef2` |
+| OPS-07 | P1 | **Implemented + drilled locally.** Counts from dump snapshot (proven under concurrent writes: 67 = 67 while live went to 340); key path containment tests; metadata kept; dangling-reference report | `6926ef2` |
+| CACHE-01 | P1 | **Measured + tested.** Live job pages `private, no-store`, OpenNext has no incremental cache, API `cf-cache-status: DYNAMIC`, one worker → moderation immediate. Guard test on `WEB_CONCURRENCY=1`. Sitemap may list a hidden job until its next render (≤ 1 h if cached) | `3c65a8c` |
+| REL-01 | P1 | **Closed (re-verified 2026-09-28).** `a365ecc` all pipelines green incl. dev deploy; prod API + prod/dev web report `a365ecc`. Dev API cold (no reply in 60 s) during check | live |
+| OPS-01 | P0 | **Open — owner.** Tooling now safe; still no scheduled independent encrypted backup | owner-checklist |
+| AUTH-01 | P1 | **Open — owner.** Real OTP/OAuth/refresh/global sign-out on dev with designated accounts | — |
+| OBS-03 | P1 | **Open.** Alert receipt not demonstrated; per-source freshness not measured | — |
+| PRIV-01 | P1 | **Open — owner decision.** Keep-and-anonymise policy for signed contracts/payments | owner-checklist |
+| SEC-02 | P0 | **Open — owner.** Re-verified 2026-09-28: prod/dev `enforce_admins=false`, 0 reviews, 4 checks; `Secret scan (gitleaks)`, `Analyze (python)`, `Analyze (javascript-typescript)` not required | — |

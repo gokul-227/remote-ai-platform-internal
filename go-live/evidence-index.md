@@ -307,3 +307,24 @@ Method: an audit sweep of **240 screen views** (visitor 11 routes, professional 
 Validation at `0b6106c`: web tsc clean, lint 0 errors (332 warnings, unchanged), Vitest **49**, formatting clean; E2E **32 passed** (29 + 2 responsive + 1 keyboard menu; containers 14:03 UTC); API 404 passed.
 
 Not done (needs a person/device): manual VoiceOver/NVDA pass; Safari/iOS retest of UX-02; 200% zoom was approximated by the 375/768 px widths, not tested as browser zoom. Remaining `button`-as-link navigation outside entity names is a known follow-up.
+
+---
+
+## Phase 06 — core journeys and AI reliability (2026-09-27)
+
+**Status: implemented and tested locally on `feat/go-live-phase-06` (stacked). Migrations 039, 040 rehearsed on PostgreSQL.**
+
+| Commit | Finding | Change | Evidence |
+|---|---|---|---|
+| `ae65253` | AI-01 | Reserve-then-settle metering: RESERVED row with `AI_RESERVATION_TOKENS` estimate, checked + committed in its own transaction under an advisory lock; settled in another independent transaction; platform cap always applies (also with no signed-in user) | 3 new tests failed on old code (rollback erased usage; no-actor skipped cap; in-flight not counted). PostgreSQL: with the check-to-insert window widened, **5 of 5** concurrent calls slipped through a 1-call allowance without the lock, exactly 1 with it |
+| `5b580af` | uploads | Read ≤ limit+1 bytes; DOCX must contain `word/document.xml`, ≤ 1,000 entries, ≤ 30 MB unpacked (a 60 MB zip bomb compressed below 5 MB passed before); PDF ≤ 20 pages parsed | 4 tests |
+| `515a9a1` | ingestion | Migration 039 `last_seen_at`/`expired_at`; imported jobs unseen among their source's recent listings for 30 days expire (freshness policy; "may no longer be open" copy); only after a successful fetch; posted jobs never; lists/search exclude, apply refuses, old links show a notice | 2 tests; all 900 live jobs < 14 days old → first run expires none. Hypothesis "external_id collides across sources" **disproved** (ids are source-prefixed) |
+| `ab132ff` | TRUST (block) | Migration 040 `user_blocks`; `/blocks` API (only the blocker lifts; nobody sees who blocked them); blocks refuse requests/conversations/messages both ways and remove connections; Block/Unblock on a person's page; export includes people you blocked only | 3 API tests; E2E `safety.spec.ts` (UI block → API 403 → unblock → 201). (First E2E draft was flaky: it read the profile before its save finished — fixed by polling) |
+| `1718c02` | AI output | `clean_ai_profile_fields`: headline ≤ 255, bio ≤ 5,000, ≤ 50 skills ≤ 60 chars, typed, de-duplicated, own skills first; input schemas bounded (headline over its column was a PostgreSQL 500) | 3 tests |
+| `61c1f2e` | visitor journey | Going to sign in remembers the page; email-code and OAuth sign-in return there once (validated plain route only) | 2 unit tests + E2E |
+
+Verified, no change: all 9 server-side outbound HTTP calls use configured URLs (no SSRF surface); no email notifications are sent (`EMAIL_PROVIDER=none`, no call site passes `email_html`) — **gate: unsubscribe + preferences before enabling email notifications**; prompts are truncated to 4,000 chars; AI parse fills empty fields only and keeps the full parse as a draft.
+
+Validation at `61c1f2e`: API **419 passed** + 5 PostgreSQL-only (passed against PG); web Vitest 51; E2E **34 passed** (stack 14:42 UTC).
+
+Blocked: real OTP/OAuth and real Groq completions in staging (dev API down, REL-01); message send idempotency keys (UI prevents double submit only) — follow-up.

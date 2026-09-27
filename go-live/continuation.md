@@ -3,7 +3,7 @@
 Last updated 2026-09-28. Read `evidence-index.md` (per phase) and `findings-register.md` (status tracker) first.
 
 ## Where things stand
-- App repo: `prod` = `dev` = `2ad2dcb` (app code = `7dd0d0f`, 48 commits over `0786783`). CI, CodeQL, production
+- App repo: `prod` = `dev` = `a365ecc` (app code = `7dd0d0f`, 49 commits over `0786783`). CI, CodeQL, production
   deploy green; web and API report the SHA; dev API healthy after the Supabase restore.
 - Local checks at release: API 434 passed (85.7 % coverage), web 51 unit, 35 E2E, cf:build, gitleaks clean.
 - Migrations 037–040 applied in production.

@@ -479,3 +479,5 @@ Documents only: `launch-gates.md` (gate matrix + verdict), `operations-cadence.m
 - Security posture 2026-09-28: 0 open code-scanning alerts, 0 Dependabot alerts.
 - Blocked for Claude by Claude Code's safety classifier (by design; owner does these): production deploys, writing
   secrets into GitHub/Render, logging in with pasted credentials.
+
+- `a365ecc`: dev smoke test accepts an empty dev job list. First fully green run of all pipelines, including the dev deploy (2026-09-28).

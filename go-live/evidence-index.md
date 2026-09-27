@@ -211,3 +211,20 @@ is reachable (REL-01 owner action).
   victim's app account. Fix: never overwrite a set `auth_subject`; refuse with a support path.
 - **DATA-01 confirmed.** `DELETE /auth/me` deletes app rows + resume object but not the Supabase user; the still-valid
   access token (≤1 h) or a refresh re-enters `get_or_create_user` and silently provisions a new blank account.
+
+---
+
+## Phase 02 — product scope and launch contract (2026-09-27)
+
+**Status: implemented and tested locally on `feat/go-live-phase-02` (stacked on phase 01). Launch contract drafted in
+`launch-contract.md`; three visibility rows + support targets await owner confirmation.**
+
+| Commit | Change | Evidence |
+|---|---|---|
+| `e9fdc44` | `POST /applications/jobs/{id}`: 409 for imported listings ("apply on the source site") and closed postings, 404 for removed; UI says so when an imported listing has no link | 2 of 3 new tests failed before (201 for imported and closed), all pass after; lifecycle test fixture now has an owning organisation (assertions unchanged) |
+| `11ee9e5` | Removed "Escrow-backed payments — funds are held…" (security page) and "Top job picks for you" (unpersonalised feed → "Latest remote jobs", matches `posted_at DESC`); `claims.test.ts` bans escrow/picks/NK+/SOC 2/guaranteed-outcome copy | claims test: 2 failed on old copy, 5 pass after |
+
+Validation: API 365 passed; web tsc clean, lint 0 errors (332 warnings, unchanged), Vitest 38 passed, `next build` ok.
+
+Checked, no change: payments gated in API (503) and UI (`payments_enabled` from `/payments/wallet`); Help's
+match-score weights equal `matching/service.py`; role switching is audited and cannot self-assign ADMIN.

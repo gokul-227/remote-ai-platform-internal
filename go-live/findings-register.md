@@ -73,3 +73,40 @@ below record what was wrong before.
 - `handbook/03` says both branches block direct pushes even for admins. That is stale: see H.
 - The recovered legal drafts said "password stored as a salted hash" and "hosted in the EU (eu-west-1)".
   The first is wrong for OTP/OAuth sign-in. The second is unverified. Neither was carried over.
+
+## Audit 2026-09-27 (`Remote-AI-Platfrom-Go-Live.md`) — status tracker
+
+IDs follow the audit. Evidence for each phase lives in `evidence-index.md`. Owner = `gokul-227` unless noted.
+
+| ID | Pri | Status | Evidence / next step | Phase |
+|---|---|---|---|---|
+| SEC-01 | P0 | Open — blocked by owner | No repo secret updated after 2026-09-06; rotation evidence needed per identifier | 01 |
+| SEC-02 | P0 | Open — confirmed live | `enforce_admins` false on prod/dev (gh api 2026-09-27) | 01/09 |
+| SEC-03 | P1 | Open | Rate limiter review | 01/11 |
+| SEC-04 | P1 | Open | WS token in query string | 04/06 |
+| SEC-05 | P1 | Open | CSP inline scripts, placeholder build env | 01/03 |
+| LEG-01 | P0 | Open — owner facts needed | `OPERATOR` identity null | 07 |
+| DATA-01 | P0 | Open | Self-delete leaves Supabase identity | 04/07 |
+| DATA-02 | P0 | Open | Export scope unproven | 04/07 |
+| DATA-03 | P0 | Open — blocked by access | Supabase ACL/RLS | 01/04 |
+| OPS-01 | P0 | Open | No restore demonstrated | 08/10 |
+| REL-01 | P1 | Root cause found | Dev API unreachable (hypothesis: paused dev Supabase) + unbounded curl made the wait take 4 h 50 min | 00/09 |
+| OBS-01 | P1 | Open | AI/storage health = configured, not functional | 10 |
+| OBS-02 | P1 | **New**, open | Hard-coded default `GIT_SHA`; Sentry release tag stale | 01/10 |
+| PERF-01 | P1 | Open | DB ~1.65 s, Redis ~0.68 s (12:19 UTC sample) | 11 |
+| API-01 | P1 | Open | Email relinking | 04 |
+| AI-01 | P1 | Open | Non-atomic quota | 06/11 |
+| UX-01 | P1 | Open | 332 lint warnings (`any`) | 03/05 |
+| UX-02 | P1 | Not reproduced | Chromium click + keyboard at 1280/375 all navigate; retest Safari/iOS | 05 |
+| UX-03 | P1 | Open | | 05/06 |
+| SEO-01 | P1 | Confirmed live | No sitemap; unknown paths 200 | 12 |
+| SEO-02 | P1 | **New**, open | Dev site indexable | 01/12 |
+| OPS-02 | P1 | Open — owner | Contact mailbox receipt | 14 |
+| OPS-03 | P1 | Confirmed live | Security scans not required checks | 09 |
+| OPS-04 | P1 | Open | Startup migrations | 04/09 |
+| OPS-05 | P1 | **New**, open | CodeQL never runs on pushes to `prod` (`branches: [main, dev]`) | 01/09 |
+| COST-01 | P1 | Open | | 11/15 |
+| COST-02 | P1 | **New**, hypothesis | Two free Render services vs 750 h pool | 11 |
+| PAY-01/02 | P0-if-enabled / P2 | Gated off (verified live 503) | | 13 |
+| TRUST-01, PROD-01 | P1 | Open | | 07/14, 04/06 |
+| GROW-01, ENT-01 | P2 | Deferred | | 12/16, 17 |

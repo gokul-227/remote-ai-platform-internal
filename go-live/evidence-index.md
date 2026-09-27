@@ -403,3 +403,21 @@ Verified, no change: structured logs carry path not query; uvicorn access log of
 
 Owner: Sentry alert rules + uptime alert e-mail routing; accept proposed RPO 24 h / RTO 4 h. Not done: a real
 production incident/recovery drill with measured times (needs production access) — G07/G10 stay open until then.
+
+---
+
+## Phase 12 — SEO, growth and privacy-preserving analytics (2026-09-27)
+
+**Status: implemented on `feat/go-live-phase-12` (stacked).**
+
+| Commit | Change | Evidence |
+|---|---|---|
+| (Phase 01 `b69f033`) | SEO-02: non-production `Disallow` + `X-Robots-Tag` | builds |
+| `86c8420` | SEO-01: server-rendered `/jobs/<id>` (title, description, canonical, Open Graph, structured description, noindex when past freshness window, "View and apply" into the app); unknown paths → real 404 page (legacy paths still redirect); `sitemap.xml` (production, hourly: home + recent public jobs); robots `Sitemap:`; `NEXT_PUBLIC_SITE_URL` required for production builds; `API_INTERNAL_URL` for container SSR | production build against live API: job page 200 + canonical + OG; random id / non-id / unknown path 404; sitemap 101 URLs; E2E **35 passed** (new public-page test) |
+
+Verified, no change: `/analytics/events` allowlists event names, caps/coerces properties, ignores client `user_id`, has
+a stricter rate tier (tests exist); the web app doesn't send client events today.
+
+Not done: JobPosting structured data (needs a decision on source licensing/attribution per board); company and profile
+public pages (next candidates, profiles only when public); sitemap ISR on Workers needs an OpenNext incremental cache —
+without one it refreshes on each deploy; hash links (`#jobdetail/<id>`) keep working.

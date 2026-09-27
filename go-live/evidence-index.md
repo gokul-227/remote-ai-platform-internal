@@ -385,3 +385,21 @@ dry-run query in Phase 04.
 
 Owner-gated (deferred by owner to after the push): restore `enforce_admins`; make "Secret scan (gitleaks)" and
 "Analyze" required checks on prod/dev; repair dev (paused Supabase) so dev deploys verify.
+
+---
+
+## Phase 10 — observability, incident response and recovery (2026-09-27)
+
+**Status: implemented on `feat/go-live-phase-10` (stacked). Runbooks: `incident-runbook.md`, `backup-and-restore.md`.**
+
+| Commit | Change | Evidence |
+|---|---|---|
+| (Phase 01 `f066282`) | OBS-02: Sentry release = deployed SHA | test |
+| `79267ff` | `/health/dependencies` admin-only (was anonymous, rate-limit exempt, probing DB/Redis/S3 and naming providers); `/health/ready` rate-limited normally; AI health adds `last_success_at`/`last_failure_at` (OBS-01); client `X-Request-ID` must match `[A-Za-z0-9._-]{1,64}` | 3 tests (401/403/200, AI outcomes, request-id injection fails on old code) |
+| `0d78a41` | Production canary every 30 min: ready 200, non-empty job list, newest job < 48 h, site serves → failure e-mails the owner | logic run against live prod (newest job 1.3 h old) |
+| `566e395` | asyncpg connect timeout 10 s, statement timeout 30 s (client-side) | PostgreSQL: `pg_sleep(10)` cut off at the configured 2 s |
+
+Verified, no change: structured logs carry path not query; uvicorn access log off (Phase 04); Sentry `send_default_pii=False`, locals off.
+
+Owner: Sentry alert rules + uptime alert e-mail routing; accept proposed RPO 24 h / RTO 4 h. Not done: a real
+production incident/recovery drill with measured times (needs production access) — G07/G10 stay open until then.

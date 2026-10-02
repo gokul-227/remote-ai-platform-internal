@@ -543,3 +543,25 @@ history, so no rotation is triggered by this exposure; copies made while public 
 | SEC-03A | CodeQL and dependency-review actions pinned to SHAs | — | `576d1b7` |
 | DEP | Next 16.3.6, PyJWT 2.15.1, pypdf 6.19.0, transitive npm fixes; `npm audit` 0 | full suites | `8a6cf68` |
 | OPS-01 | Inert `production-backup.yml` in this (private) repo: manual trigger, needs Infisical-synced secrets, 14-day encrypted artifact | not run (no secrets) | internal |
+
+### Release 492f9e7 (2026-10-02, owner instruction: direct push) and provider changes
+
+- dev: CI 37033696455 green, deploy green; live API + web `492f9e7`; `/health/ready` 200; anon `/auth/me` 401;
+  salary bound without units 422; anon Data API on `email_outbox` 401 (table exists, locked).
+- prod: pushed `541364e..492f9e7`. CI 37034947096 attempt 1 hung 20 min in "Install Playwright browsers" (runner
+  download stall; same step < 1 min on dev) → cancelled, re-run green; deploy green. Live: API + both web hosts
+  `492f9e7`, `/health/ready` 200, `/auth/me` + `/health/dependencies` 401, jobs total 401, `sitemap-entries` 3639,
+  live `sitemap.xml` 3640 `<loc>` (was ≤ 101), `/health/ingestion` lists all 5 configured sources, erasures overdue 0.
+  Migration 043 applied (API starts only after alembic). Follow-up `f89e9d8`: install step bounded + retried.
+- **DATA-01 verified live (prod):** anon publishable key → Data API `users`, `engineer_profiles`, `job_posts`,
+  `messages`: 401 / `42501`; anon storage list of resumes → `[]`; anon upload to assets → 400.
+- **Bucket limits applied via Storage API (`infisical run`, values never printed), prod + dev:** resumes private,
+  5 MB, PDF + DOCX only (applied after the probe change `c62dd3d` reached prod); assets 2 MB, png/jpeg/webp/gif
+  (prod assets bucket: public, 0 objects, unused by the app). Dev proof: text/plain upload 400, PDF 200.
+- **MAIL-01:** prod `render-api` already has `EMAIL_PROVIDER=resend`, `FRONTEND_URL=https://remoteaiplatform.com`.
+  Sender is still Resend's sandbox (`onboarding@resend.dev`) → only the Resend account owner receives mail; others
+  dead-letter (HTTP 403). Owner will verify `remoteaiplatform.com` in Resend; then DNS + `EMAIL_FROM_ADDRESS`.
+  The stored Resend key is sending-only (domains API 401) — good.
+- **OPS-01:** owner: strictly free, no payment method → R2 rejected (needs one); runner stays a private GitHub
+  artifact (inert until secrets).
+- DOC-01: handbook 11/14 reconciled (`5243adc`).

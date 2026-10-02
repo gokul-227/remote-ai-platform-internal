@@ -598,3 +598,9 @@ history, so no rotation is triggered by this exposure; copies made while public 
 - **Sign-in providers (Supabase public settings):** prod email + Google + Microsoft + GitHub; dev email + GitHub only.
   PR #52 shows only enabled providers.
 - Repo setting: `allow_auto_merge=true` (merges still require all 7 checks).
+- **Release d405f92 (first release through PRs under restored protection):** #51 (Vercel leftovers) and #52 (enabled
+  OAuth providers only) merged to dev → dev `c8a2c8d` live; #53 dev→prod merged → prod `d405f92` (tree identical to
+  dev), prod CI + deploy green, API + web report `d405f92`, `/health/ready` 200.
+- **TEST-02 (new, P2):** dev push run 37051936782 E2E: Firefox "signing in returns you to the page you were on" hung
+  90 s waiting for the code field; rerun passed in 1.9 s (PR run on the same SHA also passed). Treated as a runner
+  stall, not a product failure; no retries added. Re-open if it recurs.

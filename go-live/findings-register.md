@@ -150,4 +150,4 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 | DOC-01 | P1 | Open: companion docs still describe some superseded behaviour | Claude (next pass) |
 | DEP-01 | P0/P1 | **Fixed** `8a6cf68`: critical Next + PyJWT, high pypdf; npm audit 0. Remaining: litellm 1.84 → 1.88.6 (medium), one PyJWT medium with no fix | Track |
 | ENT-01, GROW-01 | P2 | Deferred expansion | — |
-
+| API-02 | P1 | **New 2026-10-02, implemented `7937e65`.** `get_db` committed after the response was sent (FastAPI 0.141 runs yield-dependency teardown post-response): read-your-writes race (E2E "Saved" flake on `b88b702`) and false 2xx on failed commit. Commit now on the per-call exit stack before the response; reproduced old order `[response, commit]` → `[commit, response]`; failed commit → 500 | Verify in CI/dev, then prod |

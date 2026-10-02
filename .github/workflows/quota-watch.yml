@@ -1,0 +1,92 @@
+name: Free-tier quota watch (COST-01)
+
+# Daily check of the free-tier limits the product depends on. Policy from the
+# go-live runbook: warn at 50 %, act at 75 % (this run fails -> GitHub emails
+# the owner), restrict new traffic / escalate at 90 %. Limits are the published
+# free-plan values on 2026-10-02; re-check them when a provider changes plans.
+#
+# Not measurable here: Render instance hours (no API). Mitigation: dev runs in
+# its own free workspace so prod keeps the whole 750 h.
+
+on:
+  schedule:
+    - cron: "41 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  quota:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Supabase database, storage and email volume
+        env:
+          DB: ${{ secrets.BACKUP_SOURCE_DATABASE_URL }}
+        run: |
+          q() { docker run --rm postgres:17-alpine psql "$DB" -tAc "$1"; }
+          db=$(q "select pg_database_size(current_database())")
+          files=$(q "select coalesce(sum((metadata->>'size')::bigint),0) from storage.objects")
+          mails=$(q "select count(*) from email_outbox where status='SENT' and sent_at > now() - interval '24 hours'")
+          users=$(q "select count(*) from users")
+          printf "db=%s\nfiles=%s\nmails=%s\nusers=%s\n" "$db" "$files" "$mails" "$users" > usage.txt
+
+      - name: Cloudflare Workers requests (yesterday, account-wide)
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          day=$(date -u -d yesterday +%F)
+          body=$(python3 - "$CF_ACCOUNT" "$day" <<'PY'
+          import json, sys
+          acct, day = sys.argv[1], sys.argv[2]
+          q = ('{ viewer { accounts(filter:{accountTag:"%s"}) { workersInvocationsAdaptive(limit:100, '
+               'filter:{date:"%s"}) { sum { requests errors } quantiles { cpuTimeP50 } } } } }') % (acct, day)
+          print(json.dumps({"query": q}))
+          PY
+          )
+          curl -s https://api.cloudflare.com/client/v4/graphql -H "Authorization: Bearer $CF_TOKEN" \
+            -H "Content-Type: application/json" -d "$body" > cf.json
+          python3 - <<'PY' >> usage.txt
+          import json
+          rows = json.load(open("cf.json"))["data"]["viewer"]["accounts"][0]["workersInvocationsAdaptive"]
+          req = sum(r["sum"]["requests"] for r in rows)
+          err = sum(r["sum"]["errors"] for r in rows)
+          cpu = max((r["quantiles"]["cpuTimeP50"] for r in rows), default=0)
+          print(f"cf_requests={req}\ncf_errors={err}\ncf_cpu_p50_us={cpu}")
+          PY
+
+      - name: Compare with free-tier limits
+        run: |
+          python3 - <<'PY'
+          import sys
+          u = dict(line.strip().split("=", 1) for line in open("usage.txt") if "=" in line)
+          limits = {  # name: (value, limit, unit)
+              "Supabase database": (int(u["db"]), 500 * 1024**2, "bytes"),
+              "Supabase file storage": (int(u["files"]), 1024**3, "bytes"),
+              "Resend emails (24 h, app notices)": (int(u["mails"]), 100, "emails"),
+              "Cloudflare Workers requests (yesterday)": (int(u["cf_requests"]), 100_000, "requests"),
+          }
+          worst = 0
+          summary = ["| Quota | Used | Limit | % |", "|---|---|---|---|"]
+          for name, (used, limit, unit) in limits.items():
+              pct = 100 * used / limit
+              worst = max(worst, pct)
+              summary.append(f"| {name} | {used:,} | {limit:,} {unit} | {pct:.1f} |")
+              if pct >= 90:
+                  print(f"::error::{name} at {pct:.0f}% of the free limit: restrict new traffic / escalate (runbook)")
+              elif pct >= 75:
+                  print(f"::error::{name} at {pct:.0f}% of the free limit: act now")
+              elif pct >= 50:
+                  print(f"::warning::{name} at {pct:.0f}% of the free limit")
+          cpu_ms = int(u["cf_cpu_p50_us"]) / 1000
+          summary.append(f"\nUsers: {int(u['users']):,}. Worker CPU p50 {cpu_ms:.0f} ms (free plan budget 10 ms/request; "
+                         f"errors yesterday {u['cf_errors']}). Render hours are not measurable by API.")
+          if cpu_ms > 10:
+              print(f"::warning::Worker median CPU {cpu_ms:.0f} ms exceeds the free plan's 10 ms per request")
+          with open(__import__("os").environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write("\n".join(summary) + "\n")
+          print("\n".join(summary))
+          sys.exit(1 if worst >= 75 else 0)
+          PY

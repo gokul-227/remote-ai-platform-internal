@@ -126,6 +126,6 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 | REL-01 | P1 | **Closed (re-verified 2026-09-28).** `a365ecc` all pipelines green incl. dev deploy; prod API + prod/dev web report `a365ecc`. Dev API cold (no reply in 60 s) during check | live |
 | OPS-01 | P0 | **Open — owner.** Tooling now safe; still no scheduled independent encrypted backup | owner-checklist |
 | AUTH-01 | P1 | **Open — owner.** Real OTP/OAuth/refresh/global sign-out on dev with designated accounts | — |
-| OBS-03 | P1 | **Open.** Alert receipt not demonstrated; per-source freshness not measured | — |
+| OBS-03 | P1 | **Implemented, CI green (PR #50, `541364e`).** `GET /health/ingestion` (per-source last success, failures since, fetched; count of erasures pending > 24 h); canary fails on a source silent 24 h or a stuck erasure. **Still open:** proof that the failure email reaches the owner (alert receipt drill) | `541364e` |
 | PRIV-01 | P1 | **Open — owner decision.** Keep-and-anonymise policy for signed contracts/payments | owner-checklist |
 | SEC-02 | P0 | **Open — owner.** Re-verified 2026-09-28: prod/dev `enforce_admins=false`, 0 reviews, 4 checks; `Secret scan (gitleaks)`, `Analyze (python)`, `Analyze (javascript-typescript)` not required | — |

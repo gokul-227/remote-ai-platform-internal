@@ -16,6 +16,8 @@ Last updated 2026-09-28 (second session: plan `Remote-AI-Platform-GO-Live.md`). 
 3. Owner items in `owner-checklist.md`.
 
 ## 2026-09-28 session 2 — PR #50 (`fix/go-live-p0-p1` → `dev`), CI green, not merged
+(2026-10-02: + OBS-03 `541364e`; all 12 checks green; merge still blocked for Claude.
+ The production canary's new ingestion step fails until this is deployed to prod.)
 Fixes DATA-04, DATA-03 (migration 042), AI-02, UX-04, OPS-06/07, CACHE-01 test. Migrations 041 and 042 are additive.
 Evidence: `evidence-index.md` (last section); status: `findings-register.md` ("Plan 2026-09-28").
 

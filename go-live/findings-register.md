@@ -151,3 +151,14 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 | DEP-01 | P0/P1 | **Fixed** `8a6cf68`: critical Next + PyJWT, high pypdf; npm audit 0. Remaining: litellm 1.84 → 1.88.6 (medium), one PyJWT medium with no fix | Track |
 | ENT-01, GROW-01 | P2 | Deferred expansion | — |
 | API-02 | P1 | **Production verified `7937e65`.** `get_db` committed after the response was sent (FastAPI 0.141 runs yield-dependency teardown post-response): read-your-writes race (E2E "Saved" flake on `b88b702`) and false 2xx on failed commit. Commit now on the per-call exit stack before the response; reproduced old order `[response, commit]` → `[commit, response]`; failed commit → 500 | Verify in CI/dev, then prod |
+
+### Owner decisions 2026-10-03 and COST-01 measurements
+| ID | Sev | Status | Owner / next action |
+|---|---|---|---|
+| LEGAL-01 | P0 (public launch) | **Owner: keep "Coming soon" for now.** Invite-only beta OK; public launch blocked until operator facts are provided | Owner |
+| PRIV-01A | P1 | **Owner: keep deletion blocked while signed contracts/payments exist** (current behaviour, support handles requests) | — |
+| COST-01 | P1 | **Measured + alerting live** (`quota-watch.yml`, daily, 50/75/90 %): DB 54 MB/500 (10 %), files ~0/1 GB, emails 0/100 per day, Workers 192/100 000 per day | — |
+| COST-02 | P0-risk | **Render hours:** prod kept warm ≈ 744 h in 31-day months of the 750 h shared per workspace → both services can be suspended at month end. **Owner decision: move dev to its own free Render workspace** (owner creates the workspace; Claude recreates the dev service via API) | Owner, then Claude |
+| PERF-02 | P1 | Worker CPU p50 ≈ 400–500 ms at ~200 req/day (cold isolates; Next server per request, no incremental cache); ≈ 15 ms on the busiest day vs 10 ms free budget. Fix: OpenNext KV incremental cache (free tier) + dev load test | Claude |
+| AUTH-03 | P1 | **Implemented PR #54:** provider sign-in first (Resend free = 100 emails/day); OAuth sign-up kept losing the Find work / Hire talent choice (orgs became professionals) — fixed, applies only to an account created < 15 min ago | Verify after prod deploy |
+| SCALE-01 | info | 10 000+ registered users fit the free tiers (DB, Auth 50k MAU); 10 000 *daily active* do not (Render 0.1 CPU + sleep, Worker CPU, 100 emails/day, AI daily caps). Realistic free envelope: a few hundred daily actives after COST-02 + PERF-02 | — |

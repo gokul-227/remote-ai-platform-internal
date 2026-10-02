@@ -137,15 +137,15 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 | SEC-01 | P0 | **Closed (verified live)** — internal repo PRIVATE, 0 forks, no secrets in history | Residual: copies made while public |
 | SEC-02 | P0 | **Open — owner.** Historical chat-exposed keys: confirm revocation in each provider (names in owner-checklist) | Owner |
 | SEC-03 | P0 | **Open → scheduled.** Restore `enforce_admins`, require Secret scan + CodeQL after this release (owner decision) | Claude, after release |
-| DATA-01 | P0 | API side fixed (`80ff1cd`). **Open — owner:** bucket limits in Supabase dashboard (resumes: 5 MB, `application/pdf` + DOCX MIME; assets: image MIME list, 2 MB), anonymous Data API/Storage probe | Owner |
-| OPS-01 | P0 | **Open — owner.** Runner ready (`.github/workflows/production-backup.yml`, inert); needs Infisical → GitHub sync of 5 secrets, first run, restore drill | Owner |
+| DATA-01 | P0 | **Closed (verified live 2026-10-02).** API stores verified type (`80ff1cd`); bucket limits applied prod + dev (resumes 5 MB PDF/DOCX, assets 2 MB images); anon Data API 42501, anon storage list empty, anon upload refused | — |
+| OPS-01 | P0 | **Open — owner.** Free only (R2 rejected: needs payment method). Runner ready (private GitHub artifact, inert); needs Infisical → GitHub sync of 5 secrets to the internal repo, first run, restore drill | Owner |
 | LEGAL-01 | P0 | **Open — owner.** Operator name/address/retention facts for Impressum/privacy | Owner (+ legal review) |
 | PAY-01 | P0-if-enabled | Gated off; unchanged | — |
-| ING-01, OBS-01, PERF-01, UX-01, SEO-01, PRIV-01, SEARCH-01, MATCH-01, AUTH-02, TEST-01 | P1 | **Implemented + tested** (see evidence index, plan 2026-10-02) | Verify after deploy |
+| ING-01, OBS-01, PERF-01, UX-01, SEO-01, PRIV-01, SEARCH-01, MATCH-01, AUTH-02, TEST-01 | P1 | **Production deployed `492f9e7`, verified live** (sitemap 3640 URLs, ingestion per configured source, salary 422, versions) | — |
 | SEC-04A | P1 | Partial: CSV, JWT claims done; proxy IP (last XFF hop) + request-ID validation already present; nonce CSP deferred (staged change) | — |
 | UX-02 | P1 | 331 lint warnings (−1); large modules not split (needs visual-parity baseline) | Deferred, gated by Phase 03 baseline |
 | AUTH-01 | P1 | **Open — owner.** Real OTP/OAuth/refresh/global sign-out on dev with designated accounts | Owner |
-| MAIL-01 | P1 | Verified source: no call site passes `email_html`, so the app sends **no** notification email; do not claim email notifications. Outbox only when a real email event is scoped | Product decision |
+| MAIL-01 | P1 | **Production deployed `492f9e7`**: durable outbox (043) for invitations + application status changes; PG concurrency proven. **Open — owner:** verify `remoteaiplatform.com` in Resend (sandbox sender reaches only the owner), then DNS + `EMAIL_FROM_ADDRESS` | Owner, then Claude |
 | COST-01 | P1 | Open: quota measurements (Render hours, Workers requests, Supabase size/egress) | Owner dashboards |
 | DOC-01 | P1 | Open: companion docs still describe some superseded behaviour | Claude (next pass) |
 | DEP-01 | P0/P1 | **Fixed** `8a6cf68`: critical Next + PyJWT, high pypdf; npm audit 0. Remaining: litellm 1.84 → 1.88.6 (medium), one PyJWT medium with no fix | Track |

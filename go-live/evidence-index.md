@@ -576,3 +576,25 @@ history, so no rotation is triggered by this exposure; copies made while public 
   Not done: a disposable failing PR to prove blocking (costs CI minutes; owner may run it).
 - Inventory: a "Vercel Preview Comments" check still runs on commits — leftover Vercel GitHub app from the old
   architecture; owner to uninstall (GitHub → Settings → Applications).
+
+### 2026-10-02 evening — owner granted access; email sender, backups, Vercel, sign-in
+- **MAIL-01 sender:** Resend domain `remoteaiplatform.com` already verified (owner screenshot). Set
+  `EMAIL_FROM_ADDRESS=notifications@remoteaiplatform.com` in Infisical `prod:/render-api` (synced to Render prod —
+  confirmed by Render API env names) and `dev` root; dev Render service is NOT Infisical-synced, so set there via
+  Render API. Both services redeployed at `7937e65` (Render API, deploys live).
+- **OPS-01 closed:** passphrase generated straight into Infisical `prod:BACKUP_PASSPHRASE` (never printed); 5 secrets
+  loaded to the internal repo from Infisical (`gh secret set` via stdin). Run 37049334394 green: archive 9.5 MB,
+  51 tables, 3 objects, server PG 17.6. Restore drill into fresh postgres:17 + MinIO containers: dry run → identity
+  `…/restore_drill`, empty target; restore: row counts ok (51), objects ok (3, checksums), references ok, 3 s;
+  restored DB at alembic `043_email_outbox`, 6215 job_posts, 3 users. Containers and local archive deleted.
+  Daily schedule enabled (03:23 UTC). Measured: RPO ≤ 24 h; RTO for current size ≈ minutes (download + 3 s restore).
+  Key custody: passphrase in Infisical + write-only GitHub secret — owner should also keep an offline copy.
+- **Vercel exposure (new):** `vercel[bot]` still creates GitHub deployments on every push (latest today);
+  `https://remote-ai-platform.vercel.app` serves a public stale build `fc1fed3` labelled production. No Vercel token in
+  Infisical → owner deletes the Vercel project and uninstalls the Vercel GitHub app. Code references removed (PR #51).
+  GitHub environments `Preview`/`Production` were created by Vercel and are unused by workflows — delete after uninstall.
+- **Stale credentials in Infisical (prod):** `GITHUB_TOKEN` rejected by GitHub; `SUPABASE_MANAGEMENT_ACCESS_TOKEN`
+  rejected by Supabase (401). Add to the owner's rotation list.
+- **Sign-in providers (Supabase public settings):** prod email + Google + Microsoft + GitHub; dev email + GitHub only.
+  PR #52 shows only enabled providers.
+- Repo setting: `allow_auto_merge=true` (merges still require all 7 checks).

@@ -503,3 +503,11 @@ Local checks at `d29c328` (macOS, Python 3.11 venv, Node 22, Docker 29.6):
   3 objects with content type/metadata/cache-control, 1 dangling reference reported; re-run into restored DB → 4;
   tampered archive → 6. Under 300 concurrent inserts: dump counted 67 users, restore 67, live 340.
 - Not done by Claude (safety classifier): anonymous probe of the live Supabase Data API/Storage with the public key.
+
+## Release 541364e (2026-10-02, owner instruction: direct push)
+- dev: CI 37020301825 green; deploy 37020948456 green (frontend + backend version checks). Live: API and web 541364e,
+  /health/ready 200, /health/ingestion 200, /auth/me and /admin/erasures/retry 401 anonymous.
+- prod: pushed a365ecc..541364e (GitHub logged a bypass of the PR rule: enforce_admins off). CI 37021486246 green.
+  Live: API and web 541364e, /health/ready 200, /health/ingestion 200 with per-source data (USAJOBS succeeds but fetches 0),
+  /auth/me and /health/dependencies 401, jobs list 200. Migrations 041-042 applied (API starts only after alembic).
+- Not yet done: anonymous Data API probe with the publishable key; GitHub now reports 36 Dependabot alerts (3 critical).

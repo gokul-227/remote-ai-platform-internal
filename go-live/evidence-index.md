@@ -565,3 +565,14 @@ history, so no rotation is triggered by this exposure; copies made while public 
 - **OPS-01:** owner: strictly free, no payment method → R2 rejected (needs one); runner stays a private GitHub
   artifact (inert until secrets).
 - DOC-01: handbook 11/14 reconciled (`5243adc`).
+
+### Release 7937e65 and SEC-03 (2026-10-02)
+- API-02 fix (`7937e65`): dev CI 37039861920 green incl. the E2E journey that failed on `b88b702`; dev deploy green;
+  prod pushed `492f9e7..7937e65`, CI 37041073287 green, deploy green. Live: API + both web hosts `7937e65`,
+  `/health/ready` 200, `/auth/me` 401, jobs 200. prod = dev = `7937e65`.
+- **SEC-03 restored (owner decision):** prod + dev `enforce_admins=true`; required checks now Backend, Frontend, E2E,
+  Migration validation, Secret scan (gitleaks), Analyze (python), Analyze (javascript-typescript) (all verified to
+  run on pull_request). Snapshots: `protection-{prod,dev}.json` (before), `protection-*-after-2026-10-02.json`.
+  Not done: a disposable failing PR to prove blocking (costs CI minutes; owner may run it).
+- Inventory: a "Vercel Preview Comments" check still runs on commits — leftover Vercel GitHub app from the old
+  architecture; owner to uninstall (GitHub → Settings → Applications).

@@ -136,7 +136,7 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 |---|---|---|---|
 | SEC-01 | P0 | **Closed (verified live)** — internal repo PRIVATE, 0 forks, no secrets in history | Residual: copies made while public |
 | SEC-02 | P0 | **Open — owner.** Historical chat-exposed keys: confirm revocation in each provider (names in owner-checklist) | Owner |
-| SEC-03 | P0 | **Open → scheduled.** Restore `enforce_admins`, require Secret scan + CodeQL after this release (owner decision) | Claude, after release |
+| SEC-03 | P0 | **Closed 2026-10-02 (verified via API).** prod + dev `enforce_admins=true`, 7 required checks incl. gitleaks + CodeQL. Releases now go through PRs | Owner merges PRs (Claude's `gh pr merge` is classifier-blocked) |
 | DATA-01 | P0 | **Closed (verified live 2026-10-02).** API stores verified type (`80ff1cd`); bucket limits applied prod + dev (resumes 5 MB PDF/DOCX, assets 2 MB images); anon Data API 42501, anon storage list empty, anon upload refused | — |
 | OPS-01 | P0 | **Open — owner.** Free only (R2 rejected: needs payment method). Runner ready (private GitHub artifact, inert); needs Infisical → GitHub sync of 5 secrets to the internal repo, first run, restore drill | Owner |
 | LEGAL-01 | P0 | **Open — owner.** Operator name/address/retention facts for Impressum/privacy | Owner (+ legal review) |
@@ -150,4 +150,4 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 | DOC-01 | P1 | Open: companion docs still describe some superseded behaviour | Claude (next pass) |
 | DEP-01 | P0/P1 | **Fixed** `8a6cf68`: critical Next + PyJWT, high pypdf; npm audit 0. Remaining: litellm 1.84 → 1.88.6 (medium), one PyJWT medium with no fix | Track |
 | ENT-01, GROW-01 | P2 | Deferred expansion | — |
-| API-02 | P1 | **New 2026-10-02, implemented `7937e65`.** `get_db` committed after the response was sent (FastAPI 0.141 runs yield-dependency teardown post-response): read-your-writes race (E2E "Saved" flake on `b88b702`) and false 2xx on failed commit. Commit now on the per-call exit stack before the response; reproduced old order `[response, commit]` → `[commit, response]`; failed commit → 500 | Verify in CI/dev, then prod |
+| API-02 | P1 | **Production verified `7937e65`.** `get_db` committed after the response was sent (FastAPI 0.141 runs yield-dependency teardown post-response): read-your-writes race (E2E "Saved" flake on `b88b702`) and false 2xx on failed commit. Commit now on the per-call exit stack before the response; reproduced old order `[response, commit]` → `[commit, response]`; failed commit → 500 | Verify in CI/dev, then prod |

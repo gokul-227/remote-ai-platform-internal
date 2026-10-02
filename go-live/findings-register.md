@@ -129,3 +129,25 @@ IDs follow the audit. Evidence per phase: `evidence-index.md`. Status as of **20
 | OBS-03 | P1 | **Implemented, CI green (PR #50, `541364e`).** `GET /health/ingestion` (per-source last success, failures since, fetched; count of erasures pending > 24 h); canary fails on a source silent 24 h or a stuck erasure. **Still open:** proof that the failure email reaches the owner (alert receipt drill) | `541364e` |
 | PRIV-01 | P1 | **Open — owner decision.** Keep-and-anonymise policy for signed contracts/payments | owner-checklist |
 | SEC-02 | P0 | **Open — owner.** Re-verified 2026-09-28: prod/dev `enforce_admins=false`, 0 reviews, 4 checks; `Secret scan (gitleaks)`, `Analyze (python)`, `Analyze (javascript-typescript)` not required | — |
+
+## Plan 2026-10-02 (`Remote-AI-Platform-ready-for-GO-Live.md`) — plan IDs
+
+| ID | Sev | Status | Owner / next action |
+|---|---|---|---|
+| SEC-01 | P0 | **Closed (verified live)** — internal repo PRIVATE, 0 forks, no secrets in history | Residual: copies made while public |
+| SEC-02 | P0 | **Open — owner.** Historical chat-exposed keys: confirm revocation in each provider (names in owner-checklist) | Owner |
+| SEC-03 | P0 | **Open → scheduled.** Restore `enforce_admins`, require Secret scan + CodeQL after this release (owner decision) | Claude, after release |
+| DATA-01 | P0 | API side fixed (`80ff1cd`). **Open — owner:** bucket limits in Supabase dashboard (resumes: 5 MB, `application/pdf` + DOCX MIME; assets: image MIME list, 2 MB), anonymous Data API/Storage probe | Owner |
+| OPS-01 | P0 | **Open — owner.** Runner ready (`.github/workflows/production-backup.yml`, inert); needs Infisical → GitHub sync of 5 secrets, first run, restore drill | Owner |
+| LEGAL-01 | P0 | **Open — owner.** Operator name/address/retention facts for Impressum/privacy | Owner (+ legal review) |
+| PAY-01 | P0-if-enabled | Gated off; unchanged | — |
+| ING-01, OBS-01, PERF-01, UX-01, SEO-01, PRIV-01, SEARCH-01, MATCH-01, AUTH-02, TEST-01 | P1 | **Implemented + tested** (see evidence index, plan 2026-10-02) | Verify after deploy |
+| SEC-04A | P1 | Partial: CSV, JWT claims done; proxy IP (last XFF hop) + request-ID validation already present; nonce CSP deferred (staged change) | — |
+| UX-02 | P1 | 331 lint warnings (−1); large modules not split (needs visual-parity baseline) | Deferred, gated by Phase 03 baseline |
+| AUTH-01 | P1 | **Open — owner.** Real OTP/OAuth/refresh/global sign-out on dev with designated accounts | Owner |
+| MAIL-01 | P1 | Verified source: no call site passes `email_html`, so the app sends **no** notification email; do not claim email notifications. Outbox only when a real email event is scoped | Product decision |
+| COST-01 | P1 | Open: quota measurements (Render hours, Workers requests, Supabase size/egress) | Owner dashboards |
+| DOC-01 | P1 | Open: companion docs still describe some superseded behaviour | Claude (next pass) |
+| DEP-01 | P0/P1 | **Fixed** `8a6cf68`: critical Next + PyJWT, high pypdf; npm audit 0. Remaining: litellm 1.84 → 1.88.6 (medium), one PyJWT medium with no fix | Track |
+| ENT-01, GROW-01 | P2 | Deferred expansion | — |
+

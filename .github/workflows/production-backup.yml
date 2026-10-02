@@ -1,0 +1,80 @@
+name: Production backup (OPS-01)
+
+# Independent, encrypted backup of the production database (public schema) and
+# object storage, using the reviewed tooling in the app repo (ops/backup).
+# Runs in this PRIVATE repo so the encrypted archive is never public.
+#
+# INERT UNTIL THE OWNER ENABLES IT:
+#   1. Deliver these secrets to this repo via the Infisical GitHub Secret Sync
+#      (never paste values into chat or commits):
+#        BACKUP_SOURCE_DATABASE_URL   libpq form, read-only role preferred
+#        BACKUP_S3_ENDPOINT, BACKUP_S3_ACCESS_KEY, BACKUP_S3_SECRET_KEY
+#        BACKUP_PASSPHRASE            stored ALSO offline, apart from the archives
+#   2. Run once with "Run workflow", then do the restore drill in backup-and-restore.md.
+#   3. Uncomment the schedule.
+#
+# Destination: a workflow artifact kept 14 days. Free private-repo artifact
+# storage is 500 MB; Supabase Free allows 500 MB DB + 1 GB files, so watch the
+# archive size in each run summary and move to another free destination before
+# it approaches the quota. RPO with a daily schedule: <= 24 h.
+
+on:
+  workflow_dispatch: {}
+  # schedule:
+  #   - cron: "23 3 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Secrets present
+        env:
+          A: ${{ secrets.BACKUP_SOURCE_DATABASE_URL }}
+          B: ${{ secrets.BACKUP_S3_ENDPOINT }}
+          C: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$A" ] || [ -z "$B" ] || [ -z "$C" ]; then
+            echo "::error::backup secrets are not configured; see the header of this workflow"
+            exit 1
+          fi
+
+      - name: Check out the backup tooling
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: gokul-227/remote-ai-platform
+          ref: prod
+          sparse-checkout: ops/backup
+
+      - name: Install the object-store client
+        run: python3 -m pip install --quiet boto3
+
+      - name: Back up
+        env:
+          PG_IMAGE: postgres:17-alpine
+          SOURCE_DATABASE_URL: ${{ secrets.BACKUP_SOURCE_DATABASE_URL }}
+          S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+          S3_ACCESS_KEY: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
+          S3_SECRET_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          S3_BUCKETS: remote-ai-platform-resumes,remote-ai-platform-assets
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          OUT_DIR: ${{ runner.temp }}/backups
+          PYTHON: python3
+        run: |
+          ops/backup/backup.sh
+          ls -l "$OUT_DIR" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the encrypted archive
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/backups/
+          retention-days: 14
+          if-no-files-found: error

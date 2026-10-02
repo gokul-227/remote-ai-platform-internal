@@ -511,3 +511,35 @@ Local checks at `d29c328` (macOS, Python 3.11 venv, Node 22, Docker 29.6):
   Live: API and web 541364e, /health/ready 200, /health/ingestion 200 with per-source data (USAJOBS succeeds but fetches 0),
   /auth/me and /health/dependencies 401, jobs list 200. Migrations 041-042 applied (API starts only after alembic).
 - Not yet done: anonymous Data API probe with the publishable key; GitHub now reports 36 Dependabot alerts (3 critical).
+
+## Plan 2026-10-02 — `Remote-AI-Platform-ready-for-GO-Live.md` (branch `feat/go-live-ready`)
+
+IDs in this section are the plan's own (its OBS-01, PERF-01, UX-01 … differ from the 2026-09-27 IDs above).
+Owner decisions 2026-10-02: make the internal repo private now; direct push to dev and prod; restore
+`enforce_admins` and add Secret scan + CodeQL as required checks after the release.
+
+**Phase 00 (verified):** app `prod` = `dev` = `541364e`; internal `main` ahead 3 (`8f7aa83`). gitleaks over full history:
+app 0 findings, internal 0 findings (57 commits). GitHub: internal repo **PUBLIC**, 0 forks; prod protection
+`enforce_admins=false`, 0 reviews, 4 required checks. Local baseline: backend 1 env-only failure (needs MinIO) → with
+MinIO 516 passed / 5 skipped / 87 %; web vitest 54/54, tsc clean, lint 0 errors / 332 warnings.
+
+**SEC-01 (verified live):** `gh repo edit --visibility private` → `PRIVATE` (2026-10-02 ~17:40 local). No credentials in
+history, so no rotation is triggered by this exposure; copies made while public cannot be recalled (residual risk).
+
+| Plan ID | Change | Evidence | Commit |
+|---|---|---|---|
+| ING-01 | Adapters raise `SourceFetchError`/`SourceDisabledError` instead of returning `[]`; sync logs FAILED/DISABLED/SUCCESS, expires only after a non-empty success, rolls back failed source, commits each log; error text redacted | 20 adapter fault tests + 5 sync tests | `f6f63a1` |
+| OBS-01 | `/health/ingestion` lists every configured source, looks past 14 days for last success, reports `last_status`; canary fails on never-succeeded sources, warns on DISABLED / zero-job success | 3 tests | `f6f63a1` |
+| PERF-01 | boto3 calls via `asyncio.to_thread`; connect 10 s / read 30 s / 3 attempts | loop-responsiveness test | `872de65` |
+| SEO-01 | `GET /api/v1/jobs/sitemap-entries` (id/dates only, ≤5000/page); sitemap pages to 50 000 URLs with fallback for older API; public filter excludes soft-deleted | 4 API + 4 web tests | `68fcc1e` |
+| UX-01 | `readRoute` keeps raw text on malformed `%` escapes instead of crashing | 2 tests | `68fcc1e` |
+| PRIV-01 | Email logs: recipient domain + status only; Sentry scrubs email keys/values, exception/log messages, secret query params | 2 tests (one existing assertion tightened) | `631ae67` |
+| SEARCH-01 | Salary bounds require `salary_currency` + `salary_period`, match same units only, reject inverted ranges | 4 tests | `4a86394` |
+| SEC-04A | CSV formula neutralisation (admin + candidates); JWT requires exp/iat/sub/aud/iss (no-exp token was accepted before: reproduced) | 3 + 9 tests | `e3bcf1c`, `2685245` |
+| DATA-01 (API side) | Stored resume Content-Type from verified signature, not client header | 1 test | `80ff1cd` |
+| MATCH-01 | Whole open-to-work pool scored in pages (heap, 20 000 ceiling logged); stale scores refreshed; listings drop hidden/expired/deleted jobs and not-open-to-work profiles; deterministic tie-breaks | 4 tests | `34b6f02` |
+| AUTH-02 | Single-flight refresh shared by concurrent 401s; storage-blocked browsers work signed-out | 2 tests | `e644f98` |
+| TEST-01 | WebKit + Firefox run smoke + navigation specs in CI | CI | `efded34` |
+| SEC-03A | CodeQL and dependency-review actions pinned to SHAs | — | `576d1b7` |
+| DEP | Next 16.3.6, PyJWT 2.15.1, pypdf 6.19.0, transitive npm fixes; `npm audit` 0 | full suites | `8a6cf68` |
+| OPS-01 | Inert `production-backup.yml` in this (private) repo: manual trigger, needs Infisical-synced secrets, 14-day encrypted artifact | not run (no secrets) | internal |

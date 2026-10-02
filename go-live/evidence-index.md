@@ -604,3 +604,26 @@ history, so no rotation is triggered by this exposure; copies made while public 
 - **TEST-02 (new, P2):** dev push run 37051936782 E2E: Firefox "signing in returns you to the page you were on" hung
   90 s waiting for the code field; rerun passed in 1.9 s (PR run on the same SHA also passed). Treated as a runner
   stall, not a product failure; no retries added. Re-open if it recurs.
+
+### 2026-10-03 — repo hygiene, capacity, region move
+- **Owner done:** Vercel project deleted (remote-ai-platform.vercel.app → 404), Vercel GitHub app uninstalled,
+  ci-service admin suspended (verified read-only: `is_active=false`). New Supabase management token in Infisical works.
+- GitHub: Vercel environments `Preview`/`Production` deleted; ~300 vercel[bot] deployment records being deleted;
+  homepage → remoteaiplatform.com, description, topics, auto-delete merged branches (protected dev/prod immune),
+  rebase-merge off, Dependabot security updates on. PRs: #61 licence (proprietary, Gokul) + SECURITY/CODEOWNERS/
+  CONTRIBUTING/templates/dependabot/release automation/deploy environments `production` + `dev`; #62 litellm 1.88.6
+  (supersedes #60); #63 Worker static-assets cache (PERF-02); #64 backup-safety tests now run in CI (16 were always
+  skipped: ops/ outside the test image); #65 Firefox E2E flake root cause (re-navigation to identical /#login);
+  #59 job sync token-only.
+- **Supabase dev auth:** site_url + redirect allow-list now include https://dev.remoteaiplatform.com (OAuth/email
+  links bounced to workers.dev before); dev email rate 2 → 30/h. Both projects send via Resend SMTP → sign-in
+  codes + app notices share Resend's free 100/day.
+- **Capacity (dev, free Render, Oregon):** 1/5/10/20 concurrent public reads → 0 errors; saturates ≈ 17 req/s;
+  p95 1.8–3.7 s. Root cause of latency: API in Oregon, DB in Ireland.
+- **Region move (owner approved):** dev → Frankfurt (`remote-ai-platform-api-dev-eu.onrender.com`, own workspace);
+  prod → new Frankfurt service `srv-db03utk9v7es739r1cdg` behind **https://api.remoteaiplatform.com** (Cloudflare
+  CNAME, DNS-only; Render cert verified). Same env (39 vars) copied via API. Measured: uncached search 2.7–3.1 s →
+  0.15–0.34 s; sitemap-entries 1.3 s → 0.26 s. Website rebuilt against the new API (CSP connect-src verified), SSR
+  job page 200 in 0.41 s, 404 for missing, sitemap 3 630, CORS ok. Old Oregon prod (`srv-d9uea4nlk1mc73elkm10`) and old
+  dev (`srv-dadgbpad0e5s73du4th0`) to delete after PR #57/#66 reach prod and hook secrets are removed.
+- **Owner action:** repoint the Infisical `prod:/render-api` → Render secret sync to the new service.

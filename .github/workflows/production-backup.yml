@@ -4,7 +4,7 @@ name: Production backup (OPS-01)
 # object storage, using the reviewed tooling in the app repo (ops/backup).
 # Runs in this PRIVATE repo so the encrypted archive is never public.
 #
-# INERT UNTIL THE OWNER ENABLES IT:
+# Enabled 2026-10-02 (secrets loaded from Infisical). Original enablement steps:
 #   1. Deliver these secrets to this repo via the Infisical GitHub Secret Sync
 #      (never paste values into chat or commits):
 #        BACKUP_SOURCE_DATABASE_URL   libpq form, read-only role preferred
@@ -21,8 +21,10 @@ name: Production backup (OPS-01)
 
 on:
   workflow_dispatch: {}
-  # schedule:
-  #   - cron: "23 3 * * *"
+  # Daily (RPO <= 24 h). Enabled 2026-10-02 after the first run and a verified
+  # restore drill (51 tables, 3 objects, restore 3 s into an empty PG17 + MinIO).
+  schedule:
+    - cron: "23 3 * * *"
 
 permissions:
   contents: read

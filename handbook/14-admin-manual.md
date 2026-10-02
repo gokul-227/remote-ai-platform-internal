@@ -35,7 +35,7 @@ matching) so you can see which AI feature is driving usage. This is genuinely co
 activity, not a placeholder.
 
 ### System Health
-Pulled from `GET /admin/health/details`, this lists each core service (Auth/Keycloak, Jobs API,
+Pulled from `GET /admin/health/details`, this lists each core service (Supabase Auth, Jobs API,
 Professionals API, PostgreSQL, Redis, and others as configured) with a live status
 (**OPERATIONAL** / an error state) and latency in milliseconds, plus a "last checked" timestamp. If this
 call fails or times out, the dashboard falls back to showing every service as **UNKNOWN** rather than
@@ -54,9 +54,12 @@ review queue, not a mockup.
 
 ### Job Source Sync Status
 A table of every external job source (RemoteOK, Arbeitnow, Remotive, USAJobs, The Muse) showing when it
-last synced, whether that run **SUCCEEDED** or **FAILED**, and how many jobs currently in the system came
-from that source. This reflects the Celery beat schedule that re-runs all sources automatically every 6
-hours — this table is your primary way to notice a source has silently started failing (e.g., an
+last synced, whether that run was **SUCCESS**, **FAILED** (the source could not be read: HTTP error,
+timeout or malformed feed; its jobs are *not* expired) or **DISABLED** (not configured, e.g. USAJobs without
+an API key), and how many jobs currently in the system came from that source. Since 2026-10-02 a failed
+fetch is never recorded as an empty success. The GitHub Actions workflow `scheduled-job-sync.yml` re-runs
+all sources every 6 hours, and the production canary fails when a configured source has never succeeded or
+has not succeeded for 24 hours — this table is your primary way to notice a source has silently started failing (e.g., an
 external API changed its response format or started rate-limiting). The **Recent Sync Runs** panel in the
 sidebar shows the last several runs with how many jobs each one inserted.
 

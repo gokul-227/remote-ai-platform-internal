@@ -24,7 +24,7 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 | Withdraw an application | Pull back an application you've submitted, as long as a company hasn't already accepted or rejected it. | Working |
 | Direct invites from companies | A company can invite you to apply directly to a role they think you fit — it shows up in your applications list as an invitation. | Working |
 | Personal recommendations dashboard | A dedicated page surfacing your top AI-ranked job matches. | Working |
-| Direct messaging | One-to-one conversations with companies (or other members) once you're connected — real-time via WebSocket. | Working |
+| Direct messaging | One-to-one conversations with companies (or other members) once you're connected. New messages arrive by periodic refresh (polling); the WebSocket path exists but is switched off in production. | Working |
 | Professional network / connections | Send, accept, and manage connection requests with other engineers and companies, similar to a professional network. | Working |
 | Social feed | A LinkedIn-style feed: post updates/project news/achievements/articles, like, comment, and share; filter by "All," "Connections," or "Media & Links." | Working |
 | Groups | Join or create interest-based groups, post inside them, and manage membership roles. | Working |
@@ -75,7 +75,7 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 
 | Feature | What it does | Status |
 |---|---|---|
-| Notifications | Real-time in-app notifications (via WebSocket) for messages, application updates, contract events, and payments, for every persona. | Working |
+| Notifications | In-app notifications (refreshed by polling) for messages, application updates, contract events, and payments, for every persona. Email (Resend, durable outbox) only for an organisation's invitation to apply and application status changes; needs a verified sending domain to reach anyone but the Resend account owner. | Working (email: pending sender domain) |
 | Messaging | One-to-one real-time conversations, available to engineers and companies alike once connected. | Working |
 | Professional network | Connections, a public engineer directory, and a public company directory. | Working |
 | Global search | One search surface across jobs, people, and companies. | Working |

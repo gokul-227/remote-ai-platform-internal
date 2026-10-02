@@ -2,21 +2,25 @@ name: Production backup (OPS-01)
 
 # Independent, encrypted backup of the production database (public schema) and
 # object storage, using the reviewed tooling in the app repo (ops/backup).
-# Runs in this PRIVATE repo so the encrypted archive is never public.
+# Destination: Cloudflare R2 (owner decision 2026-10-02), outside Supabase,
+# Render and GitHub. The archive is encrypted before upload (BACKUP_PASSPHRASE);
+# R2 never sees plaintext.
 #
 # INERT UNTIL THE OWNER ENABLES IT:
-#   1. Deliver these secrets to this repo via the Infisical GitHub Secret Sync
+#   1. Cloudflare dashboard: enable R2, create bucket `rap-backups` (location EU),
+#      add a lifecycle rule deleting objects after 30 days, and create an R2 API
+#      token with Object Read & Write on that bucket only.
+#   2. Deliver these secrets to this repo via the Infisical GitHub Secret Sync
 #      (never paste values into chat or commits):
-#        BACKUP_SOURCE_DATABASE_URL   libpq form, read-only role preferred
-#        BACKUP_S3_ENDPOINT, BACKUP_S3_ACCESS_KEY, BACKUP_S3_SECRET_KEY
+#        BACKUP_SOURCE_DATABASE_URL   libpq form (postgresql://...), session pooler
+#        BACKUP_S3_ENDPOINT, BACKUP_S3_ACCESS_KEY, BACKUP_S3_SECRET_KEY   Supabase Storage S3
 #        BACKUP_PASSPHRASE            stored ALSO offline, apart from the archives
-#   2. Run once with "Run workflow", then do the restore drill in backup-and-restore.md.
-#   3. Uncomment the schedule.
+#        R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+#   3. Run once with "Run workflow", then do the restore drill in backup-and-restore.md.
+#   4. Uncomment the schedule (daily: RPO <= 24 h).
 #
-# Destination: a workflow artifact kept 14 days. Free private-repo artifact
-# storage is 500 MB; Supabase Free allows 500 MB DB + 1 GB files, so watch the
-# archive size in each run summary and move to another free destination before
-# it approaches the quota. RPO with a daily schedule: <= 24 h.
+# R2 free tier: 10 GB storage, 1M writes / 10M reads per month; a 30-day daily
+# rotation of a sub-GB archive stays inside it. Check the size in each run summary.
 
 on:
   workflow_dispatch: {}
@@ -40,8 +44,9 @@ jobs:
           A: ${{ secrets.BACKUP_SOURCE_DATABASE_URL }}
           B: ${{ secrets.BACKUP_S3_ENDPOINT }}
           C: ${{ secrets.BACKUP_PASSPHRASE }}
+          D: ${{ secrets.R2_ACCESS_KEY_ID }}
         run: |
-          if [ -z "$A" ] || [ -z "$B" ] || [ -z "$C" ]; then
+          if [ -z "$A" ] || [ -z "$B" ] || [ -z "$C" ] || [ -z "$D" ]; then
             echo "::error::backup secrets are not configured; see the header of this workflow"
             exit 1
           fi
@@ -71,10 +76,18 @@ jobs:
           ops/backup/backup.sh
           ls -l "$OUT_DIR" | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: Keep the encrypted archive
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: backup-${{ github.run_id }}
-          path: ${{ runner.temp }}/backups/
-          retention-days: 14
-          if-no-files-found: error
+      - name: Upload the encrypted archive to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          OUT_DIR: ${{ runner.temp }}/backups
+        run: |
+          for f in "$OUT_DIR"/*; do
+            aws s3 cp "$f" "s3://rap-backups/$(basename "$f")" --endpoint-url "$R2_ENDPOINT" --only-show-errors
+          done
+          # Prove the upload: the remote checksum file must match the local one.
+          sum=$(ls "$OUT_DIR"/*.sha256)
+          aws s3 cp "s3://rap-backups/$(basename "$sum")" - --endpoint-url "$R2_ENDPOINT" | cmp - "$sum"
+          echo "Uploaded $(ls "$OUT_DIR" | tr '\n' ' ')" >> "$GITHUB_STEP_SUMMARY"

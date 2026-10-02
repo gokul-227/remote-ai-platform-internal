@@ -13,7 +13,8 @@ name: Production backup (OPS-01)
 #   2. Run once with "Run workflow", then do the restore drill in backup-and-restore.md.
 #   3. Uncomment the schedule.
 #
-# Destination: a workflow artifact kept 14 days. Free private-repo artifact
+# Destination (owner decision 2026-10-02: strictly free, no payment method on
+# file, so not R2): a workflow artifact in this private repo, kept 14 days. Free private-repo artifact
 # storage is 500 MB; Supabase Free allows 500 MB DB + 1 GB files, so watch the
 # archive size in each run summary and move to another free destination before
 # it approaches the quota. RPO with a daily schedule: <= 24 h.

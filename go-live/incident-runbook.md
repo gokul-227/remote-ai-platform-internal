@@ -39,3 +39,20 @@ above the previous release; schema incompatibility; quota exhaustion; integrity 
 ## After
 
 Write a short blameless note here: timeline, impact, cause, fix, the test that now covers it.
+
+## Incident 2026-10-03 — production website 500s (Sev2, 21 min)
+
+- **Impact:** every server-rendered page on https://remoteaiplatform.com (and dev) returned HTTP 500 from
+  03:01 to 03:22 UTC. API unaffected (stayed on 83e3551). No data loss.
+- **Cause:** release #88 (`7b924dc`) included Dependabot's npm minor/patch group, which raised
+  `@sentry/nextjs` 10.73.0 → 10.76.0. On Cloudflare Workers 10.76 fails to load the Next.js instrumentation
+  hook ("An error occurred while loading the instrumentation hook" → "Failed to prepare server").
+  Reproduced locally under workerd: 10.76.0 → 500, 10.73.0 → 200 (Next 16.3.8, React 19.3 unchanged).
+- **Detection:** by Claude verifying the release (deploy job "Verify deploy" failed). The production canary did
+  **not** run (GitHub delays scheduled workflows; actual cadence ≈ 3 h) — no alert reached the owner.
+- **Mitigation:** `wrangler rollback 593f701b…` (previous Worker version) → 200 at 03:22. Render never deployed
+  7b924dc, so web and API stayed consistent at 83e3551.
+- **Fix:** PR #90 pins @sentry/nextjs 10.73.0, Dependabot ignores newer versions until verified, and CI now builds
+  the real Worker bundle and smoke-tests it under `wrangler dev` (E2E runs on Node.js and could not catch it).
+- **Follow-ups:** (1) external free uptime monitor with email alerts (owner account, e.g. UptimeRobot free, 5-min);
+  (2) a failed dev deploy should block the dev→prod release (dev also broke and nobody was stopped).

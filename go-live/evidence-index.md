@@ -679,3 +679,17 @@ history, so no rotation is triggered by this exposure; copies made while public 
 - First checks: all 5 prod UP; dev DOWN (still on the broken Sentry build until #90 deploys) → owner should have
   received a Down email = alert-delivery proof; an Up email follows when dev recovers.
 - **Alert receipt proven (owner confirmed 2026-10-03):** UptimeRobot email for the dev outage arrived.
+
+### 2026-10-03 morning — release v2026.10.03.3 (648afc8), pipeline hardening
+- Prod web + API `648afc8`; `/`, `/auth/callback`, `/sitemap.xml`, API `/health/ready` 200. Release workflow created
+  `v2026.10.03.3` automatically (first fully automatic release).
+- Contains: Sentry pin 10.73.0 + Worker runtime smoke in CI (#90, incident fix), release gate (#92), pip/npm
+  minor-patch groups with code fixes (#86/#87), GitHub Actions group (#76), cross-browser retry (#89), syncs.
+- **Release gate proven:** `check-source-branch` waited for dev web + API on the release SHA and checked 4 endpoints
+  (all 200) before allowing the merge; then made a **required check on prod** (8 required checks).
+- **Pipeline flaws found and fixed (PR #94, shipping):** (1) API-created Frankfurt services never receive GitHub push
+  events → Render auto-deploy never fired (every recent API deploy was manual); deploy jobs now call the Render API for
+  the exact tested commit (RENDER_API_KEY GitHub secret from Infisical — owner decision; vars RENDER_SERVICE_ID_PROD/DEV;
+  Render auto-deploy turned off). (2) Deploy concurrency was one pending run per environment, so bursts of CI
+  completions (PR + sync runs) cancelled the real dev deploy; groups are now per commit (is-tip check unchanged).
+- UptimeRobot alert receipt confirmed by the owner (dev outage Down email; Up on recovery).

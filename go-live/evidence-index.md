@@ -668,3 +668,13 @@ history, so no rotation is triggered by this exposure; copies made while public 
   lockfile had two React copies and jsdom outside vitest's reach → regenerated; Next 16.3.8 required by
   @opennextjs/cloudflare 1.20.8. Dependabot then superseded #72/#78 with #86/#87; fixes reapplied (backend 527, web 72,
   builds OK). Known dev-only exception: braces ≤ 3.0.3 (GHSA-vfj7-8cjw-p6xm, no patched release) via eslint-config-next.
+
+### 2026-10-03 — external uptime monitoring (OBS / alert receipt)
+- UptimeRobot FREE account (owner), key in Infisical prod `UPTIMEROBOT_API_KEY` (pasted in chat → rotate at end).
+  v2 API refuses monitor creation on new free accounts ("not allowed … current plan"); v3 API works.
+- Monitors (5-min interval, 30 s timeout, email alert contact 8878002 on down + up):
+  Prod website `/` (HTTP); Prod website server render `/api/version` (keyword `git_sha` must exist — catches the
+  Worker-500 failure mode of the incident); Prod API `/health/ready` (`HEALTHY`); Prod public jobs API
+  `/api/v1/jobs?limit=1` (`"id"`); Prod sitemap (`<loc>`); Dev website `/api/version` (`git_sha`).
+- First checks: all 5 prod UP; dev DOWN (still on the broken Sentry build until #90 deploys) → owner should have
+  received a Down email = alert-delivery proof; an Up email follows when dev recovers.

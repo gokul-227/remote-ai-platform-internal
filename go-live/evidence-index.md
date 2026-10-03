@@ -678,3 +678,4 @@ history, so no rotation is triggered by this exposure; copies made while public 
   `/api/v1/jobs?limit=1` (`"id"`); Prod sitemap (`<loc>`); Dev website `/api/version` (`git_sha`).
 - First checks: all 5 prod UP; dev DOWN (still on the broken Sentry build until #90 deploys) → owner should have
   received a Down email = alert-delivery proof; an Up email follows when dev recovers.
+- **Alert receipt proven (owner confirmed 2026-10-03):** UptimeRobot email for the dev outage arrived.

@@ -627,3 +627,28 @@ history, so no rotation is triggered by this exposure; copies made while public 
   job page 200 in 0.41 s, 404 for missing, sitemap 3 630, CORS ok. Old Oregon prod (`srv-d9uea4nlk1mc73elkm10`) and old
   dev (`srv-dadgbpad0e5s73du4th0`) to delete after PR #57/#66 reach prod and hook secrets are removed.
 - **Owner action:** repoint the Infisical `prod:/render-api` → Render secret sync to the new service.
+
+### 2026-10-03 early — release 684309f, cut-over complete, CodeRabbit
+- Infisical sync incident: owner's first EU sync targeted the *dev* service with "import", overwriting
+  `prod:/render-api` with dev values (APP_ENV=staging, dev DB). Production services were untouched (live API stayed
+  production). Owner deleted the sync; Claude restored all 39 values from the live prod service (hash-verified 39/39);
+  owner recreated the sync → `remote-ai-platform-api-eu` with overwrite; re-verified 39/39, dev separate.
+  Note: folder references (${prod.X}) are now literals — rotate keys in this folder too.
+- Release #68 → prod `684309f` (licence/governance #61, Worker static-assets cache #63, litellm #62, backup tests in CI
+  #64, Firefox fix #65, job-sync token-only #59, dev auto-deploy #57, prod hook optional #66, self-hosted Inter #67).
+  Deploy job timed out waiting (Render waits for all checks, incl. a sync-PR run on the same SHA); Frankfurt deploy
+  of the CI-green commit triggered via API → live. Prod API + web report `684309f`, ready 200.
+  First GitHub Release `v2026.10.03` created (automatic from now on).
+- Live Stripe webhook `we_1UC0…` repointed from the Oregon URL to https://api.remoteaiplatform.com/… (unsigned POST
+  → 400 on both before switching). No other references to old API URLs in Infisical or repos.
+- Deleted: GitHub secrets RENDER_DEPLOY_HOOK_PROD/DEV; Render services old Oregon prod `srv-d9uea4nlk1mc73elkm10` and
+  old dev `srv-dadgbpad0e5s73du4th0`. Each workspace now has exactly one Frankfurt service.
+- CodeRabbit: GitHub app already installed (Advanced plan, 10 reviews/h included). `.coderabbit.yaml` (schema-valid,
+  PR #69): assertive, auto-review dev/prod, project path instructions, 15 linters/scanners, Dependabot excluded.
+  First review of #69: 0 actionable comments. API key stored in Infisical prod `CODERABBIT_API_KEY` (pasted in chat →
+  rotate at the end).
+- Dependabot first run: 9 major bumps → "@dependabot ignore this major version"; config now minor/patch only
+  (majors are deliberate migrations). Minor/patch groups #72 (pip ×19), #78 (npm ×15), #76 (actions ×8) queued.
+- Flaky test found: ingestion-health privacy assertion matched "1111" inside a timestamp (#83 fixes).
+- Prod protection "require up to date" makes each release need a prod→dev sync PR (#70); relaxing it on prod was
+  blocked by the safety classifier — owner may choose to turn off "Require branches to be up to date" on prod only.

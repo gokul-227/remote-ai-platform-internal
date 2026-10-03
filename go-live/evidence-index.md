@@ -652,3 +652,19 @@ history, so no rotation is triggered by this exposure; copies made while public 
 - Flaky test found: ingestion-health privacy assertion matched "1111" inside a timestamp (#83 fixes).
 - Prod protection "require up to date" makes each release need a prod→dev sync PR (#70); relaxing it on prod was
   blocked by the safety classifier — owner may choose to turn off "Require branches to be up to date" on prod only.
+
+### 2026-10-03 — releases v2026.10.03.2, Dependabot fixes, deployments clean
+- Release #84 → prod `83e3551` (CodeRabbit config #69, Dependabot minor/patch policy, flaky-test fix + 20-min deploy wait
+  #83, sync #70). Web deployed by workflow; API stuck at 684309f because Render's checksPass waited on the sync PR's
+  checks for the same SHA. **Prod Render autoDeployTrigger → `commit`** (prod only receives merges that already passed
+  all required checks; workflow still verifies the SHA). API deployed 83e3551 via API, ready 200. GitHub Release
+  `v2026.10.03.2` created manually (workflow only releases after a fully successful deploy run).
+- Worker CPU after #63 (static-assets cache): since deploy p25 3.1 ms, p50 3.7 ms, p75 5.9 ms, p90 34.8 ms (was
+  ≈15 ms warm / ≈400 ms cold) — inside the 10 ms free budget for the bulk of requests. PERF-02 closed.
+- Deployments page: all 215+ vercel[bot] records deleted (earlier loops were no-ops: zsh does not word-split
+  unquoted variables). Only `production` and `dev` environments remain.
+- Dependabot groups: pip needed code changes for ruff 0.16 (UP042 → `UserRole(enum.StrEnum)`, only __repr__ used
+  str()) and SQLAlchemy's stricter types (bind None-guard, rowcount via CursorResult, typed analytics rows); npm group's
+  lockfile had two React copies and jsdom outside vitest's reach → regenerated; Next 16.3.8 required by
+  @opennextjs/cloudflare 1.20.8. Dependabot then superseded #72/#78 with #86/#87; fixes reapplied (backend 527, web 72,
+  builds OK). Known dev-only exception: braces ≤ 3.0.3 (GHSA-vfj7-8cjw-p6xm, no patched release) via eslint-config-next.

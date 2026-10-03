@@ -693,3 +693,11 @@ history, so no rotation is triggered by this exposure; copies made while public 
   Render auto-deploy turned off). (2) Deploy concurrency was one pending run per environment, so bursts of CI
   completions (PR + sync runs) cancelled the real dev deploy; groups are now per commit (is-tip check unchanged).
 - UptimeRobot alert receipt confirmed by the owner (dev outage Down email; Up on recovery).
+
+### 2026-10-03 08:07 — v2026.10.03.4 (69087b5): first fully automatic release
+- Release #96 passed the required gate (dev web + API on the release SHA, healthy), merged, prod CI → deploy workflow
+  deployed the Worker and triggered the Render API deploy of the exact commit (API live after 10 polls ≈ 2.5 min),
+  verified, and the Release workflow published `v2026.10.03.4`. No manual step.
+- Prod web + API `69087b5`; `/`, `/auth/callback`, `/sitemap.xml`, API `/health/ready` 200. UptimeRobot monitors UP.
+- Remaining process note: each release leaves a prod-only merge commit, so the next release needs a prod→dev sync PR
+  (or the owner turns off "require up to date" on prod only).

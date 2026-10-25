@@ -47,7 +47,7 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 | Review applications | See everyone who applied to your jobs, with their profile summary (headline, skills, experience, profile score) surfaced inline. | Working |
 | Move applications through a pipeline | Change an application's status (Reviewing → Shortlisted → Accepted/Rejected) with real state-transition rules enforced server-side. | Working |
 | Invite candidates directly | Proactively invite a specific engineer to apply to one of your open roles. | Working |
-| Message candidates | Direct, real-time messaging with any candidate you're connected to. | Working |
+| Message candidates | Direct messaging (refreshed by polling) with any candidate you're connected to. | Working |
 | Browse the engineer/company directories | Explore public engineer and company profile listings. | Working |
 | Digital contracts | Draft a contract for a specific worker (rate type, amount, scope, milestones), send it, and track it through Offered → Signed → Active → Completed/Terminated. | Working |
 | Payment to professionals | Pay the professional directly under the agreed terms; in-product escrow buttons are switched off. | Payments off by design |
@@ -69,6 +69,7 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 | Moderation queue | Review and act on user-submitted reports (hide a job, suspend a user, or dismiss) from one queue. | Working |
 | Audit log | An immutable, searchable log of every sensitive admin action (status changes, role changes, deletions) for accountability. | Working |
 | Activity log | A general feed of platform administrative activity. | Working |
+| Staff console (separate app) | admin.remoteaiplatform.com / admin-dev: support queue with SLA and internal notes, people & access with reasons, sign-out-everywhere, moderation, audit log, AI usage, health, job sources, integrations. Refuses writes if pointed at the wrong environment. | Built; live once deployed (see platform-expansion/handoff.md) |
 | Feature-flag visibility | The backend can report which platform feature flags are currently on/off (e.g. trending skills, AI matching). | **Partial** — the API endpoint exists and works, but there's no panel for it in the admin dashboard UI yet, and flags can only be changed via server configuration, not clicked on/off from the console. |
 
 ## Shared / cross-cutting features
@@ -82,6 +83,12 @@ edge. **Placeholder** = visible in the UI but not backed by real functionality y
 | Groups | Community spaces any user can create, join, and post in. | Working |
 | Social feed | The shared LinkedIn-style feed described above, available to both personas. | Working |
 | Saved items | Bookmarking for jobs today (engineers); no equivalent for companies bookmarking candidates yet. | Partial |
+| Channels | Project channels (everyone on the project) and group channels (people you choose among your connections), with one-level threads, @mentions that notify, unread counts kept on the server, and mute. Refreshes by polling every 15 s while the tab is open. | Working (runtime unverified until deployed) |
+| Meetings | Schedule a call with connections or a contract partner, accept/decline, join from 15 minutes before the start. The call runs on a free Jitsi Meet room or your own https link, in a new tab; there is no built-in video. | Working (external call service; native calling deferred) |
+| Contract deliverables | Per milestone: a GitHub commit (exact SHA), a document (PDF/Office/text, 15 MB, checked and stored privately) or a demo link. The client accepts or requests changes; revisions are versioned. Accepting does not move money. | Working; GitHub App connection, previews deferred |
+| Work items | Project tasks now have a type (task/bug/story/epic), labels, watchers and conflict-safe edits; dependency loops are refused. | Working |
+| AI assistant | Ask about your jobs, tasks, contracts and meetings; drafts text; creates tasks, meetings or support tickets only after you confirm. Uses your AI allowance; if AI is down, everything else still works. | Working (needs a configured free AI provider) |
+| Contact support | Open a ticket and talk to the team in a thread; safety reports are prioritised. | Working |
 
 ---
 

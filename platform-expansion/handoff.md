@@ -53,4 +53,3 @@ All migrations are additive (new tables/columns with server defaults, RLS on, no
 3. **Storage bucket:** the first document deliverable creates `remote-ai-platform-deliverables` via the
    S3 API. Confirm in Supabase Storage that it is **private** and set a 15 MB file limit, like the resume bucket.
 4. **Meetings:** two real browsers and a restricted network test before advertising calling.
-5. Push this internal repo (`git push` from your machine).

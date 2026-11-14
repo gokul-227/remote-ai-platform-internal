@@ -13,7 +13,7 @@ Do the steps **in this order**. Each one ends with "tell Claude", which is when 
 | 5 | Neon | Development/staging database (replaces the paused Supabase dev project) | No | Free |
 | 6 | Grafana Cloud | Dashboards and alerts | No | Free |
 | 7 | WorkOS (staging only) | Trial of the second sign-in provider | No | Free (staging is never billed) |
-| 8 | Firebase (optional) | Browser push notifications | No | Free (Spark plan) |
+| 8 | Firebase | Browser push notifications (included in this release) | No | Free (Spark plan) |
 
 Free-tier limits were read from each provider's pricing page on 14 Nov 2026. Check them again on the day you sign up; a free allowance does not guarantee a zero bill, so set every budget alert below.
 
@@ -70,19 +70,21 @@ Note: Oracle reclaims Always Free instances that sit idle for 7 days (CPU, netwo
 
 1. https://dash.cloudflare.com → your account → **R2 Object Storage**.
 2. Click **Purchase R2 / Add payment method** and add the card. Then **Billing → Notifications → Create**: usage alert for R2 at **5 GB stored** and **500,000 Class A operations**.
-3. **Create bucket** `rap-files-prod`, location hint **Western Europe (WEUR)**, default storage class **Standard**. Leave **Public access: Disabled**.
-4. Create bucket `rap-files-dev` the same way.
-5. **R2 → Manage API tokens → Create API token**:
-   - Permissions: **Object Read & Write**
-   - Specify buckets: `rap-files-prod`, `rap-files-dev`
-   - TTL: forever (or 1 year)
-   - Copy **Access Key ID**, **Secret Access Key** and the **S3 endpoint** (`https://<account-id>.r2.cloudflarestorage.com`).
-6. Bucket `rap-files-prod` → **Settings → CORS policy** → paste:
+3. Create these **private** buckets (location hint **Western Europe (WEUR)**, storage class **Standard**, public access **Disabled**). R2 bucket names are unique per account, so each environment gets its own:
+   - Production: `rap-prod-resumes`, `rap-prod-assets`, `rap-prod-deliverables`, `rap-prod-files`
+   - Development: `rap-dev-resumes`, `rap-dev-assets`, `rap-dev-deliverables`, `rap-dev-files`
+4. **R2 → Manage API tokens → Create API token**: permission **Object Read & Write**, limited to the eight buckets above. Copy the **Access Key ID**, **Secret Access Key**, and the **S3 endpoint** `https://<account-id>.r2.cloudflarestorage.com`.
+5. For each `*-files` bucket: **Settings → CORS policy**:
    ```json
-   [{"AllowedOrigins":["https://remoteaiplatform.com","https://www.remoteaiplatform.com"],"AllowedMethods":["GET","PUT"],"AllowedHeaders":["*"],"MaxAgeSeconds":3600}]
+   [{"AllowedOrigins":["https://remoteaiplatform.com","https://www.remoteaiplatform.com"],"AllowedMethods":["GET"],"AllowedHeaders":["*"],"MaxAgeSeconds":3600}]
    ```
-   For `rap-files-dev` use `https://dev.remoteaiplatform.com`.
-7. In Infisical, **prod → /render-api**, add: `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_FILES=rap-files-prod`. In **dev**: the same with `rap-files-dev`.
+   (use `https://dev.remoteaiplatform.com` for the dev bucket).
+6. In Infisical **prod → /render-api** add (names must match exactly):
+   - `R2_ENDPOINT` = the S3 endpoint
+   - `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`
+   - `R2_BUCKET_RESUMES=rap-prod-resumes`, `R2_BUCKET_ASSETS=rap-prod-assets`, `R2_BUCKET_DELIVERABLES=rap-prod-deliverables`, `R2_BUCKET_FILES=rap-prod-files`
+   - Do **not** change `STORAGE_PROVIDER` yourself. I switch it during the release: first with the old storage kept as a fallback, then copy and verify every existing file with `ops/storage/migrate_objects.py`, then turn the fallback off.
+7. Same in Infisical **dev** with the `rap-dev-*` names.
 8. **Tell Claude:** "R2 done." See the storage decision below before the release.
 
 ## 5. Neon development database (10 minutes)
@@ -111,16 +113,21 @@ Note: Oracle reclaims Always Free instances that sit idle for 7 days (CPU, netwo
 6. Infisical **dev**: `WORKOS_CLIENT_ID`, `WORKOS_API_KEY`.
 7. **Tell Claude:** "WorkOS staging done." I then enable it on dev only, behind the allow-list, and test sign-in, recovery and rollback.
 
-## 8. Firebase Cloud Messaging — optional (15 minutes)
+## 8. Firebase Cloud Messaging — browser push (20 minutes)
 
-Skip this unless you want browser push notifications at launch.
+You chose to include push in this release.
 
-1. https://console.firebase.google.com → **Add project** `remote-ai-platform`, disable Google Analytics. Plan stays **Spark (free)**; never click Upgrade.
-2. **Project settings → Cloud Messaging → Web configuration → Generate key pair**; copy the **VAPID key**.
-3. **Project settings → Service accounts → Generate new private key** (downloads a JSON file).
-4. Base64-encode it: `base64 -i ~/Downloads/<file>.json | pbcopy`, then add Infisical **prod**: `FCM_CREDENTIALS_B64` (paste), `FCM_VAPID_KEY`.
-5. Delete the downloaded JSON file.
-6. **Tell Claude:** "Firebase done."
+1. https://console.firebase.google.com → **Add project** `remote-ai-platform`. Turn **off** Google Analytics. The plan stays **Spark (free)**; never click Upgrade.
+2. **Project settings (gear) → General → Your apps → Web (`</>`)**: register an app called `web`. Do **not** set up Firebase Hosting. Firebase shows a `firebaseConfig` object; copy only these four values: `apiKey`, `projectId`, `messagingSenderId`, `appId`.
+3. In GitHub → repository **gokul-227/remote-ai-platform → Settings → Secrets and variables → Actions → Variables**, add variable `FIREBASE_WEB_CONFIG` with this one-line JSON (your values):
+   `{"apiKey":"…","projectId":"…","messagingSenderId":"…","appId":"…"}`
+   These four values are public by design (they ship in the browser), so a variable is correct, not a secret. For dev use the same project and add `FIREBASE_WEB_CONFIG_DEV` with the same value.
+4. **Project settings → Cloud Messaging → Web configuration → Web Push certificates → Generate key pair**. Copy the key (starts with `B…`).
+5. **Project settings → Service accounts → Firebase Admin SDK → Generate new private key** (downloads a JSON file).
+6. On this Mac: `base64 -i ~/Downloads/<that-file>.json | pbcopy`
+7. In Infisical **prod → /render-api** add: `FCM_PROJECT_ID` = your project id, `FCM_CREDENTIALS_B64` = paste, `FCM_VAPID_KEY` = the `B…` key. Repeat in **dev**.
+8. Delete the downloaded JSON file and empty the Trash.
+9. **Tell Claude:** "Firebase done." I then test a real notification on dev in your browser.
 
 ---
 

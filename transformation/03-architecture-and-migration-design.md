@@ -1,5 +1,11 @@
 # Phase 3 — Architecture and migration design (14 November 2026)
 
+> **Readiness correction — 2026-11-14:** Read [the current phase checkpoint](2026-11-14-phase-readiness-checkpoint.md) before using this historical design/runbook. Phases 4/6/7/16/17 are not complete. Provider prices, allowances and account status below are historical planning claims, not newly verified entitlements. This document does not authorize deployment or provider changes.
+>
+> Development must use isolated dev secrets/data, not the production export/canary instructions below. Do not use the 1 GB micro fallback or assume workloads prevent OCI reclaim without capacity/entitlement validation. Host port 8000 is not published by Compose; verify through Caddy or inside the API container and inspect readiness JSON. Workers/scheduler need validated external egress. Require a tested image digest; `latest` is not release proof.
+>
+> Migration rollback must preserve new data: do not routinely downgrade and drop tables. Actual identity design uses `user_identities` (057), not `auth_subject_workos`; source migrations extend through 060 at the checkpoint. R2 configuration currently uses the S3-compatible `MINIO_*` interface, not the proposed `R2_*` variables. Backup scripts exist, but scheduled/restic backups and a current full restore are unverified. The linked checkpoint supersedes conflicting instructions and lists the required evidence.
+
 Inputs: Phase 0 audit, Phase 2 research packages, owner decisions of 14 Nov (card-on-file OK for free tiers; owner provisions accounts; direct push to dev/prod authorized; branch protection later).
 
 ## 1. Existing module map and reuse decisions

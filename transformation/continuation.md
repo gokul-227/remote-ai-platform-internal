@@ -83,3 +83,13 @@ CI for this new commit have not yet been observed. Production was not promoted i
 Remaining: full browser/reconnect validation on final images, remote CI, provider provisioning and
 verified backup restore/cut-over, plus exact phase acceptance gaps. See owner-provisioning-handoff.md.
 Do not claim the whole implementation complete or mark infrastructure phases complete from local tests.
+
+## Urgent save checkpoint
+
+Product `275a4bc` pushed to dev and feature branch. Includes `62906aa` trash content-access fix,
+meeting passcode/waiting-room implementation (migration065), staff inventory wiring and backup-evidence
+status, and browser sign-in hydration wait. Inventory tests4 passed. Meeting final checks, migration065
+round-trip, final browser reruns and remote CI still need review. Earlier full browser run failed the
+serial messaging journey with a signed-out page; hydration helper adjusted, rerun results unobserved.
+Current npm audit returned zero vulnerabilities. Production unchanged. Preserve and inspect all files
+before continuing; do not claim the full specification completed.

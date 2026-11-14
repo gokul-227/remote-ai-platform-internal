@@ -129,6 +129,15 @@ You chose to include push in this release.
 8. Delete the downloaded JSON file and empty the Trash.
 9. **Tell Claude:** "Firebase done." I then test a real notification on dev in your browser.
 
+## Backup report token (2 minutes, no account)
+
+This lets the backup scripts show their results in the staff console. It is not a provider account.
+
+1. On this Mac run: `openssl rand -hex 32 | pbcopy`
+2. In Infisical **prod → /render-api** add `BACKUP_REPORT_TOKEN` and paste. Repeat in **dev** with a *new* value (run step 1 again).
+3. On the backup host (the Oracle VM), the same value goes in the backup job's environment with `BACKUP_REPORT_URL=https://api.remoteaiplatform.com`. I set this up during the cut-over.
+4. **Tell Claude:** "Backup token done."
+
 ---
 
 ## After everything: what I do, then the single production release

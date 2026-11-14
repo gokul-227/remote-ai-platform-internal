@@ -65,3 +65,21 @@ NEXT EXECUTABLE TASKS (in order):
 8. End: owner account guide (Upstash, Oracle, R2, Neon, Grafana, WorkOS, FCM) with card requirements;
    restore branch protection from ~/Developer/GitHub/.protection-backup.
 ```
+
+## Latest checkpoint — 14 November 2026
+
+Product commit `f1d39f4` saves all integrated work from the parallel implementation round.
+Includes contract workspace activation/completion gates, demo registry and workspace Demos tab,
+group moderation/private requests, channel threads and Files attachments for channels/DMs,
+bounded Office text previews, reviewer-email selection, assistant permission tools, incidents,
+and process-owned worker/scheduler monitoring. Migrations 063 and 064 follow 061 (062 unused).
+
+Verification: backend 771 passed / 11 skipped; fresh PostgreSQL migration upgrade, downgrade to061,
+and re-upgrade passed; PostgreSQL concurrency/RLS 10 passed; web unit120 passed; admin unit5 passed;
+focused Chromium files/channel/feed journeys3 passed; backend Ruff/mypy and frontend type checks passed.
+Docs regenerated and docs-check passed before the final save. Final rebuilt browser suite and remote
+CI for this new commit have not yet been observed. Production was not promoted in this round.
+
+Remaining: full browser/reconnect validation on final images, remote CI, provider provisioning and
+verified backup restore/cut-over, plus exact phase acceptance gaps. See owner-provisioning-handoff.md.
+Do not claim the whole implementation complete or mark infrastructure phases complete from local tests.

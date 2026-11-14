@@ -1,0 +1,11 @@
+{
+  "current_count": 230,
+  "baseline_count": 239,
+  "added": [],
+  "resolved_count": 9,
+  "after_safe_autofix_count": 72,
+  "final_count": 0,
+  "safe_autofix_resolved_count": 158,
+  "manual_resolved_count": 72,
+  "manual_changes": "Split compound test assertions; assert precise validation failures; remove unused test assignments; correct parametrize and fixture style; remove trailing whitespace. No lint ignores added."
+}

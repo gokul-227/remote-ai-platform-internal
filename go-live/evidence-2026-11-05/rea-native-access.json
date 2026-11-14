@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-05",
+  "scope": "Current native accessibility interfaces; not complete workflow coverage",
+  "apps": [
+    {
+      "app": "word",
+      "status": "verified-native-access",
+      "evidence_id": "ev_5b99ade19f888a5e4f6499acc9b80ec9de23fddc997167cefe83cfbe3ec2d39f",
+      "node_count": 128
+    },
+    {
+      "app": "slack",
+      "status": "verified-native-access",
+      "evidence_id": "ev_9a3a5c4712a673952d06c6ea94ba5baf62953d475da29a6d5895223e1c0fd646",
+      "node_count": 12
+    },
+    {
+      "app": "zoom",
+      "status": "verified-native-access",
+      "evidence_id": "ev_1258b3c00e080f3414acff5f91c8f70a08fe6ba4b476087039e06ca30d9dfab6",
+      "node_count": 29
+    },
+    {
+      "app": "brave",
+      "status": "verified-native-access",
+      "evidence_id": "ev_4c01dcc55227a7942b0b67636ff058b5c33f67a8cd080551380bf08d8f59099b",
+      "node_count": 54
+    },
+    {
+      "app": "excel",
+      "status": "verified-native-access",
+      "evidence_id": "ev_cb24174eef4b1ca44a145df4b7e34db5a07c13a9f2915af63610699ac0ffbb04",
+      "node_count": 108
+    },
+    {
+      "app": "powerpoint",
+      "status": "verified-native-access",
+      "evidence_id": "ev_8114c942966ad650151f2b41f162edac1beac32b0660adc8b50c0e4afe1e8326",
+      "node_count": 146
+    }
+  ]
+}

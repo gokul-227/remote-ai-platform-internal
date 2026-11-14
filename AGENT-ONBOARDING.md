@@ -39,8 +39,14 @@ are switched off until the final phase — treat it as production (see
 
 | Environment | Frontend | Backend API |
 |---|---|---|
-| Production | https://remoteaiplatform.com | https://remote-ai-platform-api.onrender.com |
-| Development | https://dev.remoteaiplatform.com | https://remote-ai-platform-api-dev.onrender.com |
+| Production | https://remoteaiplatform.com | https://api.remoteaiplatform.com |
+| Development | https://dev.remoteaiplatform.com | https://remote-ai-platform-api-dev-eu.onrender.com |
+
+Routing reverified on **5 November 2026** against GitHub deployment variables and
+live `/health/version` responses. The old `remote-ai-platform-api.onrender.com`
+hostname returns Render `no-server`; that hostname is stale, not evidence that
+the production API is down. Development currently reports environment `staging`.
+See `go-live/2026-11-05-runtime-verification.md` for the dated read-only evidence.
 
 Backend health check on either: `GET /api/v1/health`. Full deployment topology
 (hosting providers, service names/IDs, DNS, everything) is in

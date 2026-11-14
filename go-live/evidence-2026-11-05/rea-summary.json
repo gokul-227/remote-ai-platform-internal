@@ -1,0 +1,37 @@
+{
+  "rea_version": "6.8.0",
+  "official_repository": "https://github.com/morluto/rea",
+  "repository_sha": "0beedcd712e39a7d93e4558ee56fd596eaa22838",
+  "runtime": "Node 22.23.4 (isolated)",
+  "claude_code_healthy": true,
+  "codex_healthy": true,
+  "mcp_server": {
+    "name": "rea",
+    "version": "6.8.0"
+  },
+  "mcp_tool_count": 229,
+  "fixture_is_error": false,
+  "application_evidence_id": "ev_8ab1cd79ab97486a71a0ff3abd41be9e8e5b0767f272f7f8438586f94327a7e6",
+  "application_statistics": {
+    "relevant_files": 30,
+    "nested_asar_containers": 0,
+    "text_bytes_read": 608634,
+    "invalid_utf8_files": 0,
+    "parsed_javascript_files": 30,
+    "skipped_javascript_files": 0,
+    "visited_ast_nodes": 91901,
+    "findings": 1548,
+    "modules": 0,
+    "parse_failures": 0
+  },
+  "limitations": [
+    "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+    "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+    "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+    "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+    "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+    "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
+  ],
+  "raw_evidence_location": "/Users/gokulr/.local/share/rea-tool",
+  "ide_session_verified": false
+}

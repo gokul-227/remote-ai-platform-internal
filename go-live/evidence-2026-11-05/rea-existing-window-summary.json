@@ -1,0 +1,131 @@
+[
+  {
+    "origin": "https://www.linkedin.com",
+    "pathCategory": "jobs",
+    "evidenceId": "ev_cb39a1e4afdf37a0757b323473a8521b4ebda14a828869bb6dc327a4992caf51",
+    "isError": false,
+    "observedInterfaceLabels": [
+      "More",
+      "Network",
+      "Jobs",
+      "Messaging",
+      "Notifications"
+    ],
+    "accessibilityNodeCount": 2696,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "Observation starts when REA attaches; prior network and console activity is unavailable.",
+      "Worker targets are a final inventory snapshot, not worker-session observation. Their attached flag describes any debugging client; this page-session collector does not observe worker network, console, or script events, and short-lived workers may be absent from the snapshot.",
+      "Raw network headers, bodies, cookies, storage values, console objects, and WebSocket payloads are never retained; explicitly requested primitive console text is retained verbatim, while payload captures retain value-free shapes.",
+      "Source maps are reported only as declarative URLs and are not fetched.",
+      "URL-less scripts and console events without an allowed source URL are excluded because their origin cannot be proven.",
+      "Browser host platform and architecture were not observed."
+    ],
+    "retainedPersonalContent": false
+  },
+  {
+    "origin": "https://www.upwork.com",
+    "pathCategory": "nx",
+    "evidenceId": "ev_64c039e643db94e7a0c2de4e228f7f9330258bcbcf915a7b7b62f9b080e7eb16",
+    "isError": false,
+    "observedInterfaceLabels": [
+      "Proposals",
+      "Search",
+      "Home",
+      "Messages",
+      "Contracts"
+    ],
+    "accessibilityNodeCount": 1398,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "Observation starts when REA attaches; prior network and console activity is unavailable.",
+      "Worker targets are a final inventory snapshot, not worker-session observation. Their attached flag describes any debugging client; this page-session collector does not observe worker network, console, or script events, and short-lived workers may be absent from the snapshot.",
+      "Raw network headers, bodies, cookies, storage values, console objects, and WebSocket payloads are never retained; explicitly requested primitive console text is retained verbatim, while payload captures retain value-free shapes.",
+      "Source maps are reported only as declarative URLs and are not fetched.",
+      "URL-less scripts and console events without an allowed source URL are excluded because their origin cannot be proven.",
+      "Browser host platform and architecture were not observed."
+    ],
+    "retainedPersonalContent": false
+  },
+  {
+    "origin": "https://www.linkedin.com",
+    "pathCategory": "jobs",
+    "evidenceId": "ev_764a061ededfff959dc87ff78d7030d987cf59a98b1e542b47246066f377986e",
+    "isError": false,
+    "observedInterfaceLabels": [
+      "More",
+      "Network",
+      "Jobs",
+      "Messaging",
+      "Notifications"
+    ],
+    "accessibilityNodeCount": 3106,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "Observation starts when REA attaches; prior network and console activity is unavailable.",
+      "Worker targets are a final inventory snapshot, not worker-session observation. Their attached flag describes any debugging client; this page-session collector does not observe worker network, console, or script events, and short-lived workers may be absent from the snapshot.",
+      "Raw network headers, bodies, cookies, storage values, console objects, and WebSocket payloads are never retained; explicitly requested primitive console text is retained verbatim, while payload captures retain value-free shapes.",
+      "Source maps are reported only as declarative URLs and are not fetched.",
+      "URL-less scripts and console events without an allowed source URL are excluded because their origin cannot be proven.",
+      "Browser host platform and architecture were not observed."
+    ],
+    "retainedPersonalContent": false
+  },
+  {
+    "origin": "https://www.linkedin.com",
+    "pathCategory": "feed",
+    "evidenceId": "ev_de86363012d5cde69cdcc3e7560d68c21f58eefaae3043cde4a55e0d6197847c",
+    "isError": false,
+    "observedInterfaceLabels": [
+      "Start a post",
+      "More",
+      "Groups",
+      "Home",
+      "Network",
+      "Jobs",
+      "Messaging",
+      "Notifications"
+    ],
+    "accessibilityNodeCount": 3201,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "Observation starts when REA attaches; prior network and console activity is unavailable.",
+      "Worker targets are a final inventory snapshot, not worker-session observation. Their attached flag describes any debugging client; this page-session collector does not observe worker network, console, or script events, and short-lived workers may be absent from the snapshot.",
+      "Raw network headers, bodies, cookies, storage values, console objects, and WebSocket payloads are never retained; explicitly requested primitive console text is retained verbatim, while payload captures retain value-free shapes.",
+      "Source maps are reported only as declarative URLs and are not fetched.",
+      "URL-less scripts and console events without an allowed source URL are excluded because their origin cannot be proven.",
+      "Browser host platform and architecture were not observed."
+    ],
+    "retainedPersonalContent": false
+  },
+  {
+    "origin": "https://www.facebook.com",
+    "pathCategory": "home",
+    "evidenceId": "ev_8e80f396638d378fd5b80f075d6f4bea5947d7e4fbb110708a0e964effffa000",
+    "isError": false,
+    "observedInterfaceLabels": [
+      "Home",
+      "Marketplace",
+      "Groups",
+      "Friends"
+    ],
+    "accessibilityNodeCount": 1340,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "Observation starts when REA attaches; prior network and console activity is unavailable.",
+      "Worker targets are a final inventory snapshot, not worker-session observation. Their attached flag describes any debugging client; this page-session collector does not observe worker network, console, or script events, and short-lived workers may be absent from the snapshot.",
+      "Raw network headers, bodies, cookies, storage values, console objects, and WebSocket payloads are never retained; explicitly requested primitive console text is retained verbatim, while payload captures retain value-free shapes.",
+      "Source maps are reported only as declarative URLs and are not fetched.",
+      "URL-less scripts and console events without an allowed source URL are excluded because their origin cannot be proven.",
+      "Browser host platform and architecture were not observed."
+    ],
+    "retainedPersonalContent": false
+  },
+  {
+    "origin": "https://gokulraj22797.atlassian.net",
+    "pathCategory": "welcome",
+    "isError": true,
+    "observedInterfaceLabels": [],
+    "retainedPersonalContent": false
+  }
+]

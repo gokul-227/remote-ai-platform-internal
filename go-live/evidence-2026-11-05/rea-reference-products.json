@@ -1,0 +1,134 @@
+[
+  {
+    "product": "brave",
+    "url": "https://brave.com/",
+    "title": "The browser that puts you first | Brave",
+    "evidence_id": "ev_4f6f043b8f0471eaecbcca75c075d322d94dcfa0156f93b42d21e19e4abed6b4",
+    "accessibility_nodes": 870,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "excel",
+    "url": "https://www.microsoft.com/en-us/microsoft-365/excel",
+    "title": "Microsoft Excel | Free Online Spreadsheets Software",
+    "evidence_id": "ev_636ee1da495e65de9b20a06828568e8d3a019e6d5431a6a4229af621439df188",
+    "accessibility_nodes": 4337,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "facebook",
+    "url": "https://www.facebook.com/",
+    "title": "Facebook",
+    "evidence_id": "ev_354e32458b1c6dd909fcf2932a4f15d9b4493e425a347250d4a6f56d5705828c",
+    "accessibility_nodes": 464,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "github",
+    "url": "https://github.com/",
+    "title": "GitHub \u00b7 Change is constant. GitHub keeps you ahead. \u00b7 GitHub \u00b7 GitHub",
+    "evidence_id": "ev_acbb30e150cb86b9d8627387fb20647e8e15ccf5df67f3be10cc947e7a325910",
+    "accessibility_nodes": 1578,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "jira",
+    "url": "https://www.atlassian.com/software/jira",
+    "title": "Jira | Project Management for the AI Era | Atlassian",
+    "evidence_id": "ev_febd0f1405fca692e2e4e4c8117c1c9bcc41e7d0822eda3178557bc07242fe11",
+    "accessibility_nodes": 1201,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "linkedin",
+    "url": "https://www.linkedin.com/",
+    "title": "LinkedIn: Log In or Sign Up",
+    "evidence_id": "ev_30866a90c5e5f0d3e7b858942b2792b85c5f434d0a0a2c0e15e51565204577bb",
+    "accessibility_nodes": 1580,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "powerpoint",
+    "url": "https://www.microsoft.com/en-us/microsoft-365/powerpoint",
+    "title": "PowerPoint | Presentations and Slides Online | Microsoft 365",
+    "evidence_id": "ev_b25d1cdb970d70aeef83b3f4fdb12c5de7300504e17538dcf692f915cd639d72",
+    "accessibility_nodes": 3295,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "slack",
+    "url": "https://slack.com/",
+    "title": "Slack | AI Work Platform &amp; Productivity Tools",
+    "evidence_id": "ev_9e932f1b4d3761fb086917fe171200585109acb2b260af6e3e679a9286ffa76a",
+    "accessibility_nodes": 2469,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "uber",
+    "url": "https://www.uber.com/de/en/",
+    "title": "Earn Money by Driving or Get a Ride Now | Uber Germany",
+    "evidence_id": "ev_f0855e7b8c199dd5d662859e11efb51ea217ddf303e28a79b871ea87fed5098d",
+    "accessibility_nodes": 1193,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "upwork",
+    "url": "https://www.upwork.com/",
+    "title": "Attention Required! | Cloudflare",
+    "evidence_id": "ev_77ae48d7d069b098b237546877d76a7a85130fa3634f6a6da147bdd882a041b2",
+    "accessibility_nodes": 68,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "blocked by Cloudflare"
+  },
+  {
+    "product": "word",
+    "url": "https://www.microsoft.com/en-us/microsoft-365/word",
+    "title": "Free Online Document Editing with Microsoft Word | Microsoft 365",
+    "evidence_id": "ev_cfcec984d11155c8c75f604d0d04448f8a7fe7cc7bc9356c1f066ba5780f6311",
+    "accessibility_nodes": 3787,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  },
+  {
+    "product": "zoom",
+    "url": "https://www.zoom.com/",
+    "title": "One platform to connect | Zoom",
+    "evidence_id": "ev_760183506d63f863c13b356da287b4f5eadc707098f4002813d980b19886fc27",
+    "accessibility_nodes": 1581,
+    "script_sources_captured": false,
+    "private_storage_captured": false,
+    "workflow_verified": false,
+    "status": "public page observed; authenticated application unverified"
+  }
+]

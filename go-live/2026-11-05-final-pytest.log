@@ -1,0 +1,103 @@
+........................................................................ [ 10%]
+........................................................................ [ 21%]
+........................................................................ [ 32%]
+........................................................................ [ 43%]
+........................................................................ [ 53%]
+........................................................................ [ 64%]
+...ssssssssss........................................................... [ 75%]
+........................................................................ [ 86%]
+........................................................................ [ 97%]
+....................                                                     [100%]
+=============================== warnings summary ===============================
+tests/test_api_hardening.py::test_production_settings_reject_wildcard_cors
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_api_hardening.py:109: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_api_hardening.py::test_production_settings_reject_wildcard_cors
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_api_hardening.py:109: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_development_secrets
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:10: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_development_secrets
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:10: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_render_env_is_treated_as_production_even_if_app_env_is_missing
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:31: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_render_env_is_treated_as_production_even_if_app_env_is_missing
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:31: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_dev_default_database_url
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:44: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_dev_default_database_url
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:44: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_any_localhost_database_url
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:60: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_any_localhost_database_url
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:60: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_debug_enabled
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:69: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_debug_enabled
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:69: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_localhost_minio_endpoint
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:78: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_localhost_minio_endpoint
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:78: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_localhost_minio_public_endpoint
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:87: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_localhost_minio_public_endpoint
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:87: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_wildcard_cors
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:96: UserWarning: SUPABASE_SERVICE_ROLE_KEY is not set: deleting an account will not remove the user from Supabase Auth, which the privacy notice promises.
+    settings.validate_production_settings()
+
+tests/test_deployment_contract.py::test_production_settings_reject_wildcard_cors
+  /Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deployment_contract.py:96: UserWarning: Production broker/cache config uses localhost for: REDIS_URL. Rate limiting, caching and background tasks will run in degraded in-memory fallback mode. Set these env vars to a hosted Redis URL (e.g. Upstash) to enable full functionality.
+    settings.validate_production_settings()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+658 passed, 10 skipped, 18 warnings in 71.70s (0:01:11)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.11/3.11.16/Frameworks/Python.framework/Versions/3.11/lib/python3.11/logging/__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+ValueError: I/O operation on closed file.
+Call stack:
+  File "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/.venv/lib/python3.11/site-packages/litellm/llms/custom_httpx/async_client_cleanup.py", line 88, in cleanup_wrapper
+    loop: Final = asyncio.new_event_loop()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.16/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/events.py", line 810, in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.16/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/events.py", line 699, in new_event_loop
+    return self._loop_factory()
+  File "/opt/homebrew/Cellar/python@3.11/3.11.16/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/unix_events.py", line 64, in __init__
+    super().__init__(selector)
+  File "/opt/homebrew/Cellar/python@3.11/3.11.16/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/selector_events.py", line 54, in __init__
+    logger.debug('Using selector: %s', selector.__class__.__name__)
+Message: 'Using selector: KqueueSelector'
+Arguments: None

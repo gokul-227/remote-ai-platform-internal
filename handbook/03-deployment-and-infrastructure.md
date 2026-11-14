@@ -1,6 +1,7 @@
 # Deployment & Infrastructure
 
-Where everything actually runs today, as of 2026-09-06. No credential values,
+Historical infrastructure inventory, originally recorded on 2026-09-06. Public API
+routing was reverified on 2026-11-05 (see the dated checkpoint below). No credential values,
 API keys, or secrets appear anywhere in this document — see
 `04-secrets-and-credentials.md` for how those are managed.
 
@@ -52,13 +53,32 @@ today.
 ## Backend hosting — Render
 
 The FastAPI backend runs as a Render **free-tier** web service per environment
-(`remote-ai-platform-api` → `prod`, `remote-ai-platform-api-dev` → `dev`), built from
+(historical service names: `remote-ai-platform-api` → `prod`,
+`remote-ai-platform-api-dev` → `dev`), built from
 `apps/api/Dockerfile` (`production` target, see `infra/deploy/render.yaml`). Deploys are
 triggered by the deploy workflows calling the service's deploy hook **with `?ref=<tested SHA>`**
 (Render disables its own auto-deploy when `ref` is used); the workflow then waits for
 `/health/version` to report that SHA. Migrations run on start (`start-production.sh`).
-Region: Oregon (US). Free instances sleep after ~15 idle minutes; the `keep-render-warm`
-workflow pings prod.
+The checked-in Render blueprint specifies Oregon (US); the active provider region
+was not independently queried in the 2026-11-05 read-only pass. Free instances can
+sleep when idle; the `keep-render-warm` workflow pings prod.
+
+### Public routing checkpoint — 5 November 2026
+
+GitHub repository variables and live requests agree on:
+
+| Target | Verified base URL | Read-only result |
+|---|---|---|
+| Production API | `https://api.remoteaiplatform.com` | `/health/version`: production SHA `1df5b240b86181546943f37cfeb1650d7396d66a`; `/health/ready`: HEALTHY |
+| Production API v1 | `https://api.remoteaiplatform.com/api/v1` | Anonymous job list: HTTP 200 |
+| Development API | `https://remote-ai-platform-api-dev-eu.onrender.com` | `/health/version`: same SHA, reports environment `staging`; readiness HTTP 200 |
+
+The old production `remote-ai-platform-api.onrender.com` URL returns HTTP 404
+with Render routing `no-server`. Do not use it as the production availability
+probe. The old development URL without `-eu` is superseded by the verified
+GitHub variable. Public liveness does not verify authenticated product journeys,
+provider permissions, backups, production capacity or recovery. Full dated
+checks are in `../go-live/2026-11-05-runtime-verification.md`.
 
 Runtime config set on Render (names only): APP_ENV, AI_PROVIDER=auto, GROQ_API_KEY,
 CORS_ORIGINS, DATABASE_URL, SUPABASE_URL, REDIS_URL (+ legacy CELERY_BROKER_URL, read as a

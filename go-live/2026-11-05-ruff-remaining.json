@@ -1,0 +1,2170 @@
+[
+  {
+    "cell": null,
+    "code": "W291",
+    "end_location": {
+      "column": 10,
+      "row": 4
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/alembic/versions/001_initial_schema.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 10,
+            "row": 4
+          },
+          "location": {
+            "column": 9,
+            "row": 4
+          }
+        }
+      ],
+      "message": "Remove trailing whitespace"
+    },
+    "location": {
+      "column": 9,
+      "row": 4
+    },
+    "message": "Trailing whitespace",
+    "name": "trailing-whitespace",
+    "noqa_row": 7,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/trailing-whitespace"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 110,
+      "row": 86
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_account_deletion_identity.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "        assert row.pending_subject == sub and row.provider_attempts == 1\n        assert row.last_error == \"RuntimeError\"\n",
+          "end_location": {
+            "column": 1,
+            "row": 87
+          },
+          "location": {
+            "column": 1,
+            "row": 86
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 9,
+      "row": 86
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 86,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 113,
+      "row": 127
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_account_deletion_identity.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "        assert row.pending_subject is None and row.provider_erased_at is not None\n        assert row.provider_attempts == 3\n",
+          "end_location": {
+            "column": 1,
+            "row": 128
+          },
+          "location": {
+            "column": 1,
+            "row": 127
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 9,
+      "row": 127
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 127,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 91,
+      "row": 258
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_account_deletion_identity.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert req.headers[\"apikey\"] == \"svc\"\n    assert req.headers[\"authorization\"] == \"Bearer svc\"\n",
+          "end_location": {
+            "column": 1,
+            "row": 259
+          },
+          "location": {
+            "column": 1,
+            "row": 258
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 258
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 258,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 266
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_account_deletion_identity.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 266
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 266,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 91,
+      "row": 145
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_admin_extensions.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert [j[\"title\"] for j in jobs] == [\"Hidden role\"]\n    assert jobs[0][\"is_active\"] is False\n",
+          "end_location": {
+            "column": 1,
+            "row": 146
+          },
+          "location": {
+            "column": 1,
+            "row": 145
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 145
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 145,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 73,
+      "row": 209
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_ai_free_tier_and_quota.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert rows[-1].status == \"SUCCESS\"\n    assert rows[-1].total_tokens == 120\n",
+          "end_location": {
+            "column": 1,
+            "row": 210
+          },
+          "location": {
+            "column": 1,
+            "row": 209
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 209
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 209,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 78,
+      "row": 21
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_ai_output_bounds.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert clean[\"skills\"][0] == \"Python\"\n    assert \"python\" not in clean[\"skills\"]\n",
+          "end_location": {
+            "column": 1,
+            "row": 22
+          },
+          "location": {
+            "column": 1,
+            "row": 21
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 21
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 21,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT006",
+    "end_location": {
+      "column": 18,
+      "row": 315
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_ai_reliability.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "(\"method\", \"path\")",
+          "end_location": {
+            "column": 18,
+            "row": 315
+          },
+          "location": {
+            "column": 5,
+            "row": 315
+          }
+        }
+      ],
+      "message": "Use a `tuple` for the first argument"
+    },
+    "location": {
+      "column": 5,
+      "row": 315
+    },
+    "message": "Wrong type passed to first argument of `pytest.mark.parametrize`; expected `tuple`",
+    "name": "pytest-parametrize-names-wrong-type",
+    "noqa_row": 315,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-parametrize-names-wrong-type"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 83,
+      "row": 91
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_contract_lifecycle_enforcement.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert approved.status_code == 200\n    assert approved.json()[\"status\"] == \"APPROVED\"\n",
+          "end_location": {
+            "column": 1,
+            "row": 92
+          },
+          "location": {
+            "column": 1,
+            "row": 91
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 91
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 91,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 76,
+      "row": 135
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_contract_lifecycle_enforcement.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert detail[\"rate_amount\"] == 1000\n    assert len(detail[\"milestones\"]) == 1\n",
+          "end_location": {
+            "column": 1,
+            "row": 136
+          },
+          "location": {
+            "column": 1,
+            "row": 135
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 135
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 135,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 84,
+      "row": 175
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_contract_lifecycle_enforcement.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert wallet.status_code == 200\n    assert wallet.json()[\"payments_enabled\"] is False\n",
+          "end_location": {
+            "column": 1,
+            "row": 176
+          },
+          "location": {
+            "column": 1,
+            "row": 175
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 175
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 175,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 94,
+      "row": 82
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_data_export.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert len(mine) == 1 and mine[0][\"reason\"] == \"spam\"\n    assert mine[0][\"decision\"] == \"WARNED\"\n",
+          "end_location": {
+            "column": 1,
+            "row": 83
+          },
+          "location": {
+            "column": 1,
+            "row": 82
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 82
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 82,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 78,
+      "row": 83
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_data_export.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert \"reviewed_by_id\" not in mine[0]\n    assert \"decision_note\" not in mine[0]\n",
+          "end_location": {
+            "column": 1,
+            "row": 84
+          },
+          "location": {
+            "column": 1,
+            "row": 83
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 83
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 83,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 74,
+      "row": 53
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deletion_keeps_shared_records.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert refused.status_code == 409\n    assert \"@\" in refused.json()[\"detail\"]\n",
+          "end_location": {
+            "column": 1,
+            "row": 54
+          },
+          "location": {
+            "column": 1,
+            "row": 53
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 53
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 53,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 74,
+      "row": 80
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_deletion_keeps_shared_records.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert rows\n    assert all(target.email not in str(r.details) for r in rows)\n",
+          "end_location": {
+            "column": 1,
+            "row": 81
+          },
+          "location": {
+            "column": 1,
+            "row": 80
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 80
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 80,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 58,
+      "row": 110
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_duplicate_writes.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "        assert r.status_code == 200\n        assert r.json()[\"liked\"]\n",
+          "end_location": {
+            "column": 1,
+            "row": 111
+          },
+          "location": {
+            "column": 1,
+            "row": 110
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 9,
+      "row": 110
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 110,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "B017",
+    "end_location": {
+      "column": 38,
+      "row": 31
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": null,
+    "location": {
+      "column": 14,
+      "row": 31
+    },
+    "message": "Do not assert blind exception: `Exception`",
+    "name": "assert-raises-exception",
+    "noqa_row": 31,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/assert-raises-exception"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 37,
+      "row": 31
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 31
+    },
+    "message": "`pytest.raises(Exception)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 31,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "B017",
+    "end_location": {
+      "column": 38,
+      "row": 35
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": null,
+    "location": {
+      "column": 14,
+      "row": 35
+    },
+    "message": "Do not assert blind exception: `Exception`",
+    "name": "assert-raises-exception",
+    "noqa_row": 35,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/assert-raises-exception"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 37,
+      "row": 35
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 35
+    },
+    "message": "`pytest.raises(Exception)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 35,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "B017",
+    "end_location": {
+      "column": 38,
+      "row": 70
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": null,
+    "location": {
+      "column": 14,
+      "row": 70
+    },
+    "message": "Do not assert blind exception: `Exception`",
+    "name": "assert-raises-exception",
+    "noqa_row": 70,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/assert-raises-exception"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 37,
+      "row": 70
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 70
+    },
+    "message": "`pytest.raises(Exception)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 70,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "B017",
+    "end_location": {
+      "column": 38,
+      "row": 81
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": null,
+    "location": {
+      "column": 14,
+      "row": 81
+    },
+    "message": "Do not assert blind exception: `Exception`",
+    "name": "assert-raises-exception",
+    "noqa_row": 81,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/assert-raises-exception"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 37,
+      "row": 81
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 81
+    },
+    "message": "`pytest.raises(Exception)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 81,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "F841",
+    "end_location": {
+      "column": 15,
+      "row": 179
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 18,
+            "row": 179
+          },
+          "location": {
+            "column": 9,
+            "row": 179
+          }
+        }
+      ],
+      "message": "Remove assignment to unused variable `result`"
+    },
+    "location": {
+      "column": 9,
+      "row": 179
+    },
+    "message": "Local variable `result` is assigned to but never used",
+    "name": "unused-variable",
+    "noqa_row": 179,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-variable"
+  },
+  {
+    "cell": null,
+    "code": "F841",
+    "end_location": {
+      "column": 15,
+      "row": 216
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 18,
+            "row": 216
+          },
+          "location": {
+            "column": 9,
+            "row": 216
+          }
+        }
+      ],
+      "message": "Remove assignment to unused variable `result`"
+    },
+    "location": {
+      "column": 9,
+      "row": 216
+    },
+    "message": "Local variable `result` is assigned to but never used",
+    "name": "unused-variable",
+    "noqa_row": 216,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-variable"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 84,
+      "row": 363
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_groups.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert m[\"member\"][\"full_name\"] == \"Group Owner\"\n    assert \"email\" not in m[\"member\"]\n",
+          "end_location": {
+            "column": 1,
+            "row": 364
+          },
+          "location": {
+            "column": 1,
+            "row": 363
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 363
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 363,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 69,
+      "row": 78
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_health.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert details[\"last_success_at\"]\n    assert details[\"last_failure_at\"]\n",
+          "end_location": {
+            "column": 1,
+            "row": 79
+          },
+          "location": {
+            "column": 1,
+            "row": 78
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 78
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 78,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 79,
+      "row": 31
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_ingestion_health.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert a[\"failures_since_success\"] == 2\n    assert a[\"last_success_fetched\"] == 7\n",
+          "end_location": {
+            "column": 1,
+            "row": 32
+          },
+          "location": {
+            "column": 1,
+            "row": 31
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 31
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 31,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 113,
+      "row": 33
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_ingestion_health.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert b[\"failures_since_success\"] == 0 and b[\"last_success_fetched\"] == 25\n    assert b[\"hours_since_success\"] < 3\n",
+          "end_location": {
+            "column": 1,
+            "row": 34
+          },
+          "location": {
+            "column": 1,
+            "row": 33
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 33
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 33,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 69,
+      "row": 68
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_ingestion_health.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "        assert \"last_success_at\" in entry\n        assert \"last_status\" in entry\n",
+          "end_location": {
+            "column": 1,
+            "row": 69
+          },
+          "location": {
+            "column": 1,
+            "row": 68
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 9,
+      "row": 68
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 68,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 85,
+      "row": 79
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_ingestion_health.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert entry[\"last_status\"] == \"FAILED\"\n    assert entry[\"failures_since_success\"] == 1\n",
+          "end_location": {
+            "column": 1,
+            "row": 80
+          },
+          "location": {
+            "column": 1,
+            "row": 79
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 79
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 79,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 87,
+      "row": 86
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_ingestion_health.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert entry[\"last_status\"] == \"DISABLED\"\n    assert entry[\"failures_since_success\"] == 0\n",
+          "end_location": {
+            "column": 1,
+            "row": 87
+          },
+          "location": {
+            "column": 1,
+            "row": 86
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 86
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 86,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 63,
+      "row": 57
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_job_expiry.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert str(ids[0]) not in listed\n    assert str(ids[1]) in listed\n",
+          "end_location": {
+            "column": 1,
+            "row": 58
+          },
+          "location": {
+            "column": 1,
+            "row": 57
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 57
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 57,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 81,
+      "row": 59
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_job_expiry.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert detail.status_code == 200\n    assert detail.json()[\"expired_at\"] is not None\n",
+          "end_location": {
+            "column": 1,
+            "row": 60
+          },
+          "location": {
+            "column": 1,
+            "row": 59
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 59
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 59,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 111,
+      "row": 47
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_job_list_cache.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert first.json() == second.json()\n    assert first.headers[\"X-Total-Count\"] == second.headers[\"X-Total-Count\"]\n",
+          "end_location": {
+            "column": 1,
+            "row": 48
+          },
+          "location": {
+            "column": 1,
+            "row": 47
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 47
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 47,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 89,
+      "row": 44
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_moderation_notice.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert \"removed\" in text.lower() and \"appeal\" in text.lower()\n    assert \"contact@\" in text\n",
+          "end_location": {
+            "column": 1,
+            "row": 45
+          },
+          "location": {
+            "column": 1,
+            "row": 44
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 44
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 44,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 75,
+      "row": 45
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_moderation_notice.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert \"Reporter Person\" not in text\n    assert \"repeat offender\" not in text\n",
+          "end_location": {
+            "column": 1,
+            "row": 46
+          },
+          "location": {
+            "column": 1,
+            "row": 45
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 45
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 45,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 102,
+      "row": 57
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_moderation_notice.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert \"suspended\" in resp.json()[\"detail\"].lower()\n    assert \"appeal\" in resp.json()[\"detail\"].lower()\n",
+          "end_location": {
+            "column": 1,
+            "row": 58
+          },
+          "location": {
+            "column": 1,
+            "row": 57
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 57
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 57,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 77,
+      "row": 53
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_network_layer.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert \"email\" not in conn[\"sender\"]\n    assert \"email\" not in conn[\"receiver\"]\n",
+          "end_location": {
+            "column": 1,
+            "row": 54
+          },
+          "location": {
+            "column": 1,
+            "row": 53
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 53
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 53,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "F841",
+    "end_location": {
+      "column": 7,
+      "row": 92
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_notifications.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 10,
+            "row": 92
+          },
+          "location": {
+            "column": 5,
+            "row": 92
+          }
+        }
+      ],
+      "message": "Remove assignment to unused variable `ws`"
+    },
+    "location": {
+      "column": 5,
+      "row": 92
+    },
+    "message": "Local variable `ws` is assigned to but never used",
+    "name": "unused-variable",
+    "noqa_row": 92,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-variable"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 80,
+      "row": 36
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_observability.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "        assert rid != bad and len(rid) <= 64\n        assert rid.replace(\"-\", \"\").isalnum()\n",
+          "end_location": {
+            "column": 1,
+            "row": 37
+          },
+          "location": {
+            "column": 1,
+            "row": 36
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 9,
+      "row": 36
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 36,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT022",
+    "end_location": {
+      "column": 10,
+      "row": 34
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_payments_webhook_security.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "return",
+          "end_location": {
+            "column": 10,
+            "row": 34
+          },
+          "location": {
+            "column": 5,
+            "row": 34
+          }
+        }
+      ],
+      "message": "Replace `yield` with `return`"
+    },
+    "location": {
+      "column": 5,
+      "row": 34
+    },
+    "message": "No teardown in fixture `_stripe_provider_enabled`, use `return` instead of `yield`",
+    "name": "pytest-useless-yield-fixture",
+    "noqa_row": 34,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-useless-yield-fixture"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 77,
+      "row": 284
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_project_management.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert comment[\"content\"] == \"Started\"\n    assert comment[\"task_id\"] == task_id\n",
+          "end_location": {
+            "column": 1,
+            "row": 285
+          },
+          "location": {
+            "column": 1,
+            "row": 284
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 284
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 284,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 74,
+      "row": 286
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_project_management.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert author[\"full_name\"] == \"Board Owner\"\n    assert \"email\" not in author\n",
+          "end_location": {
+            "column": 1,
+            "row": 287
+          },
+          "location": {
+            "column": 1,
+            "row": 286
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 286
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 286,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "B017",
+    "end_location": {
+      "column": 38,
+      "row": 35
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_quality_engine.py",
+    "fix": null,
+    "location": {
+      "column": 14,
+      "row": 35
+    },
+    "message": "Do not assert blind exception: `Exception`",
+    "name": "assert-raises-exception",
+    "noqa_row": 35,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/assert-raises-exception"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 37,
+      "row": 35
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_quality_engine.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 35
+    },
+    "message": "`pytest.raises(Exception)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 35,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "B017",
+    "end_location": {
+      "column": 38,
+      "row": 75
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_quality_engine.py",
+    "fix": null,
+    "location": {
+      "column": 14,
+      "row": 75
+    },
+    "message": "Do not assert blind exception: `Exception`",
+    "name": "assert-raises-exception",
+    "noqa_row": 75,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/assert-raises-exception"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 37,
+      "row": 75
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_quality_engine.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 75
+    },
+    "message": "`pytest.raises(Exception)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 75,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "N806",
+    "end_location": {
+      "column": 81,
+      "row": 274
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_quality_engine.py",
+    "fix": null,
+    "location": {
+      "column": 72,
+      "row": 274
+    },
+    "message": "Variable `MockAgent` in function should be lowercase",
+    "name": "non-lowercase-variable-in-function",
+    "noqa_row": 274,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/non-lowercase-variable-in-function"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 71,
+      "row": 81
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_resume_upload_ai_parsing.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert \"Go\" in profile[\"skills\"]\n    assert \"Python\" in profile[\"skills\"]\n",
+          "end_location": {
+            "column": 1,
+            "row": 82
+          },
+          "location": {
+            "column": 1,
+            "row": 81
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 81
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 81,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 30
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_resume_upload_limits.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 30
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 30,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 32
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_resume_upload_limits.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 32
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 32,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 52,
+      "row": 33
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_rich_text.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert clean(None) == \"\"\n    assert clean(\"   \") == \"\"\n",
+          "end_location": {
+            "column": 1,
+            "row": 34
+          },
+          "location": {
+            "column": 1,
+            "row": 33
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 33
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 33,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 120,
+      "row": 45
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_scheduled_sync_token.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert resp.status_code == 200\n    assert resp.json() == {\"REMOTEOK\": 3, \"identity_erasures_pending\": 0, \"emails_sent\": 0}\n",
+          "end_location": {
+            "column": 1,
+            "row": 46
+          },
+          "location": {
+            "column": 1,
+            "row": 45
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 45
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 45,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 11
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_security_hardening.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 11
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 11,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 22
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_security_hardening.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 22
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 22,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 27
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_security_hardening.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 27
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 27,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 35
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_security_hardening.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 35
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 35,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 42
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_security_hardening.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 42
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 42,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT011",
+    "end_location": {
+      "column": 34,
+      "row": 54
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_security_hardening.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 54
+    },
+    "message": "`pytest.raises(ValueError)` is too broad, set the `match` parameter or use a more specific exception",
+    "name": "pytest-raises-too-broad",
+    "noqa_row": 54,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-raises-too-broad"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 67,
+      "row": 33
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_self_service_privacy.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert \"auth_subject\" not in text\n    assert \"resume_url\" not in text\n",
+          "end_location": {
+            "column": 1,
+            "row": 34
+          },
+          "location": {
+            "column": 1,
+            "row": 33
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 33
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 33,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 60,
+      "row": 43
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_storage_nonblocking.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert seen\n    assert all(tid != loop_thread for tid in seen)\n",
+          "end_location": {
+            "column": 1,
+            "row": 44
+          },
+          "location": {
+            "column": 1,
+            "row": 43
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 43
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 43,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 64,
+      "row": 50
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_storage_nonblocking.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert cfg.connect_timeout <= 10\n    assert cfg.read_timeout <= 30\n",
+          "end_location": {
+            "column": 1,
+            "row": 51
+          },
+          "location": {
+            "column": 1,
+            "row": 50
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 50
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 50,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 117,
+      "row": 34
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_wallet_currencies.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert by[\"EUR\"][\"escrow_held\"] == 100 and by[\"EUR\"][\"total_spent\"] == 150\n    assert by[\"EUR\"][\"total_released\"] == 50\n",
+          "end_location": {
+            "column": 1,
+            "row": 35
+          },
+          "location": {
+            "column": 1,
+            "row": 34
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 34
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 34,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 79,
+      "row": 35
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_wallet_currencies.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert by[\"USD\"][\"escrow_held\"] == 100\n    assert by[\"USD\"][\"total_spent\"] == 100\n",
+          "end_location": {
+            "column": 1,
+            "row": 36
+          },
+          "location": {
+            "column": 1,
+            "row": 35
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 35
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 35,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 62,
+      "row": 37
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_wallet_currencies.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert w[\"currency\"] is None\n    assert w[\"escrow_held\"] is None\n",
+          "end_location": {
+            "column": 1,
+            "row": 38
+          },
+          "location": {
+            "column": 1,
+            "row": 37
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 37
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 37,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 52,
+      "row": 132
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_websocket_auth.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "    assert ws.sent\n    assert ws.sent[0][\"type\"] == \"ping\"\n",
+          "end_location": {
+            "column": 1,
+            "row": 133
+          },
+          "location": {
+            "column": 1,
+            "row": 132
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 5,
+      "row": 132
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 132,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "PT018",
+    "end_location": {
+      "column": 58,
+      "row": 201
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_websocket_auth.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "        assert ws.closed_with == 1008\n        assert not ws.accepted\n",
+          "end_location": {
+            "column": 1,
+            "row": 202
+          },
+          "location": {
+            "column": 1,
+            "row": 201
+          }
+        }
+      ],
+      "message": "Break down assertion into multiple parts"
+    },
+    "location": {
+      "column": 9,
+      "row": 201
+    },
+    "message": "Assertion should be broken down into multiple parts",
+    "name": "pytest-composite-assertion",
+    "noqa_row": 201,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/pytest-composite-assertion"
+  },
+  {
+    "cell": null,
+    "code": "F841",
+    "end_location": {
+      "column": 12,
+      "row": 60
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_work_lifecycle.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 15,
+            "row": 60
+          },
+          "location": {
+            "column": 5,
+            "row": 60
+          }
+        }
+      ],
+      "message": "Remove assignment to unused variable `cm_id_1`"
+    },
+    "location": {
+      "column": 5,
+      "row": 60
+    },
+    "message": "Local variable `cm_id_1` is assigned to but never used",
+    "name": "unused-variable",
+    "noqa_row": 60,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-variable"
+  },
+  {
+    "cell": null,
+    "code": "F841",
+    "end_location": {
+      "column": 17,
+      "row": 97
+    },
+    "filename": "/Users/gokulr/Developer/GitHub/remote-ai-platform/apps/api/tests/test_work_lifecycle.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 20,
+            "row": 97
+          },
+          "location": {
+            "column": 5,
+            "row": 97
+          }
+        }
+      ],
+      "message": "Remove assignment to unused variable `milestone_id`"
+    },
+    "location": {
+      "column": 5,
+      "row": 97
+    },
+    "message": "Local variable `milestone_id` is assigned to but never used",
+    "name": "unused-variable",
+    "noqa_row": 97,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unused-variable"
+  }
+]

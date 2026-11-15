@@ -3,25 +3,22 @@
 Read this first in any new session. Owner decisions: memory `transformation-program-2026-11` (card-OK free tiers; owner creates accounts at the end with a guide from Claude; direct push to dev and prod; include work from the parallel Codex/Claude session; Upstash for production Redis; Files app at `#files` with Office inside).
 
 ```text
-PHASE: 0-16 implemented and tested on dev; 17 (provision + cut-over + single prod deploy) waits on owner accounts
-STATUS: dev = 3eadd6e (CI green); prod = 67eaf19 (unchanged, by decision: one prod deploy at the very end)
-CURRENT BRANCH: feat/launch-discovery-hardening (pushed to dev directly)
+STATE (15 Nov 2026, evening): PRODUCTION RUNS ON THE ORACLE VM
+release: cc2c847 (+ a019cca backup-report fix) on branch integrate/all; pushed to dev and prod
+VM: 79.76.118.213 (opc, ~/.ssh/oci_rap), compose project rap-prod: caddy, web, admin, api, worker,
+    scheduler, postgres 17, redis; ops project rap-ops: GlitchTip, Uptime Kuma, Slack relay
+Env: /opt/rap/.env rendered by ops/vm/render-env.sh from Infisical prod /render-api + /vm
+Data: Supabase -> VM verified (96 tables, 53,282 rows; 5 files to OCI rap-prod-resumes)
+DNS: Cloudflare A records (proxied) -> VM; SSL Full (strict); Render custom domain removed
+Fallback: Render service suspended (resume + point api back) until ~22 Nov; workers detached, not deleted
+Backups: rap-backup.timer 02:39 UTC -> OCI rap-prod-backups, reports to API (#backups)
 
-LATEST (14 Nov 2026, Claude):
-- Staff roles + feature-flag overrides (067) with console screens; E2E staff-console.spec.ts
-- Backup/restore evidence: POST /ops/backups/report (BACKUP_REPORT_TOKEN), /admin/backups,
-  inventory shows real freshness; /admin/catalogue service catalogue; console screens (068 backup_runs)
-- 068 also repairs messages.attachment_ids where an early 063 draft ran (IF NOT EXISTS)
-- Restore drill on E2E stack: 93 tables, 16 objects verified. Found and fixed: extensions
-  (pg_trgm) were not restored from a public-schema dump
-- k6 tests/load/public-read.js: p95 jobs 27 ms, search 64 ms, 0 errors (local Docker)
-- Full Playwright: 83 passed on Chromium, Firefox, WebKit
-- Phase 9 milestone-task links and Phase 10 reaction tallies were already built (verified)
-
-NEW SECRET NAMES FOR INFISICAL (owner): BACKUP_REPORT_TOKEN (API and backup host, same value)
-
-NEXT: owner follows owner-infrastructure-guide.md; then Phase 17 cut-over steps in that guide;
-restore branch protection from ~/Developer/GitHub/.protection-backup/; rotate keys pasted in chat.
+OPEN:
+- WorkOS production needs owner's card -> then import 40 real accounts (runbook 05-*), set
+  AUTH_PRIMARY_PROVIDER=workos, NEXT_PUBLIC_AUTH_PROVIDER=workos (repo var AUTH_PROVIDER), then delete Supabase
+- After fallback week: delete Render, Upstash, Cloudflare workers, Sentry project
+- Owner: Google People API verification (08-*), LinkedIn app (09-*), Slack incoming webhook for UptimeRobot
+- GlitchTip public route for browser errors; restore branch protection; rotate keys pasted in chat
 ```
 
 ## Latest checkpoint — 14 November 2026

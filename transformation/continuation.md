@@ -79,3 +79,9 @@ promote dev->prod as authorized; observe deploy-vm build and health gate. Verify
 worker/scheduler fresh heartbeat, legal/hubs/sitemaps/cache, migration076 and job-cache live.
 See 2026-11-15-final-action-audit.md and 2026-11-15-config-retirement-register.md for remaining
 owner gates and cleanup dependencies. Never run full synthetic-account mutation E2E on production.
+
+Final agent reports: admin820px regression passed, TS/unit10/build passed; old84px overflow not
+reproduced, no CSS fix claimed. Last output-path test-config adjustment not rerun. Capacity tools:
+3 regression tests, shell syntax, isolated PG17 31-job/1-member seed/query benchmark passed;
+injected benchmark error exited1. HTTP smoke rerun result uncollected. Local capacity API and
+rap-capacity-smoke-pg remain running. Capacity docs updated and committed after urgent save.

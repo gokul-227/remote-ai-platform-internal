@@ -23,3 +23,13 @@ Live read-only verification: homepage, remote-jobs, robots and sitemap200. `/leg
 Worker processes jobs but heartbeat startup errored when sorting Kombu Queue objects; fixed in source.
 Jooble key is present on VM. Adzuna permission remains false. Never expose secret values.
 Production remains at068d41b until tested promotion and VM image verification.
+
+## Final integration verification
+
+Combined source is committed through `db2a7d2` on dev and fix/vm-runtime-observability.
+Full combined backend:1038 passed,16 skipped. Web236 passed. Merged filter review58 passed.
+CI caught independent075 heads; additive merge076 preserves both branches. Fresh PostgreSQL
+upgrade to076, downgrade to074 and re-upgrade passed. Production migration076 remains pending.
+Deployment script now starts isolated job-cache; API budget retained. All recovered source worktrees
+are clean and their completed commits are retained. Latest CI/deploy is pending; do not report release
+completion until version SHA, worker heartbeat, public/legal pages and caches are verified live.

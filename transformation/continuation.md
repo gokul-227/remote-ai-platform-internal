@@ -48,3 +48,34 @@ round-trip, final browser reruns and remote CI still need review. Earlier full b
 serial messaging journey with a signed-out page; hydration helper adjusted, rerun results unobserved.
 Current npm audit returned zero vulnerabilities. Production unchanged. Preserve and inspect all files
 before continuing; do not claim the full specification completed.
+
+## 15 November late release-save checkpoint
+
+ACTIVE WORKTREE `/Users/gokulr/Developer/GitHub/rap-runtime-observability`, branch
+`fix/vm-runtime-observability`, dev HEAD `b262715`. Do NOT resume in the older main
+checkout and overwrite newer production history. Production remains068d41b.
+
+Recovered Claude's saved legal/SEO/scale branches and integrated all into dev. Full combined
+backend1038 passed16 skipped; web236 passed; filter integration58 passed. Migration076 merges
+075 source boards and scale read models; fresh PostgreSQL upgrade/downgrade074/re-upgrade passed.
+
+Found/fixed rollout blockers: explicit Bash failure propagation, rollback API command override
+bypasses old Alembic (old image cannot resolve migration076), legacy unknown API SHA allowed only
+in rollback, starts isolated job-cache. Nine deployment regression tests passed. Commit346c4d8.
+
+Fresh backup initially failed: backup.env targeted old Supabase while primary runtime uses Oracle
+via STORAGE_PROVIDER=r2. Corrected backup source from live primary settings securely, preserving
+root-only /opt/rap/backup.env.before-storage-fix. Backup succeeded22:18UTC:98MB,99 tables,5 objects,
+offsite upload to rap-prod-backups and evidence report201. No secrets printed.
+
+Commit b262715 urgently saves capacity-tool fixes and admin tablet regression tests. Final agent
+validation reports pending at save time. Run/inspect those tests before treating them as accepted.
+Latest dev CI still running; older db2a7d2 frontend/migrations/backend passed, E2E pending.
+Production NOT promoted. Do not delete fallback providers/credentials. Search Console credentials
+absent and SEO weekly report disabled (owner gate); Adzuna permission false. Jooble key present.
+
+Next: confirm clean trees; finish responsive/capacity tests; inspect latest CI. On green tested SHA,
+promote dev->prod as authorized; observe deploy-vm build and health gate. Verify API/web exactSHA,
+worker/scheduler fresh heartbeat, legal/hubs/sitemaps/cache, migration076 and job-cache live.
+See 2026-11-15-final-action-audit.md and 2026-11-15-config-retirement-register.md for remaining
+owner gates and cleanup dependencies. Never run full synthetic-account mutation E2E on production.

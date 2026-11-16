@@ -85,3 +85,28 @@ reproduced, no CSS fix claimed. Last output-path test-config adjustment not reru
 3 regression tests, shell syntax, isolated PG17 31-job/1-member seed/query benchmark passed;
 injected benchmark error exited1. HTTP smoke rerun result uncollected. Local capacity API and
 rap-capacity-smoke-pg remain running. Capacity docs updated and committed after urgent save.
+
+### 16 November 2026 resumed release validation
+
+Active integration remains `rap-runtime-observability`; dev `52db47d` includes homepage
+narrow-grid correction and native hash auth anchors. CI at `67dee38` had four E2E
+failures: old homepage content expectations and 49px overflow at 320px. Following the
+updated signup/back journey also exposed Next Link hash navigation missing AppEntry's
+hashchange listener; native anchors fixed it. Five focused local discovery/accessibility
+journeys passed, web236 unit tests passed, web TypeScript and focused ESLint passed.
+Admin820px regression rerun passed with final output-directory config. Nine deployment
+regression tests passed. Full final CI43862858700 is still running; no promotion yet.
+
+Capacity HTTP smoke is now collected: 31 fixture jobs traversed as20+11 with no overlap;
+3 k6 iterations,13/13 checks,7requests,zero failures. This is bounded loopback evidence,
+not10M-job/1M-member capacity acceptance. Evidence saved in product tests/load/evidence.
+
+Nightly backup16Nov02:36UTC succeeded (103MB). A fresh isolated VM restore into new
+PostgreSQL17 and local MinIO containers verified99table row counts,5objects with matching
+checksums/metadata and no missing references in34sec; report201 recorded. Scratch containers
+and volumes removed by trap; production DB/storage untouched. This verifies the current
+production schema backup, not yet the pending076 production migration.
+
+GitHub's five dependency alerts are all in the separate docs-tool lock, not current app
+production locks: fast-uri3.1.8 and legacy Faker5.5.3. A bounded agent is preparing compatible
+converter updates and tests before final release. No secret values were printed.

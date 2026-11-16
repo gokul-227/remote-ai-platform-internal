@@ -110,3 +110,20 @@ production schema backup, not yet the pending076 production migration.
 GitHub's five dependency alerts are all in the separate docs-tool lock, not current app
 production locks: fast-uri3.1.8 and legacy Faker5.5.3. A bounded agent is preparing compatible
 converter updates and tests before final release. No secret values were printed.
+
+Release follow-up: product HEAD `885aa7d` pushed to dev and integration branch. Added
+missing isolated job-cache architecture component and regenerated YAML/draw.io/PNGs;
+21 architecture tests and drift check passed. Docs converter locks now use fast-uri3.1.9,
+Faker10.5.0 and nested YAML1.10.3; local audit zero vulnerabilities,6converter tests passed,
+1API-export test skipped locally for absent worktree venv (separate export drift check passed).
+All386 collection requests/hash remain unchanged; no Postman publishing during local tests.
+Final workflows: CI43863645539, Architecture43863645573, Postman43863645491.
+
+Production preparation:84,797 estimated job rows; schema075_job_source_boards.
+Prebuilt16pending075_scale_read_models indexes CONCURRENTLY with3slock timeout/120sstatement
+bound per command. All16pg_index.indisvalid=true. No table data/schema revision changed;
+old application stays live and ready. This prevents the normal migrator building these
+indexes under a write-blocking transaction. Production still068d41b pending exactSHAchecks.
+
+Jooble live evidence: sourceJOOBLE enabled/permission true, latest09:17UTCenqueued run
+SUCCEEDED09:18:29UTCwith2saved jobs (prior06:18run saved1). No manual import was triggered.

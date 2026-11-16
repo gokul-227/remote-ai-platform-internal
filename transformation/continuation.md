@@ -161,3 +161,25 @@ building. Canceled duplicate prod-push CI43866475410 (same already-tested commit
 the manual production workflow performs the deployment. No CI failure was bypassed.
 Deployment/live final verification is still pending; previous runtime068d41b remains
 until the health-gated rollout finishes. No owner provider gates have been enabled.
+
+### Production rollback — 16 November12:35UTC
+
+Workflow43866474084 successfully deployed885aa7d; exact public web/API SHAs and schema076
+verified; legal/security/hub routes200. Manual catalogue refresh503fcb59-e292-4361-bc67-
+2abede51d149 completed40.35s with34searches and7,357employers (35stored-statrows). Worker
+heartbeat fix became healthy. However live hub renders repeatedly hit10s and salary/skills
+queries accumulated15active sessions, some20s, starving readiness. Rolled application back
+using the prepared legacy migration-bypass override. Rollback health gate passed for068d41b;
+schema076/indexes remain additive. Public readiness healthy again. Gitprod still885aa7d;
+DO NOT equate branch tip/deploy workflow success with current runtime.
+
+Also found existing broker command stillallkeys-lru because app-only rollout does not recreate
+Redis. Set noeviction immediately, then explicitly recreated only Redis from current Compose
+with its existing AOF volume. Policy nowpersistentlynoeviction; dedicated query cache remains
+allkeys-lru. Brief broker reconnect occurred; no data volume was removed. Auth/users untouched.
+GitHub nowzero open Dependabot alerts. Admin shell200 with deployment UA; default Python UA
+was403 at Cloudflare, not an admin outage.
+
+Fix lane: coordinator adds lightweight landing-count endpoint, bounded hub count fetches and
+API_INTERNAL_URL for web SSR; agentowns efficient bounded keyword aggregate SQL and PG tests.
+Requires newtests/CI/candidate evidence before re-promotion. Do not declare release complete.

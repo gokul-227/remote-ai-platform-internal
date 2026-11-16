@@ -218,3 +218,9 @@ currently885aa7d whileVMrollback068d41b; noautomaticbadre-deploypending.
 Temporary registryloginasopc was established securely fromghauthtoken for candidateimage
 pulls; log out after candidateverification. Never printtokenorbackupenv. Backup/source
 credentialsremainroot-only. ScratchRedis muststayseparate (candidateharness does this).
+
+692 isolated verification PASSED with production-like web outbound networking:
+85,009restored jobs; firsthome1205ms, subsequenthome81ms, hubs71/77/62ms, APIhealth3samples
+max90ms allhealthy. Count204ms vs priorc98observed4935ms. Exact692API/webimages; separate
+scratchPG/Redis/MinIO; cleanupremovedcontainers/volumes/network. No productionload. Full
+report2026-11-16-release-recovery.md. CI43870170740pending; build43870170459success.

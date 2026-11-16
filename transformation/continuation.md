@@ -140,3 +140,15 @@ This is a bounded read rollback check, not full authenticated write compatibilit
 
 Candidate885aa7d multiarch build-only workflow43864101523 succeeded; no deployment by that
 run. Architecture, Postman and CodeQL are green for885aa7d; fullCI43863645539 pending.
+
+Before release: discovered JOOBLE's persisted schedule still17 */3 * * * despite the
+candidate's documented daily default. Updated exactly that old value to0 6 * * * via guarded
+SQL; one row changed. Source enabled/permission unchanged; no import manually triggered.
+Fresh pre-release backup16Nov12:20:12UTC succeeded25s:111MB,99tables,5objects,offsite upload
+and report201; archive remote-ai-platform-20261116T122012Z.tar.enc. Scratch drill containers
+are gone; Redis database15 used for the API probe was inspected empty (DBSIZE0).
+
+CI43862858700 at52db47d completed successfully:1020backend/34skipped,21repo-level,
+10PostgreSQL,108browser/8skipped and5WorkOS journeys. Final885aa7d CI43863645539 has passed
+backend/frontend/migration/secret scan; final browser suite started12:13UTC and is pending.
+Do not treat earlier successful application tests as finalSHAcompletion until that run ends.

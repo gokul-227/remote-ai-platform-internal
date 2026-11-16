@@ -152,3 +152,12 @@ CI43862858700 at52db47d completed successfully:1020backend/34skipped,21repo-leve
 10PostgreSQL,108browser/8skipped and5WorkOS journeys. Final885aa7d CI43863645539 has passed
 backend/frontend/migration/secret scan; final browser suite started12:13UTC and is pending.
 Do not treat earlier successful application tests as finalSHAcompletion until that run ends.
+
+Final885aa7d CI43863645539 SUCCESS:1020backend/34skipped,21repo-level,
+236webunit,10adminunit,10PostgreSQL,108browser/8skipped,5WorkOS. Architecture,
+CodeQL and Postman checks also succeeded. Promoted885aa7d dev->prod fast-forward after
+that result. Started production workflow43866474084 with deploy=true; app images now
+building. Canceled duplicate prod-push CI43866475410 (same already-tested commit), so
+the manual production workflow performs the deployment. No CI failure was bypassed.
+Deployment/live final verification is still pending; previous runtime068d41b remains
+until the health-gated rollout finishes. No owner provider gates have been enabled.

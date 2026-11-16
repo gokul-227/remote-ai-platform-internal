@@ -127,3 +127,16 @@ indexes under a write-blocking transaction. Production still068d41b pending exac
 
 Jooble live evidence: sourceJOOBLE enabled/permission true, latest09:17UTCenqueued run
 SUCCEEDED09:18:29UTCwith2saved jobs (prior06:18run saved1). No manual import was triggered.
+
+Populated rehearsal: restored the16Novarchive again into isolated containers, verified99tables
+and5objects, then mounted candidate885aa7d API/migrations over the old production image for
+Alembic. Upgrade from075_job_source_boards through075_scale_read_models to076 succeeded;
+restored job count remained69,916 (the backup snapshot, older than live84,797estimate).
+The old068d41b API started directly via uvicorn (bypassing its incompatible old migrator)
+and GET /api/v1/jobs?limit=2 returned200/twojobs when called inside its container. The
+initial host-published-port harness did not connect on the internal Docker network;
+inside-container read is the compatibility evidence, not the failing host-port probe.
+This is a bounded read rollback check, not full authenticated write compatibility.
+
+Candidate885aa7d multiarch build-only workflow43864101523 succeeded; no deployment by that
+run. Architecture, Postman and CodeQL are green for885aa7d; fullCI43863645539 pending.

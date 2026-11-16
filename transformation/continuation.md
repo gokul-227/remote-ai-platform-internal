@@ -183,3 +183,38 @@ was403 at Cloudflare, not an admin outage.
 Fix lane: coordinator adds lightweight landing-count endpoint, bounded hub count fetches and
 API_INTERNAL_URL for web SSR; agentowns efficient bounded keyword aggregate SQL and PG tests.
 Requires newtests/CI/candidate evidence before re-promotion. Do not declare release complete.
+
+### Corrected candidate — 16Nov12:50UTC
+
+Product692b504 pushed dev/integration, all product changes committed; runtime still068d41b
+on additive076schema. Commits8aa04b7 count-only hub API/bounded4-at-a-time navigation and
+API_INTERNAL_URL=http://api:8000; c98d1c4 keyword detail projection from one capped window;
+6ea9db6 formatting;692b504 crucial partial-index predicate correction.
+
+Actual cause verified with read-only production EXPLAIN (no ANALYZE): WHERE is_active IS TRUE
+AND is_deleted IS FALSE choseParallelSeqScan(cost17580), whereas WHERE is_active AND NOT
+is_deleted chose ix_job_posts_live_fts BitmapIndexScan(cost672). Existing partial indexes
+have the latter predicate; PostgreSQL does not infer eligibility from the former spelling.
+Corrected shared_filtered predicate; NOTNULLbooleans preserve semantics. NewPGregression
+forces bitmap-planning and proves oldshape cannotuseFTS/newshape can. Three PGtests passed
+(2,105/84,000fixture semantics plus indexeligibility), Ruff/mypy passed. NewPGtestincluded
+CI migration-validation invocation. Previous synthetic timing alone showed no speedup and
+didnotreproduceproduction: fixed~149ms/legacy144ms on short descriptions; do not claimitdid.
+
+IsolatedVMcandidatec98 on the latest backup reproduced the problem without productionload:
+Pythoncount4.935s; unfilteredstats380ms; jobslist123ms. Rootrender exceeded30s while API
+readinessremained8–143ms dueboundedfanout. Allscratchcontainers/volumesremoved. Thusc98and
+6eaareNOTaccepted;692b504 indexfix requires a fresh isolatedVMrender test using builtimages.
+Helper/tmp/rap-candidate-c98-verify.sh onVM performsrestore/start/read/cleanup, latestlogs in
+/tmp/rap-candidate-c98-verify.log and API/webdiagnosticsroot-only. Do not treat timeoutaspass.
+
+692 workflows: CI43870170740, build-only43870170459, Architecture43870170667(success),
+Postman43870170576, CodeQL43870170648. Earlierc98/6eaCI canceled as superseded; c98front
+failurewasformatting (fixed); currentPrettierallsourcecheck passed. Localfocused5browser,
+237webunit,17SEOAPItests and countsAPI+9deployregressions passed. Next: isolated692coldhub
+andreadinessevidence; exact692CIgreen; onlythenpromoteprodandhealthgateddeploy. Prodbranch
+currently885aa7d whileVMrollback068d41b; noautomaticbadre-deploypending.
+
+Temporary registryloginasopc was established securely fromghauthtoken for candidateimage
+pulls; log out after candidateverification. Never printtokenorbackupenv. Backup/source
+credentialsremainroot-only. ScratchRedis muststayseparate (candidateharness does this).

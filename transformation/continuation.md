@@ -233,3 +233,9 @@ Production7aahealthy; noold692jobreruns. Currentworktreebranchfeat/guest-light-s
 Guestcandidate nowda360a3; CI44079246882/build44079247042running. Old556CIbrowserfailures
 wereoutdated"Viewandapply"guestnavigation assertions; correctedand3cross-engine tests pass.
 Sourcecodeunchangedfrom556apartfromtest. FullpublicdescriptionspreservedperuserSEOchoice.
+
+17Novliveguestrelease da360a3: userexplicitlyaskedimmediatego-livebeforequota; prebuiltimages
+44079247042 deployedvia healthgateddeploy.sh,passed. LivePlaywrightdarkOS/savedDark->light,
+newhome,mobile0overflow,publicfulldescription/noJS/canonical,guestapply->signup/noexternalpopup,
+anonymousAPIapplyURLnull. WebversionexactDA; allreadinessserviceshealthy. FullbrowserCI
+44079246882finishing; otherchecks green. Prod/dev/guestbranchallDA; treescleanbeforefinalnotes.

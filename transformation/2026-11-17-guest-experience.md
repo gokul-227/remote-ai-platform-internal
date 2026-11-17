@@ -1,8 +1,8 @@
 # Guest experience — 17 November 2026
 
-Candidate bf223fb3156b3252401672737c761e5aaf648924 on feat/guest-light-signup/dev.
+Live release da360a367607cd435279889677f70f0a70c2e7ae on prod/dev/feat/guest-light-signup.
 Integrated current7aaab40production baseline, preserving billing/Slack/latestSEO changes.
-Production stays7aaab40 until candidate checks/deployment finish.
+Deployment health gate passed on17November; public web/API version and all four readiness services healthy.
 
 User resolved SEO tradeoff: preserve Google Jobs by keeping full descriptions public;
 signup required to apply. No crawler-only content or login wall around descriptions.
@@ -34,3 +34,17 @@ verify public200/canonical/404and"Sign up to apply"->registration plus remembere
 Targeted test passes Chromium/WebKit/Firefox(3tests). Product code unchanged by that testfix.
 Finalcandidate da360a367607cd435279889677f70f0a70c2e7ae committed/pusheddevandguestbranch;
 CI44079246882/build44079247042running. Production stays7aaab40until exactCIgreenanddeploy.
+
+## Live verification
+
+User explicitly requested immediate go-live before quota exhaustion. Reused successful
+prebuilt production images44079247042 and ran standard VMdeploy.sh with automatic health
+gate/rollback. Gatepassed forda360a3; no database migrations/settings changes. Temporary
+registry login removed. FullbrowserCI44079246882 wasfinishing at rollout; backend/frontend/
+migration/secretchecks alreadygreen. Duplicateprod-pushCI44081275947canceled; devCI continues.
+
+Live Playwright with dark device and saved dark preference: homepage200/newhero/lighttheme,
+375px mobilezerooverflow, actualpublicjob200withfulldescription, anonymousAPIexternal_urlnull,
+apply->Createyouraccount withnoexternalpopup. SeparateJavaScript-disabled contextverified
+publicdescriptionandcanonical. Desktop screenshotvisuallyverified white/cleanwithrealjobs.
+Publicversionda360a3 and DB/Redis/worker/schedulerHEALTHY. Sourceanddocumentationcommitted.

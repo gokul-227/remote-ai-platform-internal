@@ -224,3 +224,8 @@ credentialsremainroot-only. ScratchRedis muststayseparate (candidateharness does
 max90ms allhealthy. Count204ms vs priorc98observed4935ms. Exact692API/webimages; separate
 scratchPG/Redis/MinIO; cleanupremovedcontainers/volumes/network. No productionload. Full
 report2026-11-16-release-recovery.md. CI43870170740pending; build43870170459success.
+
+17Novguesttask: userchosepublicdescriptions+signup-to-apply to preserveGoogleJobs. Newlight/
+cleanhomepage andmember-onlyapplicationURLscommittedbf223fb, mergedwithnewproduction7aa
+beforepushingdev. FullCI44074893619/build44074893853running. See2026-11-17-guest-experience.md.
+Production7aahealthy; noold692jobreruns. Currentworktreebranchfeat/guest-light-signupclean.

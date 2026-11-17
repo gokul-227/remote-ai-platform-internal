@@ -229,3 +229,7 @@ report2026-11-16-release-recovery.md. CI43870170740pending; build43870170459succ
 cleanhomepage andmember-onlyapplicationURLscommittedbf223fb, mergedwithnewproduction7aa
 beforepushingdev. FullCI44074893619/build44074893853running. See2026-11-17-guest-experience.md.
 Production7aahealthy; noold692jobreruns. Currentworktreebranchfeat/guest-light-signupclean.
+
+Guestcandidate nowda360a3; CI44079246882/build44079247042running. Old556CIbrowserfailures
+wereoutdated"Viewandapply"guestnavigation assertions; correctedand3cross-engine tests pass.
+Sourcecodeunchangedfrom556apartfromtest. FullpublicdescriptionspreservedperuserSEOchoice.

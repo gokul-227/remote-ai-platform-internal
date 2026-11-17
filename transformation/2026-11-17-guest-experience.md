@@ -26,3 +26,11 @@ state. Its migration guard rejected unknown080revision and restored newer7aaab40
 andhealthy DB/Redis/worker/scheduler verified; current7aaCaddyfile restored (other shipped
 compose/deploy/postgresfiles unchanged). No database revision downgrade or user data deletion.
 Do not retry olddeploymentjobs; use currentcandidate workflows and verify prodtip first.
+
+Follow-up:5562b3d preserves intended-job return after onboarding. FullCI at556 had all
+backend/frontend/migration checks pass; its browser failures were two old cross-engine
+navigation checks expecting the removed guest"View and apply"label. Updated the check to
+verify public200/canonical/404and"Sign up to apply"->registration plus rememberedjob.
+Targeted test passes Chromium/WebKit/Firefox(3tests). Product code unchanged by that testfix.
+Finalcandidate da360a367607cd435279889677f70f0a70c2e7ae committed/pusheddevandguestbranch;
+CI44079246882/build44079247042running. Production stays7aaab40until exactCIgreenanddeploy.
